@@ -20,15 +20,179 @@ export type NonEmptyArray<T> = [T, ...T[]]
 
 export type MustInclude<T, U extends T[]> = [T] extends [ValueOf<U>] ? U : never
 
+export interface HttpResponse<T> {
+	data: T
+	message: string
+	status: string
+}
+
+export type HttpError = {
+	response: {
+		data: {
+			error: string
+			message: string
+			status: string
+		}
+	}
+}
+
+export interface PaginationResponse<T> {
+	data: T[]
+	pagination: {
+		pageSize: number
+		totalCount: number
+		pageCount: number
+		currentPage: number
+		hasNext: boolean
+	}
+}
+
+export interface PaginationProps {
+	timeLine?: TimelineProps
+	limit?: number
+	page?: number
+}
+
+export type TimelineProps =
+	| "YESTERDAY"
+	| "TODAY"
+	| "THIS_WEEK"
+	| "LAST_7_DAYS"
+	| "LAST_WEEK"
+	| "THIS_MONTH"
+	| "LAST_6_MONTHS"
+	| "LAST_12_MONTHS"
+	| (string & {})
+
+export type StatusProps =
+	| "BOOKED"
+	| "CANCELLED"
+	| "COMPLETED"
+	| "CONFIRMED"
+	| "DELIVERED"
+	| "FAILED"
+	| "PENDING"
+	| "PICKED"
+	| "PROCESSING"
+	| "REFUND"
+	| "SHIPPED"
+	| (string & {})
+
 export type Node = {
-	createdOn: Date | string
+	createdAt: Date | string
 	deletedBy: Maybe<string>
-	deletedOn: Maybe<Date | string>
+	deletedAt: Maybe<Date | string>
 	id: string
 	updateBy: Maybe<string>
-	updatedOn: Maybe<Date | string>
+	updatedAt: Maybe<Date | string>
+}
+
+export type AdminProps = Node & {
+	Email: string
+	FirstName: string
+	LastName: string
 }
 
 export type UserProps = Node & {
 	email: string
+	full_name: string
+	profile_image: string
 }
+
+export type SellerProps = Node & {
+	address: string
+	email: string
+	full_name: string
+	phone_number: string
+	profile_image: string
+}
+
+export type BuyerProps = Node & {
+	address: string
+	email: string
+	full_name: string
+	phone_number: string
+	profile_image: string
+}
+
+export type ProductProps = Node & {
+	__typename?: "Product"
+	_id: string
+	description: string
+	height: number
+	images: string[]
+	is_discounted: boolean
+	product_id: string
+	product_name: string
+	quantity: number
+	unit_price: number
+	vendor: {
+		Email: string
+		_id: string
+	}
+	weight: number
+	width: number
+}
+
+export type OrderProps = Node & {
+	__typename?: "Order"
+	_id: string
+	delivery_amount: number
+	grand_total: number
+	items: ProductProps[]
+	order_itinerary: string
+	payment_type: "INSTANT"
+	shipping_address: string
+	status: StatusProps
+	total_amount: number
+	tracking_id: string
+	user: {
+		_id: string
+		Email: string
+		FirstName: string
+		LastName: string
+		PhoneNumber: string
+	}
+}
+
+export type TransactionProps = Node & {
+	amount: number
+	payment_type: "card" | "transfer"
+	status: "cancelled" | "pending" | "success"
+	tracking_id: string
+	type: "credited" | "withdrew"
+	user: {
+		_id: string
+		FirstName: string
+		LastName: string
+		Role: "buyer" | "seller"
+	}
+}
+
+export type LatestOrderProps = Node & {
+	product_id: string
+	product_name: string
+	quantity: number
+	unit_price: number
+	createdAt: Date | string
+	status: StatusProps
+	total_price: number
+}
+
+export type CouponProps = Node & {
+	activation_date: Date | string
+	amount: number
+	applied_to: "USER" | "VENDOR"
+	expiry_date: Date | string
+	coupon_type: CouponTypeProps
+	name: string
+	remove_expiry_date: boolean
+	remove_usage_limit: boolean
+	usage_limit: string
+}
+
+export type CouponTypeProps =
+	| "PRICE_DISCOUNT"
+	| "FIXED_DISCOUNT"
+	| "PERCENTAGE_DISCOUNT"
+	| "FREE_SHIPPING"

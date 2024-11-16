@@ -1,22 +1,60 @@
+import { Eye, EyeSlash, Icon } from "iconsax-react"
 import * as React from "react"
 
 import { cn } from "@/lib/utils"
 
-export interface InputProps
-	extends React.InputHTMLAttributes<HTMLInputElement> {}
+export interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
+	error?: string
+	label?: string
+	labelClassName?: string
+	leadingIcon?: Icon
+	wrapperClassName?: string
+}
 
 const Input = React.forwardRef<HTMLInputElement, InputProps>(
-	({ className, type, ...props }, ref) => {
+	(
+		{ className, error, label, labelClassName, leadingIcon: Icon, type, wrapperClassName, ...props },
+		ref
+	) => {
+		const [showPassword, setShowPassword] = React.useState(false)
+
 		return (
-			<input
-				type={type}
-				className={cn(
-					"flex h-10 w-full rounded-md border border-neutral-200 bg-white px-3 py-2 text-sm ring-offset-white file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-neutral-950 placeholder:text-neutral-500 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-neutral-950 focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 dark:border-neutral-800 dark:bg-neutral-950 dark:ring-offset-neutral-950 dark:file:text-neutral-50 dark:placeholder:text-neutral-400 dark:focus-visible:ring-neutral-300",
-					className
+			<div className="flex w-full flex-col gap-4">
+				{label && (
+					<label
+						className={cn(
+							"text-2xl font-medium leading-none text-[#5d5c5c] peer-disabled:cursor-not-allowed peer-disabled:opacity-70",
+							labelClassName
+						)}>
+						{label}
+					</label>
 				)}
-				ref={ref}
-				{...props}
-			/>
+				<div
+					className={cn(
+						"flex h-[70px] w-full items-center gap-2 rounded-3xl bg-white px-3 py-2",
+						wrapperClassName
+					)}>
+					{Icon && <Icon size={24} className="text-neutral-400" />}
+					<input
+						type={showPassword ? "text" : type}
+						className={cn(
+							"flex h-full w-full bg-transparent text-xl outline-none file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-neutral-950 placeholder:text-neutral-500 disabled:cursor-not-allowed disabled:opacity-50",
+							className
+						)}
+						ref={ref}
+						{...props}
+					/>
+					{type === "password" && (
+						<button
+							type="button"
+							onClick={() => setShowPassword(!showPassword)}
+							className="flex items-center justify-center">
+							{showPassword ? <EyeSlash size={24} /> : <Eye size={24} />}
+						</button>
+					)}
+				</div>
+				{error && <p className="text-xs text-red-500">{error}</p>}
+			</div>
 		)
 	}
 )

@@ -20,13 +20,10 @@ const initialState: GlobalStore = {
 	setLocale: () => {},
 }
 
-const useGlobalStore = createPersistMiddleware<GlobalStore>(
-	"spaceet-global",
-	(set) => ({
-		...initialState,
-		setCurrency: (currency) => set({ currency }),
-		setLocale: (locale) => set({ locale }),
-	})
-)
+const useGlobalStore = createPersistMiddleware<GlobalStore>("spaceet-global", (set) => ({
+	...initialState,
+	setCurrency: (currency) => set({ currency }),
+	setLocale: (locale) => set({ locale }),
+}))
 
 export { useGlobalStore }

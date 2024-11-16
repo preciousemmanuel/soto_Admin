@@ -1,6 +1,7 @@
 import React from "react"
 
 const Signin = React.lazy(() => import("./signin"))
+const ForgotPassword = React.lazy(() => import("./forgot-password"))
 const Overview = React.lazy(() => import("./dashboard"))
 const Wallet = React.lazy(() => import("./wallet"))
 const Withdrawal = React.lazy(() => import("./withdrawal"))
@@ -10,6 +11,8 @@ const Order = React.lazy(() => import("./order"))
 const Orders = React.lazy(() => import("./orders"))
 const Product = React.lazy(() => import("./product"))
 const Products = React.lazy(() => import("./products"))
+const CreateProduct = React.lazy(() => import("./create-product"))
+const Purchaser = React.lazy(() => import("./purchaser"))
 const Buyer = React.lazy(() => import("./buyer"))
 const Buyers = React.lazy(() => import("./buyers"))
 const Seller = React.lazy(() => import("./seller"))
@@ -21,12 +24,15 @@ export {
 	Buyer,
 	Buyers,
 	Coupon,
+	CreateProduct,
 	Feedback,
+	ForgotPassword,
 	Order,
 	Orders,
 	Overview,
 	Product,
 	Products,
+	Purchaser,
 	Seller,
 	Sellers,
 	Settings,

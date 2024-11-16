@@ -8,12 +8,15 @@ import {
 	Buyer,
 	Buyers,
 	Coupon,
+	CreateProduct,
 	Feedback,
+	ForgotPassword,
 	Order,
 	Orders,
 	Overview,
 	Product,
 	Products,
+	Purchaser,
 	Seller,
 	Sellers,
 	Settings,
@@ -30,6 +33,10 @@ function App() {
 		{
 			path: "/",
 			element: <Signin />,
+		},
+		{
+			path: "/forgot-password",
+			element: <ForgotPassword />,
 		},
 		{
 			path: "/dashboard",
@@ -63,7 +70,10 @@ function App() {
 						{
 							path: "orders",
 							children: [
-								{ index: true, element: <Orders /> },
+								{
+									index: true,
+									element: <Orders />,
+								},
 								{
 									path: ":id",
 									element: <Order />,
@@ -73,10 +83,26 @@ function App() {
 						{
 							path: "products",
 							children: [
-								{ index: true, element: <Products /> },
+								{
+									index: true,
+									element: <Products />,
+								},
 								{
 									path: ":id",
 									element: <Product />,
+								},
+								{
+									path: "create",
+									element: <CreateProduct />,
+								},
+							],
+						},
+						{
+							path: "purchaser",
+							children: [
+								{
+									index: true,
+									element: <Purchaser />,
 								},
 							],
 						},
@@ -87,7 +113,10 @@ function App() {
 						{
 							path: "buyers",
 							children: [
-								{ index: true, element: <Buyers /> },
+								{
+									index: true,
+									element: <Buyers />,
+								},
 								{
 									path: ":id",
 									element: <Buyer />,
@@ -97,7 +126,10 @@ function App() {
 						{
 							path: "sellers",
 							children: [
-								{ index: true, element: <Sellers /> },
+								{
+									index: true,
+									element: <Sellers />,
+								},
 								{
 									path: ":id",
 									element: <Seller />,
