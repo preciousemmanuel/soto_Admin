@@ -1,9 +1,7 @@
-import { RouterProvider, createBrowserRouter } from "react-router-dom"
 import { Suspense } from "react"
+import { Navigate, RouterProvider, createBrowserRouter } from "react-router-dom"
 
 import { DashboardLayout, ProtectedRoutes } from "@/layouts"
-import { ErrorBoundary } from "./components/shared"
-import { useUserStore } from "./store/z-store"
 import {
 	Buyer,
 	Buyers,
@@ -25,14 +23,17 @@ import {
 	Wallet,
 	Withdrawal,
 } from "@/pages"
+import { ErrorBoundary } from "./components/shared"
+import { useUserStore } from "./store/z-store"
 
 function App() {
 	const { isAuthenticated } = useUserStore()
+	console.log("isAuthenticated", isAuthenticated)
 
 	const router = createBrowserRouter([
 		{
 			path: "/",
-			element: <Signin />,
+			element: isAuthenticated ? <Navigate to="/dashboard" /> : <Signin />,
 		},
 		{
 			path: "/forgot-password",

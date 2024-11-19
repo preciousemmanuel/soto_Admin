@@ -6,7 +6,7 @@ export const endpoints = (id?: string) => {
 	}
 
 	const auth = {
-		signin: `${baseURL}/admin/auth/signin`,
+		signin: `${baseURL}/admin/login`,
 		forgot_password: `${baseURL}/admin/auth/`,
 		reset_password: `${baseURL}/admin/auth/`,
 		verify_otp: `${baseURL}/admin/auth/`,
@@ -24,7 +24,7 @@ export const endpoints = (id?: string) => {
 		dashboard: `${baseURL}/admin/overview`,
 		best_seller: `${baseURL}/admin/best-seller`,
 		latest_orders: `${baseURL}/admin/latest-orders`,
-	}
+	} as const
 
 	const wallet = {}
 
@@ -34,18 +34,18 @@ export const endpoints = (id?: string) => {
 		cancel: `${baseURL}/admin/cancel-order/${id}`,
 		create_shipment: `${baseURL}/admin/create-shipment`,
 		track_shipment: `${baseURL}/admin/track-shipment`,
-	}
+	} as const
 
 	const products = {
 		get_all: `${baseURL}/admin/products-mgt`,
 		get_one: `${baseURL}/admin/view-a/${id}`,
-	}
+	} as const
 
 	const coupons = {
 		get_all: `${baseURL}/admin/`,
 		get_one: `${baseURL}/admin/`,
 		create: `${baseURL}/admin/create-coupon`,
-	}
+	} as const
 
 	const buyers = {}
 

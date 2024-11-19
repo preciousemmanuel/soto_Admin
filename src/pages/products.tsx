@@ -1,74 +1,119 @@
+import { Spinner } from "@/components/shared"
+import { ProductItem } from "@/components/table"
+import { ProductItemsB } from "@/components/table/product-items-b"
+import { Button } from "@/components/ui/button"
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import { PAGE_LIMIT } from "@/config"
+import { useDebounce } from "@/hooks"
+import { replaceSpaceWithUnderscore } from "@/lib"
+import { GetProductsQuery } from "@/queries"
+import type { TimelineProps } from "@/types"
 import { useQuery } from "@tanstack/react-query"
 import { SearchNormal1 } from "iconsax-react"
-import { Link } from "react-router-dom"
-import React from "react"
+import * as React from "react"
+import { useSearchParams } from "react-router-dom"
 
-import { ProductItem } from "@/components/table"
-import { Button } from "@/components/ui/button"
-import { GetProductsQuery } from "@/queries"
-import { productStatus } from "@/config"
-import { TimelineProps } from "@/types"
-import { useDebounce } from "@/hooks"
-
-const LIMIT = 10
-const tabs = ["ACTIVE", "SOLD", "PROMO", "OUT_OF_STOCK", "RETURNED"] as const
+const tabs = ["active", "sold", "promo", "out of stock", "returned"] as const
 type Tabs = (typeof tabs)[number]
 
 const Products = () => {
-	const [status, setStatus] = React.useState<Tabs>("ACTIVE")
+	const [searchParams, setSearchParams] = useSearchParams()
+	const status = replaceSpaceWithUnderscore(searchParams.get("status") || "active")
+
+	// const [status, setStatus] = React.useState<Tabs>("ACTIVE")
 	const [timeLine] = React.useState<TimelineProps>("")
 	const [query, setQuery] = React.useState("")
-	const [page] = React.useState(1)
+	const [page, setPage] = React.useState(1)
 
 	const product_name = useDebounce(query, 500)
 
-	const { data: products } = useQuery({
+	const { data: products, isPending } = useQuery({
 		queryFn: () =>
-			GetProductsQuery({ timeLine, page, limit: LIMIT, select_type: status, product_name }),
+			GetProductsQuery({
+				timeLine,
+				page,
+				limit: PAGE_LIMIT,
+				select_type: status.toUpperCase(),
+				product_name,
+			}),
 		queryKey: ["get-products", timeLine, page, status, product_name],
 	})
 
 	return (
-		<div>
-			<div className="flex w-full items-center justify-between pb-[27px] pt-[72px]">
-				<p className="text-[32px] font-medium">Products Management</p>
+		<section className="flex flex-col gap-10">
+			<header className="flex items-center justify-between gap-2">
+				<h2 className="text-3xl font-medium">Products Management</h2>
+
 				<div className="flex items-center gap-6">
-					<Button variant="outline">Add Interest</Button>
-					<Link to="/dashboard/products/create">
-						<Button> Add Product</Button>
-					</Link>
-				</div>
-			</div>
-			<div className="my-5 flex w-full flex-col gap-14">
-				<div className="flex h-12 w-[329px] items-center gap-2 rounded-md border p-3">
-					<SearchNormal1 className="size-5" />
-					<input
-						type="text"
-						value={query}
-						onChange={(e) => setQuery(e.target.value)}
-						className="h-full w-full bg-transparent outline-none"
-						placeholder="Search by product name"
-					/>
-				</div>
-				<div className="flex w-full flex-col">
-					<div className="flex w-full items-center gap-[30px] border-b">
-						{tabs.map((tab) => (
-							<button
-								key={tab}
-								className={`relative py-2 capitalize transition-all before:absolute before:-bottom-0.5 before:left-0 before:h-0.5 before:bg-primary ${
-									tab === status ? "before:w-full" : "before:w-0"
-								}`}
-								onClick={() => setStatus(tab)}>
-								<p className="text-[16px] font-medium">{productStatus[tab]}</p>
-							</button>
-						))}
-					</div>
-					<div className="grid w-full grid-cols-3 gap-[30px] pt-5">
-						{products?.data.data.map((product, index) => <ProductItem key={index} product={product} />)}
+					<div className="flex items-center gap-3">
+						<Button variant="outline" className="border-primary hover:bg-primary/5">
+							Add interest
+						</Button>
+						<Button>Add Product</Button>
 					</div>
 				</div>
+			</header>
+
+			<div className="relative flex items-center gap-2">
+				<SearchNormal1 className="absolute left-4 top-1/2 size-5 -translate-y-1/2 text-[#5F6B7A]" />
+				<input
+					type="search"
+					value={query}
+					onChange={(e) => setQuery(e.target.value)}
+					className="w-96 rounded-md border bg-neutral-50 p-3 pl-12 outline-none focus:ring-1 focus-visible:ring-primary"
+					placeholder="Search by product name"
+				/>
 			</div>
-		</div>
+
+			<Tabs
+				defaultValue={status ?? tabs[0]}
+				value={status ?? tabs[0]}
+				onValueChange={(value) => {
+					searchParams.set("status", replaceSpaceWithUnderscore(value))
+					setSearchParams(searchParams)
+				}}>
+				<TabsList>
+					{tabs.map((tab) => (
+						<TabsTrigger key={tab} value={replaceSpaceWithUnderscore(tab)}>
+							{tab} Products
+						</TabsTrigger>
+					))}
+				</TabsList>
+
+				{isPending ? (
+					<div className="flex items-center justify-center">
+						<Spinner variant="primary" size="lg" />
+					</div>
+				) : (
+					<>
+						{/* ACTIVE PRODUCTS */}
+						<TabsContent value="active" className="grid grid-cols-3 gap-6">
+							<ProductItem products={products?.data.data ?? []} />
+						</TabsContent>
+
+						{/* SOLD PRODUCTS */}
+						<TabsContent value="sold" className="grid grid-cols-3 gap-6">
+							<ProductItemsB products={products?.data.data ?? []} />
+						</TabsContent>
+
+						{/* PROMO PRODUCTS */}
+						<TabsContent value="promo" className="grid grid-cols-3 gap-6">
+							<ProductItemsB products={products?.data.data ?? []} />
+						</TabsContent>
+
+						{/* OUT OF STOCK PRODUCTS */}
+						<TabsContent value="out_of_stock" className="grid grid-cols-3 gap-6">
+							<ProductItem products={products?.data.data ?? []} />
+						</TabsContent>
+
+						{/* RETURNED PRODUCTS */}
+						<TabsContent value="returned" className="grid grid-cols-3 gap-6">
+							<ProductItemsB products={products?.data.data ?? []} />
+						</TabsContent>
+					</>
+				)}
+			</Tabs>
+		</section>
 	)
 }
 

@@ -91,6 +91,7 @@ export type AdminProps = Node & {
 	Email: string
 	FirstName: string
 	LastName: string
+	Token: string
 }
 
 export type UserProps = Node & {
@@ -121,10 +122,20 @@ export type ProductProps = Node & {
 	description: string
 	height: number
 	images: string[]
+	in_stock: boolean
+	is_verified: boolean
+	is_deleted: boolean
 	is_discounted: boolean
-	product_id: string
+	discount_price: number
+	total_quantity_sold: number | undefined
+	product_id:
+		| string
+		| {
+				total_quantity_sold: number
+				images: string[]
+		  }
 	product_name: string
-	quantity: number
+	product_quantity: number
 	unit_price: number
 	vendor: {
 		Email: string
@@ -177,6 +188,8 @@ export type LatestOrderProps = Node & {
 	createdAt: Date | string
 	status: StatusProps
 	total_price: number
+	order: string
+	images: string[]
 }
 
 export type CouponProps = Node & {

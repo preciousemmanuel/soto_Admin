@@ -5,7 +5,7 @@ interface Props {
 	redirectURL?: string
 }
 
-export function ProtectedRoutes({ isAuthenticated, redirectURL = "/signin" }: Props) {
+export function ProtectedRoutes({ isAuthenticated, redirectURL = "/" }: Props) {
 	if (!isAuthenticated) {
 		return <Navigate to={redirectURL} />
 	}

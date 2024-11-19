@@ -78,3 +78,7 @@ export const aggregateAmount = (data?: RangeProps[]) => {
 		return acc + curr.amount
 	}, 0)
 }
+
+export const replaceSpaceWithUnderscore = (value: string) => {
+	return value.replace(/ /g, "_")
+}

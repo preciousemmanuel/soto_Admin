@@ -1,6 +1,7 @@
-import { Link, Outlet, useLocation } from "react-router-dom"
 import { Suspense } from "react"
+import { Link, Outlet, useLocation } from "react-router-dom"
 
+import SotoLogoWhite from "@/assets/icons/SotoLogoWhite"
 import { Loading } from "@/components/shared"
 import { dashboard_links } from "@/config"
 
@@ -20,9 +21,11 @@ export function DashboardLayout() {
 	}
 
 	return (
-		<div className="flex h-screen w-screen items-start overflow-hidden">
+		<div className="flex h-screen overflow-hidden">
 			<aside className="flex h-full w-[260px] flex-col bg-primary">
-				<div className="h-[147px] w-full border-b"></div>
+				<div className="grid w-full place-items-center border-b-[0.5px] border-[#f8f3f3] py-12">
+					<SotoLogoWhite />
+				</div>
 				<div className="flex w-full flex-col gap-4 px-[26px] py-5">
 					{dashboard_links.map(({ href, icon: Icon, label }, index) => (
 						<Link
@@ -34,7 +37,8 @@ export function DashboardLayout() {
 					))}
 				</div>
 			</aside>
-			<main className="h-full w-full flex-1 overflow-y-scroll px-10">
+
+			<main className="flex-1 overflow-y-auto p-10">
 				<Suspense fallback={<Loading />}>
 					<Outlet />
 				</Suspense>

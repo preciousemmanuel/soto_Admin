@@ -53,6 +53,7 @@ const GetBestSellerQuery = async (params?: ExtendedPaginationProps) => {
 					product_name: string
 					total_quantity: number
 					total_price: number
+					images: string
 				}>
 			>
 		>(endpoints().overview.best_seller, {
