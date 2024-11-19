@@ -83,7 +83,7 @@ const Orders = () => {
 
 				{ORDER_TABS.map((tab) => (
 					<TabsContent key={tab} value={tab}>
-						<OrdersTable timeLine={timeLine} page={1} status={tab} />
+						<OrdersTable timeLine={timeLine} />
 					</TabsContent>
 				))}
 			</Tabs>

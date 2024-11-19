@@ -10,6 +10,7 @@ import { MoreHorizontal } from "lucide-react"
 import { Link } from "react-router-dom"
 import { Spinner } from "../shared"
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar"
+import { Pagination } from "../ui/pagination"
 import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "../ui/table"
 
@@ -98,6 +99,8 @@ export const LatestOrdersTable = ({ page, timeLine }: Props) => {
 		getCoreRowModel: getCoreRowModel(),
 	})
 
+	const totalPages = Number(data?.data.pagination.pageCount)
+
 	return (
 		<div className="flex flex-col gap-8 border-0.5 border-[#f8f3f3] bg-white p-6 shadow-card shadow-primary/[8%]">
 			<div className="flex w-full items-center justify-between">
@@ -151,6 +154,8 @@ export const LatestOrdersTable = ({ page, timeLine }: Props) => {
 					)}
 				</TableBody>
 			</Table>
+
+			<Pagination totalPages={totalPages} />
 		</div>
 	)
 }

@@ -1,5 +1,5 @@
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
-import { PAGE_LIMIT, statusClass, type OrderTabs } from "@/config"
+import { PAGE_LIMIT, statusClass } from "@/config"
 import { capitalize, formatPrice, getInitials, getTimeFromNow } from "@/lib"
 import { GetOrdersQuery } from "@/queries"
 import { OrderProps } from "@/types"
@@ -9,12 +9,11 @@ import { MoreHorizontal } from "lucide-react"
 import { Link, useSearchParams } from "react-router-dom"
 import { Spinner } from "../shared"
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar"
+import { Pagination } from "../ui/pagination"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "../ui/table"
 
 interface Props {
 	timeLine: string
-	page: number
-	status: OrderTabs
 }
 
 const columns: ColumnDef<OrderProps>[] = [
@@ -82,18 +81,31 @@ const columns: ColumnDef<OrderProps>[] = [
 		),
 	},
 ]
-export const OrdersTable = ({ timeLine, page, status }: Props) => {
+
+const defaultData: never[] = []
+export const OrdersTable = ({ timeLine }: Props) => {
 	const [searchParams] = useSearchParams()
+	const status = searchParams.get("status") || "pending"
+	const page = Number(searchParams.get("page") || 1)
+
 	const { data, isPending } = useQuery({
 		queryFn: () =>
-			GetOrdersQuery({ timeLine, page, limit: PAGE_LIMIT, status: status.toUpperCase() }),
+			GetOrdersQuery({
+				timeLine,
+				page,
+				limit: PAGE_LIMIT,
+				status: status.toUpperCase(),
+			}),
 		queryKey: ["get-orders", timeLine, page, status],
 	})
 	const table = useReactTable({
-		data: data?.data.data || [],
+		data: data?.data.data || defaultData,
 		columns,
 		getCoreRowModel: getCoreRowModel(),
 	})
+
+	const totalPages = Number(data?.data.pagination.pageCount)
+	// const totalCount = Number(data?.data.pagination.totalCount)
 	// const { isPending, mutateAsync } = useMutation({
 	// 	mutationFn: (id: string) => CancelOrderMutation(id),
 	// 	mutationKey: ["cancel-order"],
@@ -107,48 +119,52 @@ export const OrdersTable = ({ timeLine, page, status }: Props) => {
 	// })
 
 	return (
-		<Table>
-			<TableHeader>
-				{table.getHeaderGroups().map((headerGroup) => (
-					<TableRow key={headerGroup.id}>
-						{headerGroup.headers.map((header) => {
-							return (
-								<TableHead key={header.id}>
-									{header.isPlaceholder
-										? null
-										: flexRender(header.column.columnDef.header, header.getContext())}
-								</TableHead>
-							)
-						})}
-					</TableRow>
-				))}
-			</TableHeader>
-
-			<TableBody>
-				{table.getRowModel().rows?.length ? (
-					table.getRowModel().rows.map((row) => (
-						<TableRow key={row.id} data-state={row.getIsSelected() && "selected"}>
-							{row.getVisibleCells().map((cell) => (
-								<TableCell key={cell.id}>
-									{flexRender(cell.column.columnDef.cell, cell.getContext())}
-								</TableCell>
-							))}
+		<>
+			<Table>
+				<TableHeader>
+					{table.getHeaderGroups().map((headerGroup) => (
+						<TableRow key={headerGroup.id}>
+							{headerGroup.headers.map((header) => {
+								return (
+									<TableHead key={header.id}>
+										{header.isPlaceholder
+											? null
+											: flexRender(header.column.columnDef.header, header.getContext())}
+									</TableHead>
+								)
+							})}
 						</TableRow>
-					))
-				) : (
-					<TableRow>
-						<TableCell colSpan={columns.length} className="h-24 text-center">
-							{isPending ? (
-								<div className="flex items-center justify-center">
-									<Spinner variant="primary" size="lg" />
-								</div>
-							) : (
-								<span>No {searchParams.get("status")} order(s).</span>
-							)}
-						</TableCell>
-					</TableRow>
-				)}
-			</TableBody>
-		</Table>
+					))}
+				</TableHeader>
+
+				<TableBody>
+					{table.getRowModel().rows?.length ? (
+						table.getRowModel().rows.map((row) => (
+							<TableRow key={row.id} data-state={row.getIsSelected() && "selected"}>
+								{row.getVisibleCells().map((cell) => (
+									<TableCell key={cell.id}>
+										{flexRender(cell.column.columnDef.cell, cell.getContext())}
+									</TableCell>
+								))}
+							</TableRow>
+						))
+					) : (
+						<TableRow>
+							<TableCell colSpan={columns.length} className="h-24 text-center">
+								{isPending ? (
+									<div className="flex items-center justify-center">
+										<Spinner variant="primary" size="lg" />
+									</div>
+								) : (
+									<span>No {searchParams.get("status")} order(s).</span>
+								)}
+							</TableCell>
+						</TableRow>
+					)}
+				</TableBody>
+			</Table>
+
+			<Pagination totalPages={totalPages} />
+		</>
 	)
 }

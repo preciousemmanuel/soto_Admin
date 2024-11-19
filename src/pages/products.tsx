@@ -18,12 +18,13 @@ type Tabs = (typeof tabs)[number]
 
 const Products = () => {
 	const [searchParams, setSearchParams] = useSearchParams()
+
 	const status = replaceSpaceWithUnderscore(searchParams.get("status") || "active")
+	const page = Number(searchParams.get("page") || 1)
 
 	// const [status, setStatus] = React.useState<Tabs>("ACTIVE")
 	const [timeLine] = React.useState<TimelineProps>("")
 	const [query, setQuery] = React.useState("")
-	const [page, setPage] = React.useState(1)
 
 	const product_name = useDebounce(query, 500)
 
@@ -87,28 +88,28 @@ const Products = () => {
 				) : (
 					<>
 						{/* ACTIVE PRODUCTS */}
-						<TabsContent value="active" className="grid grid-cols-3 gap-6">
-							<ProductItem products={products?.data.data ?? []} />
+						<TabsContent value="active">
+							<ProductItem products={products?.data} />
 						</TabsContent>
 
 						{/* SOLD PRODUCTS */}
-						<TabsContent value="sold" className="grid grid-cols-3 gap-6">
-							<ProductItemsB products={products?.data.data ?? []} />
+						<TabsContent value="sold">
+							<ProductItemsB products={products?.data} />
 						</TabsContent>
 
 						{/* PROMO PRODUCTS */}
-						<TabsContent value="promo" className="grid grid-cols-3 gap-6">
-							<ProductItemsB products={products?.data.data ?? []} />
+						<TabsContent value="promo">
+							<ProductItemsB products={products?.data} />
 						</TabsContent>
 
 						{/* OUT OF STOCK PRODUCTS */}
-						<TabsContent value="out_of_stock" className="grid grid-cols-3 gap-6">
-							<ProductItem products={products?.data.data ?? []} />
+						<TabsContent value="out_of_stock">
+							<ProductItem products={products?.data} />
 						</TabsContent>
 
 						{/* RETURNED PRODUCTS */}
-						<TabsContent value="returned" className="grid grid-cols-3 gap-6">
-							<ProductItemsB products={products?.data.data ?? []} />
+						<TabsContent value="returned">
+							<ProductItemsB products={products?.data} />
 						</TabsContent>
 					</>
 				)}
