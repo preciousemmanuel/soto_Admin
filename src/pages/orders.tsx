@@ -28,7 +28,7 @@ const Orders = () => {
 	return (
 		<section className="flex flex-col gap-10">
 			<header className="flex items-center justify-between gap-2">
-				<h2 className="text-3xl font-medium">Order Management</h2>
+				<h2 className="font-body text-3xl font-medium">Order Management</h2>
 
 				<div className="flex items-center gap-6">
 					<Select value={timeLine} onValueChange={setTimeLine}>

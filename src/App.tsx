@@ -6,6 +6,7 @@ import {
 	Buyer,
 	Buyers,
 	Coupon,
+	CreateCoupon,
 	CreateProduct,
 	Feedback,
 	ForgotPassword,
@@ -109,7 +110,16 @@ function App() {
 						},
 						{
 							path: "coupon-and-promo",
-							element: <Coupon />,
+							children: [
+								{
+									index: true,
+									element: <Coupon />,
+								},
+								{
+									path: "create",
+									element: <CreateCoupon />,
+								},
+							],
 						},
 						{
 							path: "buyers",

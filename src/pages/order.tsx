@@ -10,6 +10,7 @@ import {
 	TableRow,
 } from "@/components/ui/table"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import { statusClass } from "@/config"
 import { formatPrice, getInitials } from "@/lib"
 import { GetOrderQuery } from "@/queries"
 import type { OrderProps } from "@/types"
@@ -76,7 +77,7 @@ const Order = () => {
 	return (
 		<section className="flex flex-col gap-10">
 			<header className="flex items-center justify-between gap-2">
-				<h2 className="text-3xl font-medium">Order Details</h2>
+				<h2 className="font-body text-3xl font-medium">Order Details</h2>
 
 				<div className="flex items-center gap-3">
 					<Button variant="outline" onClick={() => navigate(-1)}>
@@ -153,7 +154,12 @@ const Order = () => {
 											Date:{" "}
 											{order?.data.createdAt && format(new Date(String(order?.data.createdAt)), "dd-MM-yyyy")}
 										</p>
-										<p>Status: {}</p>
+										<p>
+											Status:{" "}
+											<span className={`${statusClass[order?.data.status as keyof typeof statusClass]}`}>
+												{order?.data.status}
+											</span>
+										</p>
 									</div>
 								</div>
 

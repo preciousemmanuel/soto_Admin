@@ -57,9 +57,10 @@ const columns: ColumnDef<OrderProps>[] = [
 		header: "Status",
 		accessorKey: "status",
 		cell: ({ row }) => (
-			<p className={`capitalize ${statusClass[row.getValue("status") as keyof typeof statusClass]}`}>
+			<span
+				className={`text-sm capitalize ${statusClass[row.getValue("status") as keyof typeof statusClass]}`}>
 				{capitalize(row.getValue("status"))}
-			</p>
+			</span>
 		),
 	},
 	{
@@ -76,6 +77,12 @@ const columns: ColumnDef<OrderProps>[] = [
 						className="flex rounded-md px-4 py-2 text-xs transition-all hover:bg-primary hover:text-white">
 						Review order
 					</Link>
+
+					<button
+						type="button"
+						className="flex w-full rounded-md px-4 py-2 text-xs text-red-600 transition-all hover:bg-red-600 hover:text-white">
+						Cancel order
+					</button>
 				</PopoverContent>
 			</Popover>
 		),

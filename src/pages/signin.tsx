@@ -66,7 +66,7 @@ const Signin = () => {
 							type="email"
 							onChange={handleChange}
 							error={errors.email}
-							className="bg-[#fbf3f1] text-black placeholder:text-neutral-500"
+							className="rounded-full bg-[#fbf3f1] py-3 text-black placeholder:text-neutral-500"
 							autoComplete="off"
 							autoCorrect="off"
 						/>
@@ -79,7 +79,7 @@ const Signin = () => {
 								type="password"
 								onChange={handleChange}
 								error={errors.password}
-								className="bg-[#fbf3f1] text-black placeholder:text-neutral-500"
+								className="rounded-full bg-[#fbf3f1] py-3 text-black placeholder:text-neutral-500"
 								autoComplete="off"
 							/>
 

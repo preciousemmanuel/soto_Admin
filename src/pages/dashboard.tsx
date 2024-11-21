@@ -32,7 +32,7 @@ const Dashboard = () => {
 	return (
 		<section className="flex flex-col gap-10">
 			<header className="flex items-center justify-between gap-2">
-				<h2 className="text-3xl font-medium">Dashboard</h2>
+				<h2 className="font-body text-3xl font-medium">Dashboard</h2>
 
 				<div className="flex items-center gap-6">
 					<Select value={timeLine} onValueChange={setTimeLine}>
@@ -82,7 +82,7 @@ const Dashboard = () => {
 			</div>
 
 			{/* analytics */}
-			<div className="grid h-[460px] w-full grid-cols-5 gap-5">
+			<div className="grid max-h-[460px] w-full grid-cols-5 gap-5">
 				<div className="col-span-2 flex h-full flex-col gap-7 rounded-xl border-0.5 border-[#f8f3f3] bg-white p-[27px] shadow-card shadow-primary/[8%]">
 					<p className="text-xl font-medium">Analytics</p>
 

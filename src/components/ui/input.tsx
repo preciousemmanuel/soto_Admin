@@ -15,11 +15,11 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
 		const [showPassword, setShowPassword] = React.useState(false)
 
 		return (
-			<div className="flex w-full flex-col gap-2">
+			<div className="flex w-full flex-col gap-2.5">
 				{label && (
 					<label
 						className={cn(
-							"px-2 text-sm font-medium leading-none text-[#5d5c5c] peer-disabled:cursor-not-allowed peer-disabled:opacity-70",
+							"text-sm font-medium leading-none text-[#5d5c5c] peer-disabled:cursor-not-allowed peer-disabled:opacity-70",
 							labelClassName
 						)}>
 						{label}
@@ -34,7 +34,7 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
 					<input
 						type={showPassword ? "text" : type}
 						className={cn(
-							`flex w-full rounded-3xl bg-red-200 px-6 py-3.5 text-base font-medium outline-none file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-neutral-950 placeholder:text-neutral-500 focus:ring-2 focus:ring-primary focus:ring-offset-1 disabled:cursor-not-allowed disabled:opacity-50 ${Icon && "pl-12"}`,
+							`flex w-full rounded border-0 bg-neutral-50 px-4 py-2.5 text-base font-normal outline-none ring-1 ring-[#E5E5E5] file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-neutral-950 placeholder:font-normal placeholder:text-neutral-500 focus:ring-2 focus:ring-primary focus:ring-offset-1 disabled:cursor-not-allowed disabled:opacity-50 ${Icon && "pl-12"}`,
 							className
 						)}
 						ref={ref}
@@ -50,7 +50,7 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
 					)}
 				</div>
 
-				{error && <p className="px-2 text-xs font-medium text-red-600">{error}</p>}
+				{error && <p className="text-xs text-red-600">{error}</p>}
 			</div>
 		)
 	}

@@ -192,16 +192,41 @@ export type LatestOrderProps = Node & {
 	images: string[]
 }
 
-export type CouponProps = Node & {
-	activation_date: Date | string
-	amount: number
-	applied_to: "USER" | "VENDOR"
-	expiry_date: Date | string
-	coupon_type: CouponTypeProps
+export type CreateCouponPayload = {
 	name: string
+	coupon_type: string
+	amount: number
+	applied_to: string
+	activation_date: string
+	expiry_date: string
+	remove_expiry_date: string
+	remove_usage_limit: string
+	usage_limit: number
+}
+
+export type UpdateCouponPayload = {
+	amount: number
+	active_status: string
+	usage_limit: number
+}
+
+export type CouponProps = Node & {
+	total_usage: number
+	name: string
+	audience: string
+	code: string
+	activation_date: string
+	expiry_date: string
 	remove_expiry_date: boolean
+	amount_type: string
+	coupon_type: string
+	condition: string
+	is_condition: boolean
+	usage_limit: number
 	remove_usage_limit: boolean
-	usage_limit: string
+	total_subscribers: number
+	active_status: boolean
+	amount: number
 }
 
 export type CouponTypeProps =

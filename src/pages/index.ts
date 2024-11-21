@@ -7,6 +7,7 @@ const Wallet = React.lazy(() => import("./wallet"))
 const Withdrawal = React.lazy(() => import("./withdrawal"))
 const Transfer = React.lazy(() => import("./transfer"))
 const Coupon = React.lazy(() => import("./coupon"))
+const CreateCoupon = React.lazy(() => import("./create-coupon"))
 const Order = React.lazy(() => import("./order"))
 const Orders = React.lazy(() => import("./orders"))
 const Product = React.lazy(() => import("./product"))
@@ -24,6 +25,7 @@ export {
 	Buyer,
 	Buyers,
 	Coupon,
+	CreateCoupon,
 	CreateProduct,
 	Feedback,
 	ForgotPassword,
@@ -41,3 +43,4 @@ export {
 	Wallet,
 	Withdrawal,
 }
+

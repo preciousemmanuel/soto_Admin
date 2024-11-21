@@ -42,9 +42,10 @@ export const endpoints = (id?: string) => {
 	} as const
 
 	const coupons = {
-		get_all: `${baseURL}/admin/`,
+		get_all: `${baseURL}/admin/get-coupons`,
 		get_one: `${baseURL}/admin/`,
 		create: `${baseURL}/admin/create-coupon`,
+		update: `${baseURL}/admin/update-coupon/${id}`,
 	} as const
 
 	const buyers = {}

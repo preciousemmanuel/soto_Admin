@@ -1,10 +1,7 @@
-import { PAGE_LIMIT } from "@/config"
 import { formatPrice, getInitials } from "@/lib"
 import { GetBestSellerQuery } from "@/queries"
 import { useQuery } from "@tanstack/react-query"
 import { flexRender, getCoreRowModel, useReactTable, type ColumnDef } from "@tanstack/react-table"
-import { ArrowRight } from "iconsax-react"
-import { Link } from "react-router-dom"
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "../ui/table"
 
@@ -55,7 +52,7 @@ const columns: ColumnDef<Product>[] = [
 
 export const BestSellingProducts = ({ page, timeLine }: Props) => {
 	const { data } = useQuery({
-		queryFn: () => GetBestSellerQuery({ timeLine, page, limit: PAGE_LIMIT }),
+		queryFn: () => GetBestSellerQuery({ timeLine, page, limit: 10 }),
 		queryKey: ["get-best-seller", timeLine, page],
 	})
 	const table = useReactTable({
@@ -65,12 +62,12 @@ export const BestSellingProducts = ({ page, timeLine }: Props) => {
 	})
 
 	return (
-		<div className="col-span-3 flex h-full flex-col gap-6 rounded-xl bg-[#fcfafa] p-[27px]">
+		<div className="col-span-3 flex h-full flex-col gap-6 overflow-y-auto rounded-xl bg-[#fcfafa] p-[27px]">
 			<div className="flex w-full items-center justify-between">
 				<p className="text-xl font-medium">Best Selling Products</p>
-				<Link to="" className="flex items-center gap-3 text-sm font-medium text-primary">
+				{/* <Link to="" className="flex items-center gap-3 text-sm font-medium text-primary">
 					More <ArrowRight size={16} />
-				</Link>
+				</Link> */}
 			</div>
 
 			<Table>
