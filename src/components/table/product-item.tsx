@@ -2,7 +2,7 @@ import { MoreHorizontal } from "lucide-react"
 
 import { formatCurrency } from "@/lib"
 import { ProductProps, type PaginationResponse } from "@/types"
-import { useSearchParams } from "react-router-dom"
+import { Link, useSearchParams } from "react-router-dom"
 import { Pagination } from "../ui/pagination"
 import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover"
 import { Separator } from "../ui/separator"
@@ -49,16 +49,16 @@ export const ProductItem = ({ products }: Props) => {
 										</PopoverTrigger>
 
 										<PopoverContent align="end">
-											<button
-												type="button"
+											<Link
+												to={`/dashboard/products/${product._id}`}
 												className="flex w-full rounded-md px-4 py-2 text-xs transition-all hover:bg-primary hover:text-white">
 												View details
-											</button>
-											<button
-												type="button"
+											</Link>
+											<Link
+												to="/dashboard/coupon-and-promo/create"
 												className="flex w-full rounded-md px-4 py-2 text-xs transition-all hover:bg-primary hover:text-white">
 												Add coupon
-											</button>
+											</Link>
 											<button
 												type="button"
 												className="flex w-full rounded-md px-4 py-2 text-xs transition-all hover:bg-primary hover:text-white">

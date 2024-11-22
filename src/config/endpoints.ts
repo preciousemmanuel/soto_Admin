@@ -21,7 +21,7 @@ export const endpoints = (id?: string) => {
 	}
 
 	const overview = {
-		dashboard: `${baseURL}/admin/overview`,
+		overview: `${baseURL}/admin/overview`,
 		best_seller: `${baseURL}/admin/best-seller`,
 		latest_orders: `${baseURL}/admin/latest-orders`,
 	} as const
@@ -48,9 +48,15 @@ export const endpoints = (id?: string) => {
 		update: `${baseURL}/admin/update-coupon/${id}`,
 	} as const
 
-	const buyers = {}
+	const buyers = {
+		get_all: `${baseURL}/admin/get-buyers`,
+		get_one: `${baseURL}/admin/view-a-buyer/${id}`,
+	} as const
 
-	const sellers = {}
+	const sellers = {
+		get_all: `${baseURL}/admin/get-sellers`,
+		get_one: `${baseURL}/admin/view-a-seller/${id}`,
+	} as const
 
 	const feedback = {}
 

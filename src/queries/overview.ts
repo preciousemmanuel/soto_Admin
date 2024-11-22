@@ -12,30 +12,31 @@ interface ExtendedPaginationProps extends PaginationProps {
 	timeLine?: TimelineProps
 }
 
-type OverviewProps = {
+type OverviewMetricProps = {
 	amount: number
 	percentage_change: number
+}
+type OverviewProps = {
+	revenue: OverviewMetricProps
+	buyers: OverviewMetricProps
+	sellers: OverviewMetricProps
+	visitors: OverviewMetricProps
+	orders: OverviewMetricProps
+	conversion: OverviewMetricProps
+	advanced_report: Array<{
+		day_or_month: string
+		amount: number
+	}>
+	cart: {
+		abandonned_cart: number
+		abandonned_revenue: number
+		percentage: number
+	}
 }
 
 const GetOverviewQuery = async (params?: ExtendedPaginationProps) => {
 	return axios
-		.get<
-			HttpResponse<{
-				revenue: OverviewProps
-				visitors: OverviewProps
-				orders: OverviewProps
-				conversion: OverviewProps
-				advanced_report: {
-					day_or_month: Date | string
-					amount: number
-				}[]
-				cart: {
-					abandonned_cart: number
-					abandonned_revenue: number
-					percentage: number
-				}
-			}>
-		>(endpoints().overview.dashboard, {
+		.get<HttpResponse<OverviewProps>>(endpoints().overview.overview, {
 			params: {
 				...params,
 				timeLine: params?.timeLine === "ALL" ? "" : params?.timeLine,

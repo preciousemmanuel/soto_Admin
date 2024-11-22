@@ -100,20 +100,138 @@ export type UserProps = Node & {
 	profile_image: string
 }
 
-export type SellerProps = Node & {
-	address: string
-	email: string
-	full_name: string
-	phone_number: string
-	profile_image: string
+// export type SellerProps = Node & {
+// 	address: string
+// 	email: string
+// 	full_name: string
+// 	phone_number: string
+// 	profile_image: string
+// }
+
+export type SellersProps = {
+	stats: {
+		active_percentage: number
+		inactive_percentage: number
+		blocked_percentage: number
+		others_percentage: number
+	}
+	revenue_from_sellers_chart: Array<{
+		day_or_month: string
+		amount: number
+	}>
+	sellers_data: {
+		data: Array<{
+			_id: string
+			first_name: string
+			last_name: string
+			email: string
+			createdAt: string
+			is_active: boolean
+			is_verified: boolean
+			total_quantity: number
+			category?: string
+			product?: string
+		}>
+		pagination: {
+			pageSize: number
+			totalCount: number
+			pageCount: number
+			currentPage: number
+			hasNext: boolean
+		}
+	}
 }
 
-export type BuyerProps = Node & {
-	address: string
+export type SellerProps = {
+	user: {
+		ShippingAddress: {
+			country: string
+		}
+		IsBlocked: boolean
+		Rank: string
+		_id: string
+		FirstName: string
+		LastName: string
+		Email: string
+		Password: string
+		UserType: string
+		SignupChannel: string
+		IsVerified: boolean
+		IsActive: boolean
+		business: {
+			_id: string
+			business_name: string
+			email: string
+			phone_number: string
+			adress: string
+			category: string
+			description: string
+			business_logo: string
+			createdAt: string
+			updatedAt: string
+			__v: number
+			user: string
+		}
+		createdAt: string
+		updatedAt: string
+		__v: number
+		Token: string
+		wallet: string
+	}
+	total_amount_sold: number
+	product_records: PaginationResponse<{
+		_id: string
+		product_name: string
+		createdAt: string
+		unit_price: number
+		product_quantity: number
+		is_verified: boolean
+	}>
+}
+
+export type BuyersProps = {
+	_id: string
+	first_name: string
+	last_name: string
 	email: string
-	full_name: string
-	phone_number: string
-	profile_image: string
+	createdAt: string
+	total_spent: number
+	last_order_price: number
+}
+
+export type BuyerProps = {
+	user: {
+		ShippingAddress: {
+			full_address: string
+			address: string
+			city: string
+			state: string
+			postal_code: string
+			country: string
+		}
+		Rank: string
+		_id: string
+		FirstName: string
+		LastName: string
+		Email: string
+		Password: string
+		PhoneNumber: string
+		UserType: string
+		SignupChannel: string
+		createdAt: string
+		updatedAt: string
+		__v: number
+		Token: string
+		IsVerified: boolean
+	}
+	total_amount_spent: number
+	orderRecords: PaginationResponse<{
+		_id: string
+		tracking_id: string
+		createdAt: string
+		status: string
+		grand_total: number
+	}>
 }
 
 export type ProductProps = Node & {

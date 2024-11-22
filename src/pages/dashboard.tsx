@@ -10,7 +10,7 @@ import {
 	SelectTrigger,
 	SelectValue,
 } from "@/components/ui/select"
-import { frequencyFilter, PAGE_LIMIT } from "@/config"
+import { frequencyFilter } from "@/config"
 import { usePageTitle } from "@/hooks"
 import { aggregateAmount, getRange } from "@/lib"
 import { GetOverviewQuery } from "@/queries"
@@ -25,8 +25,8 @@ const Dashboard = () => {
 	const [page, setPage] = React.useState(1)
 
 	const { data: overview } = useQuery({
-		queryFn: () => GetOverviewQuery({ timeLine, page, limit: PAGE_LIMIT }),
-		queryKey: ["get-overview", timeLine, page],
+		queryFn: () => GetOverviewQuery({ timeLine }),
+		queryKey: ["get-overview", timeLine],
 	})
 
 	return (
@@ -77,7 +77,7 @@ const Dashboard = () => {
 				<DataCard
 					label="Orders"
 					amount={overview?.data.orders.amount}
-					percentage_change={overview?.data.orders.percentage_change.toFixed(2)}
+					percentage_change={Number(overview?.data.orders.percentage_change.toFixed(2))}
 				/>
 			</div>
 
