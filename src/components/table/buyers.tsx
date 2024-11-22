@@ -17,7 +17,8 @@ type Props = {
 	search: string
 }
 
-const columns: ColumnDef<BuyersProps>[] = [
+type BuyerDetails = BuyersProps["data"]["data"][number]
+const columns: ColumnDef<BuyerDetails>[] = [
 	{
 		header: "Buyer",
 		accessorKey: "first_name",
@@ -97,12 +98,12 @@ export const BuyersTable = ({ search }: Props) => {
 		queryKey: ["get-buyers", page, search],
 	})
 	const table = useReactTable({
-		data: data?.data.data || [],
+		data: data?.data.data.data || [],
 		columns,
 		getCoreRowModel: getCoreRowModel(),
 	})
 
-	const totalPages = Number(data?.data.pagination.pageCount)
+	const totalPages = Number(data?.data.data.pagination.pageCount)
 
 	return (
 		<div className="flex flex-col gap-8 border-0.5 border-[#f8f3f3] bg-white p-6 shadow-card shadow-primary/[8%]">

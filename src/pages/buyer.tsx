@@ -10,6 +10,7 @@ import {
 	TableRow,
 } from "@/components/ui/table"
 import { statusClass } from "@/config"
+import { usePageTitle } from "@/hooks"
 import { formatCurrency, formatPrice } from "@/lib"
 import { GetBuyerQuery } from "@/queries"
 import type { BuyerProps } from "@/types"
@@ -51,6 +52,7 @@ const columns: ColumnDef<BuyerOrder>[] = [
 ]
 
 const Buyer = () => {
+	usePageTitle("Buyer")
 	const { id } = useParams()
 	const navigate = useNavigate()
 

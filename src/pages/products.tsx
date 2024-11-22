@@ -4,7 +4,7 @@ import { ProductItemsB } from "@/components/table/product-items-b"
 import { Button } from "@/components/ui/button"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { PAGE_LIMIT } from "@/config"
-import { useDebounce } from "@/hooks"
+import { useDebounce, usePageTitle } from "@/hooks"
 import { replaceSpaceWithUnderscore } from "@/lib"
 import { GetProductsQuery } from "@/queries"
 import type { TimelineProps } from "@/types"
@@ -17,6 +17,7 @@ const tabs = ["active", "sold", "promo", "out of stock", "returned"] as const
 type Tabs = (typeof tabs)[number]
 
 const Products = () => {
+	usePageTitle("Products")
 	const [searchParams, setSearchParams] = useSearchParams()
 
 	const status = replaceSpaceWithUnderscore(searchParams.get("status") || "active")

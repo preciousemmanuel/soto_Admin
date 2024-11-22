@@ -1,18 +1,12 @@
 import { endpoints } from "@/config"
 import { axios } from "@/lib"
-import type {
-	BuyerProps,
-	BuyersProps,
-	HttpResponse,
-	PaginationProps,
-	PaginationResponse,
-} from "@/types"
+import type { BuyerProps, BuyersProps, HttpResponse, PaginationProps } from "@/types"
 
 const GetBuyersQuery = async (
 	params: PaginationProps & { search?: string; end_date?: string; start_date?: string }
 ) => {
 	return axios
-		.get<HttpResponse<PaginationResponse<BuyersProps>>>(endpoints().buyers.get_all, {
+		.get<HttpResponse<BuyersProps>>(endpoints().buyers.get_all, {
 			params: {
 				...params,
 			},

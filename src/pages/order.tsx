@@ -11,6 +11,7 @@ import {
 } from "@/components/ui/table"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { statusClass } from "@/config"
+import { usePageTitle } from "@/hooks"
 import { formatPrice, getInitials } from "@/lib"
 import { GetOrderQuery } from "@/queries"
 import type { OrderProps } from "@/types"
@@ -56,6 +57,7 @@ const columns: ColumnDef<OrderItem>[] = [
 ]
 
 const Order = () => {
+	usePageTitle("Order")
 	const [searchParams, setSearchParams] = useSearchParams()
 	const { id } = useParams()
 	const navigate = useNavigate()

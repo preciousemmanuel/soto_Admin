@@ -10,6 +10,7 @@ import {
 	TableHeader,
 	TableRow,
 } from "@/components/ui/table"
+import { usePageTitle } from "@/hooks"
 import { formatCurrency, getInitials } from "@/lib"
 import { GetSellerQuery } from "@/queries"
 import type { SellerProps } from "@/types"
@@ -65,6 +66,7 @@ const columns: ColumnDef<SellerProducts>[] = [
 ]
 
 const Seller = () => {
+	usePageTitle("Seller")
 	const { id } = useParams()
 	const navigate = useNavigate()
 

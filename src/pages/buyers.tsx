@@ -1,4 +1,3 @@
-import { ChartPie } from "@/components/charts"
 import { ChartArea } from "@/components/charts/area"
 import { DataCard } from "@/components/shared"
 import { BuyersTable } from "@/components/table"
@@ -11,43 +10,21 @@ import {
 	SelectValue,
 } from "@/components/ui/select"
 import { PAGE_LIMIT } from "@/config"
-import { useDebounce } from "@/hooks"
-import { formattedStats, getWeekRanges } from "@/lib"
-import { GetOverviewQuery, GetSellersQuery } from "@/queries"
+import { useDebounce, usePageTitle } from "@/hooks"
+import { getWeekRanges } from "@/lib"
+import { GetBuyersQuery, GetOverviewQuery } from "@/queries"
 import type { TimelineProps } from "@/types"
 import { useQuery } from "@tanstack/react-query"
 import { SearchNormal1 } from "iconsax-react"
 import { MoreHorizontal } from "lucide-react"
 import * as React from "react"
 
-// const data = [
-// 	{
-// 		day_or_month: "Fri Nov 01 2024",
-// 		amount: 0,
-// 	},
-// 	{
-// 		day_or_month: "Fri Nov 08 2024",
-// 		amount: 0,
-// 	},
-// 	{
-// 		day_or_month: "Fri Nov 15 2024",
-// 		amount: 0,
-// 	},
-// 	{
-// 		day_or_month: "Fri Nov 22 2024",
-// 		amount: 114500,
-// 	},
-// 	{
-// 		day_or_month: "Fri Nov 29 2024",
-// 		amount: 0,
-// 	},
-// ]
-
 const page = 1
 const Buyers = () => {
+	usePageTitle("Buyers")
 	const [timeLine, setTimeLine] = React.useState<TimelineProps>("")
 	const [query, setQuery] = React.useState("")
-	const seller_name = useDebounce(query, 500)
+	const buyer_name = useDebounce(query, 500)
 
 	const ranges = getWeekRanges(new Date("2024-06-01"))
 	// const [start_date, end_date] = timeLine.split(" - ")
@@ -55,8 +32,8 @@ const Buyers = () => {
 	// console.log("timeLine", start_date, end_date)
 
 	const { data } = useQuery({
-		queryFn: () => GetSellersQuery({ page, limit: PAGE_LIMIT, search: seller_name }),
-		queryKey: ["get-sellers", page, seller_name],
+		queryFn: () => GetBuyersQuery({ page, limit: PAGE_LIMIT, search: buyer_name }),
+		queryKey: ["get-buyers", page, buyer_name],
 	})
 	const { data: overview } = useQuery({
 		queryFn: () => GetOverviewQuery({ timeLine }),
@@ -130,37 +107,18 @@ const Buyers = () => {
 				<div className="col-span-3 flex flex-col gap-8 rounded-xl border-0.5 border-[#f8f3f3] bg-white p-6 shadow-card shadow-primary/[8%]">
 					<p className="font-medium text-gray-700">Revenue Generated from Sellers</p>
 
-					{data && <ChartArea data={data?.data.revenue_from_sellers_chart || []} />}
+					{data && <ChartArea data={data?.data.revenue_from_buyers_chart || []} />}
 				</div>
 
 				<div className="col-span-2 flex flex-col gap-8 rounded-xl border-0.5 border-[#f8f3f3] bg-white p-6 shadow-card shadow-primary/[8%]">
 					<p className="font-medium">Sellers Status</p>
 
-					{data && <ChartPie data={formattedStats(data?.data.stats)} />}
-
-					<ul className="flex items-center justify-center gap-4 text-xs text-[#6B6B6B]">
-						<li className="flex items-center gap-2">
-							<div className="size-2 rounded-full bg-[#0E973E]" />
-							<span>Active</span>
-						</li>
-						<li className="flex items-center gap-2">
-							<div className="size-2 rounded-full bg-[#7F7F7F]" />
-							<span>Inactive</span>
-						</li>
-						<li className="flex items-center gap-2">
-							<div className="size-2 rounded-full bg-[#dc2626]" />
-							<span>Blocked</span>
-						</li>
-						<li className="flex items-center gap-2">
-							<div className="size-2 rounded-full bg-[#FEAA1D]" />
-							<span>Others</span>
-						</li>
-					</ul>
+					{/* {data && <ChartPie data={formattedStats(data?.data.stats)} />} */}
 				</div>
 			</div>
 
 			{/* sellers table */}
-			<BuyersTable search={seller_name} />
+			<BuyersTable search={buyer_name} />
 		</section>
 	)
 }

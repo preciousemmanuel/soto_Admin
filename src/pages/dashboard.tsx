@@ -1,4 +1,4 @@
-import { ChartLine } from "@/components/charts"
+import { ChartBar, ChartLine } from "@/components/charts"
 import { DataCard } from "@/components/shared"
 import { LatestOrdersTable } from "@/components/table"
 import { BestSellingProducts } from "@/components/table/best-selling-products"
@@ -12,7 +12,7 @@ import {
 } from "@/components/ui/select"
 import { frequencyFilter } from "@/config"
 import { usePageTitle } from "@/hooks"
-import { aggregateAmount, getRange } from "@/lib"
+import { aggregateAmount, formatCurrency, getRange } from "@/lib"
 import { GetOverviewQuery } from "@/queries"
 import type { TimelineProps } from "@/types"
 import { useQuery } from "@tanstack/react-query"
@@ -22,7 +22,6 @@ import React from "react"
 const Dashboard = () => {
 	usePageTitle("Dashboard")
 	const [timeLine, setTimeLine] = React.useState<TimelineProps>("")
-	const [page, setPage] = React.useState(1)
 
 	const { data: overview } = useQuery({
 		queryFn: () => GetOverviewQuery({ timeLine }),
@@ -81,6 +80,34 @@ const Dashboard = () => {
 				/>
 			</div>
 
+			{/* charts */}
+			<div className="grid grid-cols-5 gap-6">
+				<div className="col-span-3 flex flex-col gap-8 rounded-xl border-0.5 border-[#f8f3f3] bg-white p-6 shadow-card shadow-primary/[8%]">
+					<p className="font-medium text-gray-700">Dashboard</p>
+					{overview ? <ChartBar data={overview?.data.advanced_report || []} /> : null}
+				</div>
+
+				<div className="col-span-2 flex flex-col gap-8 rounded-xl border-0.5 border-[#f8f3f3] bg-white p-6 shadow-card shadow-primary/[8%]">
+					<p className="font-medium">Cart overview</p>
+					<div className="flex size-52 items-center justify-center self-center rounded-full border-primary bg-white">
+						<div className="flex size-36 items-center justify-center rounded-full border-0.5 border-[#f8f3f3] bg-white p-6 shadow-card shadow-primary/[8%]">
+							<p className="text-3xl font-semibold">{overview?.data.cart.percentage}%</p>
+						</div>
+					</div>
+
+					<ul className="mx-auto flex w-5/6 flex-col justify-center gap-2.5 text-sm">
+						<li className="flex items-center justify-between font-medium">
+							<p>Abandoned Cart</p>
+							<p>{overview?.data.cart.abandonned_cart}</p>
+						</li>
+						<li className="flex items-center justify-between font-medium text-[#807C83]">
+							<p>Abandoned Revenue</p>
+							<p>{formatCurrency(overview?.data.cart.abandonned_revenue ?? 0)}</p>
+						</li>
+					</ul>
+				</div>
+			</div>
+
 			{/* analytics */}
 			<div className="grid max-h-[460px] w-full grid-cols-5 gap-5">
 				<div className="col-span-2 flex h-full flex-col gap-7 rounded-xl border-0.5 border-[#f8f3f3] bg-white p-[27px] shadow-card shadow-primary/[8%]">
@@ -99,11 +126,11 @@ const Dashboard = () => {
 					<ChartLine data={[]} />
 				</div>
 
-				<BestSellingProducts page={page} timeLine={timeLine} />
+				<BestSellingProducts timeLine={timeLine} />
 			</div>
 
 			{/* Data Table */}
-			<LatestOrdersTable timeLine={timeLine} page={page} />
+			<LatestOrdersTable timeLine={timeLine} />
 		</section>
 	)
 }

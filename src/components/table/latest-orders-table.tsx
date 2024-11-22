@@ -7,7 +7,7 @@ import { flexRender, getCoreRowModel, useReactTable, type ColumnDef } from "@tan
 import { format } from "date-fns"
 import { ArrowRight } from "iconsax-react"
 import { MoreHorizontal } from "lucide-react"
-import { Link } from "react-router-dom"
+import { Link, useSearchParams } from "react-router-dom"
 import { Spinner } from "../shared"
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar"
 import { Pagination } from "../ui/pagination"
@@ -15,7 +15,6 @@ import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "../ui/table"
 
 type Props = {
-	page: number
 	timeLine: string
 }
 
@@ -88,7 +87,10 @@ const columns: ColumnDef<LatestOrderProps>[] = [
 	},
 ]
 
-export const LatestOrdersTable = ({ page, timeLine }: Props) => {
+export const LatestOrdersTable = ({ timeLine }: Props) => {
+	const [searchParams] = useSearchParams()
+	const page = Number(searchParams.get("page") || 1)
+
 	const { data, isPending } = useQuery({
 		queryFn: () => GetLatestOrdersQuery({ timeLine, page, limit: PAGE_LIMIT }),
 		queryKey: ["get-latest-orders", timeLine, page],

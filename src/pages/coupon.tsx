@@ -5,6 +5,7 @@ import { Pagination } from "@/components/ui/pagination"
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { PAGE_LIMIT } from "@/config"
+import { usePageTitle } from "@/hooks"
 import { GetCouponsQuery } from "@/queries/coupon"
 import type { CouponProps } from "@/types"
 import { useQuery } from "@tanstack/react-query"
@@ -88,6 +89,7 @@ const columns: ColumnDef<CouponProps>[] = [
 ]
 
 const Coupon = () => {
+	usePageTitle("Coupon and Promo")
 	const [searchParams] = useSearchParams()
 	const page = Number(searchParams.get("page") || 1)
 

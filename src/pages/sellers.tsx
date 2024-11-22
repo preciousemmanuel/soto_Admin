@@ -11,7 +11,7 @@ import {
 	SelectValue,
 } from "@/components/ui/select"
 import { PAGE_LIMIT } from "@/config"
-import { useDebounce } from "@/hooks"
+import { useDebounce, usePageTitle } from "@/hooks"
 import { formattedStats, getWeekRanges } from "@/lib"
 import { GetOverviewQuery, GetSellersQuery } from "@/queries"
 import type { TimelineProps } from "@/types"
@@ -45,6 +45,7 @@ import * as React from "react"
 
 const page = 1
 const Sellers = () => {
+	usePageTitle("Sellers")
 	const [timeLine, setTimeLine] = React.useState<TimelineProps>("")
 	const [query, setQuery] = React.useState("")
 	const seller_name = useDebounce(query, 500)

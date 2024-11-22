@@ -8,6 +8,7 @@ import {
 	SelectTrigger,
 	SelectValue,
 } from "@/components/ui/select"
+import { usePageTitle } from "@/hooks"
 import { capitalize } from "@/lib"
 import { CreateCouponMutation } from "@/queries/coupon"
 import { createCouponSchema } from "@/schema"
@@ -56,6 +57,7 @@ const initialValues = {
 type FormValue = typeof initialValues
 
 const CreateCoupon = () => {
+	usePageTitle("Create Coupon")
 	const queryClient = useQueryClient()
 	const navigate = useNavigate()
 

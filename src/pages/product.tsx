@@ -1,10 +1,12 @@
 import { Button } from "@/components/ui/button"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import { usePageTitle } from "@/hooks"
 import { useNavigate } from "react-router-dom"
 
 const tabs = ["description", "additional information", "reviews"]
 
 const Product = () => {
+	usePageTitle("Product")
 	const navigate = useNavigate()
 	// const { id } = useParams()
 

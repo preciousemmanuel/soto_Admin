@@ -46,6 +46,12 @@ export const formatPrice = (price: number) => {
 	}
 }
 
+export const formatNumberAsPercentage = (value: number) => {
+	return new Intl.NumberFormat("en-NG", {
+		style: "percent",
+	}).format(Number(value))
+}
+
 export const getTimeFromNow = (date: Date | string) => {
 	const now = new Date()
 	const diffInMilliseconds = now.getTime() - new Date(date).getTime()

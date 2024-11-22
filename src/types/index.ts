@@ -190,13 +190,21 @@ export type SellerProps = {
 }
 
 export type BuyersProps = {
-	_id: string
-	first_name: string
-	last_name: string
-	email: string
-	createdAt: string
-	total_spent: number
-	last_order_price: number
+	revenue_from_buyers_chart: Array<{
+		day_or_month: string
+		amount: number
+	}>
+	data: PaginationResponse<{
+		_id: string
+		first_name: string
+		last_name: string
+		email: string
+		profile_image: string
+		createdAt: string
+		rank?: string
+		total_spent: number
+		last_order_price: number
+	}>
 }
 
 export type BuyerProps = {

@@ -6,7 +6,6 @@ import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "../ui/table"
 
 type Props = {
-	page: number
 	timeLine: string
 }
 
@@ -50,7 +49,8 @@ const columns: ColumnDef<Product>[] = [
 	},
 ]
 
-export const BestSellingProducts = ({ page, timeLine }: Props) => {
+const page = 1
+export const BestSellingProducts = ({ timeLine }: Props) => {
 	const { data } = useQuery({
 		queryFn: () => GetBestSellerQuery({ timeLine, page, limit: 10 }),
 		queryKey: ["get-best-seller", timeLine, page],
