@@ -465,17 +465,39 @@ export type WalletOverviewProps = {
 	}>
 }
 
-export type WithdrawalRequestsProps = {
-	data: PaginationResponse<{
-		_id: string
-		amount: number
-		account_name: string
-		account_number: string
-		status: string
-		createdAt: string
-		vendor_name: string
-		vendor_email: string
-		vendor_logo: string
-		bank: string
-	}>
+export type WithdrawalRequestsProps = PaginationResponse<{
+	_id: string
+	amount: number
+	account_name: string
+	account_number: string
+	status: string
+	createdAt: string
+	vendor_name: string
+	vendor_email: string
+	vendor_logo: string
+	bank: string
+}>
+
+export type SettingsProps = {
+	ShippingAddress: {
+		country: string
+		full_address: string
+		address: string
+		city: string
+		state: string
+		postal_code: string
+	}
+	withdrawals: {
+		manual: string
+		scheduled: string
+		frequency: number
+	}
+	interest_rates: {
+		flat: number
+		special: number
+	}
+	_id: string
+	createdAt: string
+	updatedAt: string
+	__v: number
 }

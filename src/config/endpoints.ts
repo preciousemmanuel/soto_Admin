@@ -64,6 +64,11 @@ export const endpoints = (id?: string) => {
 		update: `${baseURL}/admin/update-a-buyer-or-seller/${id}`,
 	} as const
 
+	const settings = {
+		get_all: `${baseURL}/admin/get-settings`,
+		update: `${baseURL}/admin/update-settings`,
+	} as const
+
 	const feedback = {}
 
 	return {
@@ -77,5 +82,6 @@ export const endpoints = (id?: string) => {
 		products,
 		sellers,
 		wallet,
+		settings,
 	}
 }

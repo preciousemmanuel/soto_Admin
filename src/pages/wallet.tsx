@@ -8,7 +8,7 @@ import type { WalletOverviewProps } from "@/types"
 import { keepPreviousData, useQuery } from "@tanstack/react-query"
 import type { ColumnDef } from "@tanstack/react-table"
 import { format } from "date-fns"
-import { useSearchParams } from "react-router-dom"
+import { Link, useSearchParams } from "react-router-dom"
 
 const typeClass = {
 	ORDER: "text-green-600",
@@ -58,7 +58,7 @@ const columns: ColumnDef<Transactions>[] = [
 		accessorKey: "createdAt",
 		cell: ({ row }) => (
 			<>
-				<p>{format(new Date(row.getValue("createdAt")), "MMM d, yyyy")}</p>
+				<p>{format(new Date(row.getValue("createdAt")), "d MMM, yyyy")}</p>
 				<p className="text-xs">{format(new Date(row.getValue("createdAt")), "h:mm a")}</p>
 			</>
 		),
@@ -91,7 +91,7 @@ const Wallet = () => {
 		placeholderData: keepPreviousData,
 	})
 	const totalPages = Number(data?.data.transaction_logs.pagination.pageCount)
-	const total = Number(data?.data.transaction_logs.pagination.totalCount)
+	// const total = Number(data?.data.transaction_logs.pagination.totalCount)
 
 	return (
 		<section className="flex flex-col gap-10">
@@ -99,7 +99,9 @@ const Wallet = () => {
 				<h2 className="font-body text-3xl font-medium">Wallet</h2>
 
 				<div className="flex items-center gap-6">
-					<Button>Withdrawal Requests</Button>
+					<Button asChild>
+						<Link to="/dashboard/wallet/withdrawal-requests">Withdrawal Requests</Link>
+					</Button>
 				</div>
 			</header>
 

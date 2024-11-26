@@ -58,13 +58,20 @@ export const WalletCard = ({ amount, color = "primary", label, percentage_change
 			<div className="flex w-full items-start justify-between p-6">
 				<div className="flex w-[170px] flex-col gap-3">
 					<p className="capitalize text-neutral-400">{label}</p>
-					<p className="text-2xl font-semibold">{formatCurrency(amount ?? 0)}</p>
-					<p className="text-neutral-400">
-						<span>{percentage_change}</span>
+					<p className="text-2xl font-semibold text-[#14181F]">{formatCurrency(amount ?? 0)}</p>
+
+					<p
+						className={`flex items-center gap-1 text-sm font-medium ${Number(percentage_change) > 1 ? "text-[#15AC77]" : "text-[#EC0509]"}`}>
+						<span>{percentage_change}%</span>
+						{Number(percentage_change) > 1 ? (
+							<ArrowUp className="size-4" />
+						) : (
+							<ArrowDown className="size-4" />
+						)}
 					</p>
 				</div>
 				<div
-					style={{ background: color }}
+					style={{ backgroundColor: color }}
 					className="grid size-[30px] place-items-center rounded-full text-white">
 					{React.createElement(cardIcon[label as LabelProps], { className: "size-4" })}
 				</div>

@@ -64,7 +64,7 @@ function App() {
 									element: <Transfer />,
 								},
 								{
-									path: "withdrawal",
+									path: "withdrawal-requests",
 									element: <Withdrawal />,
 								},
 							],
