@@ -1,9 +1,9 @@
 import { formatPrice, getInitials } from "@/lib"
 import { GetBestSellerQuery } from "@/queries"
 import { useQuery } from "@tanstack/react-query"
-import { flexRender, getCoreRowModel, useReactTable, type ColumnDef } from "@tanstack/react-table"
+import { type ColumnDef } from "@tanstack/react-table"
+import { DataTable } from "../shared"
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar"
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "../ui/table"
 
 type Props = {
 	timeLine: string
@@ -51,14 +51,9 @@ const columns: ColumnDef<Product>[] = [
 
 const page = 1
 export const BestSellingProducts = ({ timeLine }: Props) => {
-	const { data } = useQuery({
+	const { data, isPending } = useQuery({
 		queryFn: () => GetBestSellerQuery({ timeLine, page, limit: 10 }),
 		queryKey: ["get-best-seller", timeLine, page],
-	})
-	const table = useReactTable({
-		data: data?.data.data || [],
-		columns,
-		getCoreRowModel: getCoreRowModel(),
 	})
 
 	return (
@@ -70,43 +65,7 @@ export const BestSellingProducts = ({ timeLine }: Props) => {
 				</Link> */}
 			</div>
 
-			<Table>
-				<TableHeader>
-					{table.getHeaderGroups().map((headerGroup) => (
-						<TableRow key={headerGroup.id}>
-							{headerGroup.headers.map((header) => {
-								return (
-									<TableHead key={header.id}>
-										{header.isPlaceholder
-											? null
-											: flexRender(header.column.columnDef.header, header.getContext())}
-									</TableHead>
-								)
-							})}
-						</TableRow>
-					))}
-				</TableHeader>
-
-				<TableBody>
-					{table.getRowModel().rows?.length ? (
-						table.getRowModel().rows.map((row) => (
-							<TableRow key={row.id} data-state={row.getIsSelected() && "selected"}>
-								{row.getVisibleCells().map((cell) => (
-									<TableCell key={cell.id}>
-										{flexRender(cell.column.columnDef.cell, cell.getContext())}
-									</TableCell>
-								))}
-							</TableRow>
-						))
-					) : (
-						<TableRow>
-							<TableCell colSpan={columns.length} className="h-24 text-center">
-								No results.
-							</TableCell>
-						</TableRow>
-					)}
-				</TableBody>
-			</Table>
+			<DataTable columns={columns} data={data?.data.data || []} isLoading={isPending} />
 		</div>
 	)
 }

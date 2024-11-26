@@ -1,8 +1,5 @@
-import React from "react"
 import {
 	ColumnDef,
-	ColumnFiltersState,
-	SortingState,
 	flexRender,
 	getCoreRowModel,
 	getFilteredRowModel,
@@ -18,31 +15,42 @@ import {
 	TableHeader,
 	TableRow,
 } from "@/components/ui/table"
+import { Pagination } from "../ui/pagination"
+import { Spinner } from "./spinner"
 
 interface Props<TData, TValue> {
 	columns: ColumnDef<TData, TValue>[]
 	data: TData[]
+	totalPages?: number
+	isLoading?: boolean
+	isPlaceholderData?: boolean
 }
 
-export function DataTable<TData, TValue>({ columns, data }: Props<TData, TValue>) {
-	const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([])
-	const [sorting, setSorting] = React.useState<SortingState>([])
-	const [rowSelection, setRowSelection] = React.useState({})
+export function DataTable<TData, TValue>({
+	columns,
+	data,
+	totalPages,
+	isLoading,
+	isPlaceholderData,
+}: Props<TData, TValue>) {
+	// const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([])
+	// const [sorting, setSorting] = React.useState<SortingState>([])
+	// const [rowSelection, setRowSelection] = React.useState({})
 
 	const table = useReactTable({
 		columns,
 		data,
 		getCoreRowModel: getCoreRowModel(),
-		onSortingChange: setSorting,
+		// onSortingChange: setSorting,
 		getSortedRowModel: getSortedRowModel(),
-		onColumnFiltersChange: setColumnFilters,
+		// onColumnFiltersChange: setColumnFilters,
 		getFilteredRowModel: getFilteredRowModel(),
-		onRowSelectionChange: setRowSelection,
-		state: {
-			sorting,
-			columnFilters,
-			rowSelection,
-		},
+		// onRowSelectionChange: setRowSelection,
+		// state: {
+		// 	sorting,
+		// 	columnFilters,
+		// 	rowSelection,
+		// },
 	})
 
 	return (
@@ -53,7 +61,7 @@ export function DataTable<TData, TValue>({ columns, data }: Props<TData, TValue>
 						<TableRow key={headerGroup.id}>
 							{headerGroup.headers.map((header) => {
 								return (
-									<TableHead key={header.id} className="text-sm font-medium text-neutral-600">
+									<TableHead key={header.id}>
 										{header.isPlaceholder
 											? null
 											: flexRender(header.column.columnDef.header, header.getContext())}
@@ -63,7 +71,7 @@ export function DataTable<TData, TValue>({ columns, data }: Props<TData, TValue>
 						</TableRow>
 					))}
 				</TableHeader>
-				<TableBody>
+				<TableBody className={`transition-opacity ${isPlaceholderData ? "opacity-50" : "opacity-100"}`}>
 					{table.getRowModel().rows?.length ? (
 						table.getRowModel().rows.map((row) => (
 							<TableRow key={row.id} data-state={row.getIsSelected() && "selected"}>
@@ -76,13 +84,21 @@ export function DataTable<TData, TValue>({ columns, data }: Props<TData, TValue>
 						))
 					) : (
 						<TableRow>
-							<TableCell colSpan={columns.length} className="h-24 text-center">
-								No results.
+							<TableCell colSpan={columns.length} className="text-center">
+								{isLoading ? (
+									<div className="flex items-center justify-center">
+										<Spinner variant="primary" size="lg" />
+									</div>
+								) : (
+									<span>No result(s).</span>
+								)}
 							</TableCell>
 						</TableRow>
 					)}
 				</TableBody>
 			</Table>
+
+			{data && totalPages ? <Pagination totalPages={totalPages} /> : null}
 		</div>
 	)
 }

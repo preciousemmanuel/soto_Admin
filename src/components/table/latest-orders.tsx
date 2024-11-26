@@ -3,16 +3,14 @@ import { formatPrice, getInitials } from "@/lib"
 import { GetLatestOrdersQuery } from "@/queries"
 import type { LatestOrderProps } from "@/types"
 import { useQuery } from "@tanstack/react-query"
-import { flexRender, getCoreRowModel, useReactTable, type ColumnDef } from "@tanstack/react-table"
+import { type ColumnDef } from "@tanstack/react-table"
 import { format } from "date-fns"
 import { ArrowRight } from "iconsax-react"
 import { MoreHorizontal } from "lucide-react"
 import { Link, useSearchParams } from "react-router-dom"
-import { Spinner } from "../shared"
+import { DataTable } from "../shared"
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar"
-import { Pagination } from "../ui/pagination"
 import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover"
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "../ui/table"
 
 type Props = {
 	timeLine: string
@@ -95,11 +93,6 @@ export const LatestOrdersTable = ({ timeLine }: Props) => {
 		queryFn: () => GetLatestOrdersQuery({ timeLine, page, limit: PAGE_LIMIT }),
 		queryKey: ["get-latest-orders", timeLine, page],
 	})
-	const table = useReactTable({
-		data: data?.data.data || [],
-		columns,
-		getCoreRowModel: getCoreRowModel(),
-	})
 
 	const totalPages = Number(data?.data.pagination.pageCount)
 
@@ -113,51 +106,12 @@ export const LatestOrdersTable = ({ timeLine }: Props) => {
 				</Link>
 			</div>
 
-			<Table>
-				<TableHeader>
-					{table.getHeaderGroups().map((headerGroup) => (
-						<TableRow key={headerGroup.id}>
-							{headerGroup.headers.map((header) => {
-								return (
-									<TableHead key={header.id}>
-										{header.isPlaceholder
-											? null
-											: flexRender(header.column.columnDef.header, header.getContext())}
-									</TableHead>
-								)
-							})}
-						</TableRow>
-					))}
-				</TableHeader>
-
-				<TableBody>
-					{table.getRowModel().rows?.length ? (
-						table.getRowModel().rows.map((row) => (
-							<TableRow key={row.id} data-state={row.getIsSelected() && "selected"}>
-								{row.getVisibleCells().map((cell) => (
-									<TableCell key={cell.id}>
-										{flexRender(cell.column.columnDef.cell, cell.getContext())}
-									</TableCell>
-								))}
-							</TableRow>
-						))
-					) : (
-						<TableRow>
-							<TableCell colSpan={columns.length} className="h-24 text-center">
-								{isPending ? (
-									<div className="flex items-center justify-center">
-										<Spinner variant="primary" size="lg" />
-									</div>
-								) : (
-									<span>No latest order(s).</span>
-								)}
-							</TableCell>
-						</TableRow>
-					)}
-				</TableBody>
-			</Table>
-
-			<Pagination totalPages={totalPages} />
+			<DataTable
+				columns={columns}
+				data={data?.data.data || []}
+				totalPages={totalPages}
+				isLoading={isPending}
+			/>
 		</div>
 	)
 }

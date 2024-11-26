@@ -131,6 +131,7 @@ export type SellersProps = {
 			total_quantity: number
 			category?: string
 			product?: string
+			is_blocked: boolean
 		}>
 		pagination: {
 			pageSize: number
@@ -158,6 +159,7 @@ export type SellerProps = {
 		SignupChannel: string
 		IsVerified: boolean
 		IsActive: boolean
+		isBlocked: boolean
 		business: {
 			_id: string
 			business_name: string
@@ -194,7 +196,7 @@ export type BuyersProps = {
 		day_or_month: string
 		amount: number
 	}>
-	data: PaginationResponse<{
+	data: Array<{
 		_id: string
 		first_name: string
 		last_name: string
@@ -205,6 +207,13 @@ export type BuyersProps = {
 		total_spent: number
 		last_order_price: number
 	}>
+	pagination: {
+		pageSize: number
+		totalCount: number
+		pageCount: number
+		currentPage: number
+		hasNext: boolean
+	}
 }
 
 export type BuyerProps = {
@@ -271,6 +280,53 @@ export type ProductProps = Node & {
 	width: number
 }
 
+export type SingleProductProps = {
+	product: {
+		_id: string
+		product_name: string
+		description: string
+		category: {
+			_id: string
+			name: string
+			__v: number
+			createdAt: string
+			updatedAt: string
+			image: string
+		}
+		images: Array<string>
+		vendor: string
+		unit_price: number
+		product_quantity: number
+		total_quantity_sold: number
+		height: number
+		width: number
+		weight: number
+		is_discounted: boolean
+		in_stock: boolean
+		is_verified: boolean
+		is_deleted: boolean
+		createdAt: string
+		updatedAt: string
+		__v: number
+	}
+	reviews: Array<{
+		_id: string
+		comment: string
+		product: string
+		user?: {
+			_id: string
+			FirstName: string
+			LastName: string
+			Email: string
+		}
+		rating: number
+		createdAt: string
+		updatedAt: string
+		__v: number
+	}>
+	total_reviews: number
+}
+
 export type OrderProps = Node & {
 	__typename?: "Order"
 	_id: string
@@ -290,6 +346,21 @@ export type OrderProps = Node & {
 		LastName: string
 		PhoneNumber: string
 	}
+	payment_details: Array<{
+		payment_provider: string
+		_id: string
+		reference: string
+		amount: number
+		user: string
+		type: string
+		status: string
+		currency: string
+		narration: string
+		narration_id: string
+		createdAt: string
+		updatedAt: string
+		__v: number
+	}>
 }
 
 export type TransactionProps = Node & {
@@ -360,3 +431,51 @@ export type CouponTypeProps =
 	| "FIXED_DISCOUNT"
 	| "PERCENTAGE_DISCOUNT"
 	| "FREE_SHIPPING"
+
+export type WalletOverviewProps = {
+	transaction: {
+		amount: number
+		percentage_change: number
+	}
+	income: {
+		amount: number
+		percentage_change: number
+	}
+	withdrawal: {
+		amount: number
+		percentage_change: number
+	}
+	remittance: {
+		amount: number
+		percentage_change: number
+	}
+	transaction_logs: PaginationResponse<{
+		_id: string
+		reference: string
+		amount: number
+		user: string
+		type: string
+		status: string
+		currency: string
+		narration: string
+		narration_id: string
+		createdAt: string
+		updatedAt: string
+		__v: number
+	}>
+}
+
+export type WithdrawalRequestsProps = {
+	data: PaginationResponse<{
+		_id: string
+		amount: number
+		account_name: string
+		account_number: string
+		status: string
+		createdAt: string
+		vendor_name: string
+		vendor_email: string
+		vendor_logo: string
+		bank: string
+	}>
+}

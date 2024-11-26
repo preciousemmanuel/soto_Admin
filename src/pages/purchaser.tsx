@@ -1,80 +1,60 @@
-import { useNavigate } from "react-router-dom"
-import React from "react"
-
 import { Button } from "@/components/ui/button"
-import { frequencyFilter } from "@/config"
-import {
-	Select,
-	SelectContent,
-	SelectItem,
-	SelectTrigger,
-	SelectValue,
-} from "@/components/ui/select"
-import { Table, TableBody, TableHead, TableHeader, TableRow } from "@/components/ui/table"
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import { usePageTitle } from "@/hooks"
+import { useNavigate, useSearchParams } from "react-router-dom"
 
 const tabs = ["pending", "picked", "delivered", "cancelled"] as const
-type Tabs = (typeof tabs)[number]
+// type Tabs = (typeof tabs)[number]
 
 const Orders = () => {
-	const [activeTab, setActiveTab] = React.useState<Tabs>("pending")
+	usePageTitle("Purchasers")
 	const navigate = useNavigate()
+	const [searchParams, setSearchParams] = useSearchParams()
+	const status = searchParams.get("status")
+
+	// const [activeTab, setActiveTab] = React.useState<Tabs>("pending")
 
 	return (
-		<div>
-			<div className="flex w-full items-center justify-between pb-[27px] pt-[72px]">
-				<p className="text-[32px] font-medium">Order Management</p>
-				<div className="flex items-center gap-6">
-					<Button onClick={() => navigate(-1)} variant="outline">
+		<section className="flex flex-col gap-10">
+			<header className="flex items-center justify-between gap-2">
+				<h2 className="font-body text-3xl font-medium">Purchaser Management</h2>
+
+				<div className="flex items-center gap-3">
+					<Button
+						variant="outline"
+						className="border-primary hover:bg-primary/5"
+						onClick={() => navigate(-1)}>
 						Back
 					</Button>
-					<Button>Block Purchaser</Button>
+					<Button>Add Product</Button>
 				</div>
-			</div>
-			<div className="my-5 flex w-full flex-col gap-4">
-				<div className="flex w-full items-center gap-[30px] border-b">
+			</header>
+
+			<Tabs
+				defaultValue={status ?? "pending"}
+				value={status ?? "pending"}
+				onValueChange={(value) => {
+					searchParams.set("status", value)
+					setSearchParams(searchParams)
+				}}>
+				<TabsList>
 					{tabs.map((tab) => (
-						<button
-							key={tab}
-							className={`relative py-2 capitalize transition-all before:absolute before:-bottom-0.5 before:left-0 before:h-0.5 before:bg-primary ${
-								tab === activeTab ? "before:w-full" : "before:w-0"
-							}`}
-							onClick={() => setActiveTab(tab)}>
-							<p className="text-[16px] font-medium">{tab}</p>
-						</button>
+						<TabsTrigger key={tab} value={tab}>
+							{tab}
+						</TabsTrigger>
 					))}
-				</div>
-				<div className="flex w-full items-center justify-end">
-					<Select>
-						<SelectTrigger className="w-[200px]">
-							<SelectValue placeholder="Filter by date range" />
-						</SelectTrigger>
-						<SelectContent>
-							{frequencyFilter.map(({ label, value }) => (
-								<SelectItem key={value} value={value}>
-									{label}
-								</SelectItem>
-							))}
-						</SelectContent>
-					</Select>
-				</div>
-				<div className="w-full pt-5">
-					<Table>
-						<TableHeader className="bg-[#f8f8f8] text-black">
-							<TableRow>
-								<TableHead className="">Product</TableHead>
-								<TableHead className="">Purchaser</TableHead>
-								<TableHead className="">Assigned</TableHead>
-								<TableHead className="">Qty</TableHead>
-								<TableHead className="">Seller</TableHead>
-								<TableHead className="">Status</TableHead>
-								<TableHead className="">Actions</TableHead>
-							</TableRow>
-						</TableHeader>
-						<TableBody></TableBody>
-					</Table>
-				</div>
-			</div>
-		</div>
+				</TabsList>
+
+				{tabs.map((tab) => (
+					<TabsContent key={tab} value={tab}>
+						<p>
+							Lorem ipsum dolor sit amet consectetur, adipisicing elit. Tempore ad error velit temporibus
+							a. Harum quod ea natus sit ipsam.
+						</p>
+					</TabsContent>
+				))}
+			</Tabs>
+		</section>
 	)
 }
 

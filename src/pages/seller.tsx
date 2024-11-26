@@ -105,7 +105,7 @@ const Seller = () => {
 						<div className="col-span-2 flex flex-col gap-8 rounded-xl border-0.5 border-[#f8f3f3] bg-white px-6 py-8 shadow-card shadow-primary/[8%]">
 							<div className="flex items-start gap-4 border-b border-b-[#E9EAF3] pb-8">
 								<img
-									src={data?.data.user.business.business_logo}
+									src={data?.data.user.business ? data?.data.user.business.business_logo : ""}
 									alt=""
 									className="size-20 rounded-full bg-red-200"
 								/>
@@ -130,13 +130,15 @@ const Seller = () => {
 								</div>
 							</div>
 
-							<div className="flex flex-col gap-1 text-sm text-[#939393]">
-								<p className="font-medium capitalize text-gray-900">Seller's Business</p>
+							{data?.data.user.business ? (
+								<div className="flex flex-col gap-1 text-sm text-[#939393]">
+									<p className="font-medium capitalize text-gray-900">Seller's Business</p>
 
-								<p className="capitalise">Business name: {data?.data.user.business.business_name}</p>
-								<p className="capitalise">Business description: {data?.data.user.business.description}</p>
-								<p className="capitalise">Business category: {data?.data.user.business.category}</p>
-							</div>
+									<p className="capitalise">Business name: {data?.data.user.business.business_name}</p>
+									<p className="capitalise">Business description: {data?.data.user.business.description}</p>
+									<p className="capitalise">Business category: {data?.data.user.business.category}</p>
+								</div>
+							) : null}
 						</div>
 
 						<div className="col-span-1 flex flex-col gap-8 rounded-xl border-0.5 border-[#f8f3f3] bg-white p-6 shadow-card shadow-primary/[8%]">
@@ -151,21 +153,21 @@ const Seller = () => {
 							<div className="flex flex-col gap-2">
 								<p className="text-sm font-medium text-[#666666]">Business Address</p>
 								<p className="text-pretty text-xs leading-relaxed text-[#979797]">
-									{data?.data.user.business.adress}
+									{data?.data.user?.business ? data?.data.user?.business.adress : "N/A"}
 								</p>
 							</div>
 
 							<div className="flex flex-col gap-2">
 								<p className="text-sm font-medium text-[#666666]">Business Email</p>
 								<p className="text-pretty text-xs leading-relaxed text-[#979797]">
-									{data?.data.user.business.email}
+									{data?.data.user?.business ? data?.data.user?.business.email : "N/A"}
 								</p>
 							</div>
 
 							<div className="flex flex-col gap-2">
 								<p className="text-sm font-medium text-[#666666]">Phone number</p>
 								<p className="text-pretty text-xs leading-relaxed text-[#979797]">
-									{data?.data.user.business.phone_number}
+									{data?.data.user.business ? data?.data.user?.business.phone_number : "N/A"}
 								</p>
 							</div>
 

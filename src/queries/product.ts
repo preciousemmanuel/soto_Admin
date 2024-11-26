@@ -1,6 +1,12 @@
-import { HttpResponse, PaginationProps, PaginationResponse, ProductProps } from "@/types"
 import { endpoints } from "@/config"
 import { axios } from "@/lib"
+import {
+	HttpResponse,
+	PaginationProps,
+	PaginationResponse,
+	ProductProps,
+	type SingleProductProps,
+} from "@/types"
 
 const GetProductsQuery = async (
 	params: PaginationProps & { product_name?: string; select_type?: string; status?: string }
@@ -17,7 +23,7 @@ const GetProductsQuery = async (
 
 const GetProductQuery = async (id: string) => {
 	return axios
-		.get<HttpResponse<ProductProps>>(endpoints(id).products.get_one)
+		.get<HttpResponse<SingleProductProps>>(endpoints(id).products.get_one)
 		.then((res) => res.data)
 }
 

@@ -18,4 +18,17 @@ const GetSellerQuery = async (id: string) => {
 	return axios.get<HttpResponse<SellerProps>>(endpoints(id).sellers.get_one).then((res) => res.data)
 }
 
-export { GetSellerQuery, GetSellersQuery }
+type UpdateSellerPayload = {
+	id: string
+	data: {
+		is_verified?: "YES" | "NO"
+		is_blocked?: "YES" | "NO"
+	}
+}
+const UpdateSellerMutation = async (payload: UpdateSellerPayload) => {
+	return axios
+		.put<HttpResponse<SellerProps>>(endpoints(payload.id).sellers.update, payload.data)
+		.then((res) => res.data)
+}
+
+export { GetSellerQuery, GetSellersQuery, UpdateSellerMutation }

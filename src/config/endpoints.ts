@@ -26,7 +26,12 @@ export const endpoints = (id?: string) => {
 		latest_orders: `${baseURL}/admin/latest-orders`,
 	} as const
 
-	const wallet = {}
+	const wallet = {
+		get_all: `${baseURL}/admin/transactions/get-wallet-overview`,
+		get_withdrawal_requests: `${baseURL}/admin/transactions/get-withdrawal-requests`,
+		approve_decline_withdrawal_request: `${baseURL}/admin/transactions/approve-or-decline-withdrawal-request/${id}`,
+		complete_withdrawal_request: `${baseURL}/admin/transactions/complete-withdrawal-approval`,
+	} as const
 
 	const orders = {
 		get_all: `${baseURL}/admin/orders`,
@@ -38,7 +43,7 @@ export const endpoints = (id?: string) => {
 
 	const products = {
 		get_all: `${baseURL}/admin/products-mgt`,
-		get_one: `${baseURL}/admin/view-a/${id}`,
+		get_one: `${baseURL}/admin/view-a-product/${id}`,
 	} as const
 
 	const coupons = {
@@ -56,6 +61,7 @@ export const endpoints = (id?: string) => {
 	const sellers = {
 		get_all: `${baseURL}/admin/get-sellers`,
 		get_one: `${baseURL}/admin/view-a-seller/${id}`,
+		update: `${baseURL}/admin/update-a-buyer-or-seller/${id}`,
 	} as const
 
 	const feedback = {}

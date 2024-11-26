@@ -1,3 +1,4 @@
+import { PAGE_LIMIT } from "@/config"
 import { usePagination } from "@/hooks"
 import { ChevronLeft, ChevronRight } from "lucide-react"
 import { useSearchParams } from "react-router-dom"
@@ -9,18 +10,25 @@ type PaginationProps = {
 
 export const Pagination = ({ totalPages }: PaginationProps) => {
 	const [searchParams, setSearchParams] = useSearchParams()
+	const page = Number(searchParams.get("page") || 1)
+
 	const {
 		range: pages,
 		active,
 		setPage,
 	} = usePagination({
 		total: totalPages,
-		page: Number(searchParams.get("page") || 1),
+		page,
 	})
+
+	const start = (page - 1) * PAGE_LIMIT + 1
+	const end = page * PAGE_LIMIT
 
 	return (
 		<div className="flex items-center justify-between py-3">
-			{/* <p className="text-xs font-medium text-[#999999]">Showing 1 to 10 of {totalCount} results</p> */}
+			<p className="text-xs font-medium text-[#999999]">
+				Showing {start} to {end}
+			</p>
 
 			<div className="ml-auto flex items-center gap-2">
 				<button

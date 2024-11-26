@@ -12,7 +12,7 @@ import {
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { statusClass } from "@/config"
 import { usePageTitle } from "@/hooks"
-import { formatPrice, getInitials } from "@/lib"
+import { formatCurrency, formatPrice, getInitials } from "@/lib"
 import { GetOrderQuery } from "@/queries"
 import type { OrderProps } from "@/types"
 import { useQuery } from "@tanstack/react-query"
@@ -52,7 +52,7 @@ const columns: ColumnDef<OrderItem>[] = [
 		header: "Total price",
 		accessorKey: "total_price",
 		// @ts-expect-error nil
-		cell: ({ row }) => formatPrice(row.getValue("unit_price") * row.getValue("quantity")),
+		cell: ({ row }) => formatCurrency(row.getValue("unit_price") * row.getValue("quantity")),
 	},
 ]
 
@@ -116,7 +116,7 @@ const Order = () => {
 								Order Details - <span className="text-neutral-400">#{order?.data._id.substring(0, 6)}</span>
 							</h3>
 
-							<div className="flex w-full items-center justify-between gap-5 pt-12 text-sm">
+							<div className="grid w-full grid-cols-3 items-center justify-between gap-10 pt-12 text-sm">
 								<div className="flex flex-col gap-8">
 									<div className="flex flex-col">
 										<p className="font-semibold">Order from:</p>
@@ -129,7 +129,7 @@ const Order = () => {
 										<p className="">{order?.data.shipping_address}</p>
 										<p className="">Phone Number</p>
 									</div>
-									<div className="flex items-center gap-2">
+									{/* <div className="flex items-center gap-2">
 										<Avatar>
 											<AvatarImage src="" alt="" />
 											<AvatarFallback>{getInitials("")}</AvatarFallback>
@@ -138,15 +138,13 @@ const Order = () => {
 											<p className="font-semibold">Product Seller</p>
 											<p>Product Seller</p>
 										</div>
-									</div>
+									</div> */}
 								</div>
 
 								<div className="flex flex-col gap-4">
 									<div className="flex flex-col">
 										<p className="font-semibold">Payment Method:</p>
-										<p className="capitalize">
-											{order?.data.user.FirstName} {order?.data.user.LastName}
-										</p>
+										<p className="capitalize">{order?.data.payment_details.at(0)?.payment_provider}</p>
 									</div>
 
 									<div className="flex w-full flex-col gap-2 font-medium">
@@ -162,6 +160,12 @@ const Order = () => {
 												{order?.data.status}
 											</span>
 										</p>
+										<p>
+											Payment Status:{" "}
+											<span className={`${statusClass[order?.data.status as keyof typeof statusClass]}`}>
+												{order?.data.payment_details.at(0)?.status}
+											</span>
+										</p>
 									</div>
 								</div>
 
@@ -170,11 +174,11 @@ const Order = () => {
 									<div className="flex w-full flex-col gap-3">
 										<div className="flex flex-col">
 											<p className="font-medium">Address</p>
-											<p>{order?.data.shipping_address}</p>
+											<p className="text-[#939393]">{order?.data.shipping_address}</p>
 										</div>
 										<div className="flex flex-col">
 											<p className="font-medium">Email</p>
-											<p>{order?.data.user.Email}</p>
+											<p className="text-[#939393]">{order?.data.user.Email}</p>
 										</div>
 										<div className="flex items-center gap-2">
 											<p className="font-medium">Contact</p>
@@ -281,29 +285,35 @@ const Order = () => {
 									</TableCell>
 								</TableRow>
 							)}
+
+							<TableRow>
+								<TableCell></TableCell>
+								<TableCell></TableCell>
+								<TableCell className="text-center">Subtotal</TableCell>
+								<TableCell>{formatCurrency(Number(order?.data.total_amount))}</TableCell>
+							</TableRow>
+							<TableRow>
+								<TableCell></TableCell>
+								<TableCell></TableCell>
+								<TableCell className="text-center">Discount</TableCell>
+								<TableCell>{formatCurrency(Number(0))}</TableCell>
+							</TableRow>
+							<TableRow>
+								<TableCell></TableCell>
+								<TableCell></TableCell>
+								<TableCell className="text-center">Fees</TableCell>
+								<TableCell>{formatCurrency(Number(0))}</TableCell>
+							</TableRow>
+							<TableRow>
+								<TableCell></TableCell>
+								<TableCell></TableCell>
+								<TableCell className="text-center font-body text-primary">Total</TableCell>
+								<TableCell className="font-body text-lg font-bold text-primary">
+									{formatCurrency(Number(order?.data.grand_total))}
+								</TableCell>
+							</TableRow>
 						</TableBody>
 					</Table>
-
-					<div className="flex justify-end text-sm">
-						<div className="flex min-w-80 flex-col gap-5">
-							<div className="flex items-center justify-between">
-								<p>Subtotal</p>
-								<p>{formatPrice(Number(order?.data.total_amount))}</p>
-							</div>
-							<div className="flex items-center justify-between">
-								<p>Discount</p>
-								<p>{formatPrice(Number(0))}</p>
-							</div>
-							<div className="flex items-center justify-between">
-								<p>Fees</p>
-								<p>{formatPrice(Number(0))}</p>
-							</div>
-							<div className="flex items-center justify-between border-t py-3 text-red-500">
-								<p>Total</p>
-								<p>{formatPrice(Number(order?.data.grand_total))}</p>
-							</div>
-						</div>
-					</div>
 				</TabsContent>
 			</Tabs>
 		</section>

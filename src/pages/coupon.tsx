@@ -1,26 +1,17 @@
 import { UpdateCouponModal } from "@/components/modals"
-import { Spinner } from "@/components/shared"
+import { DataTable } from "@/components/shared"
 import { Button } from "@/components/ui/button"
-import { Pagination } from "@/components/ui/pagination"
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { PAGE_LIMIT } from "@/config"
 import { usePageTitle } from "@/hooks"
 import { GetCouponsQuery } from "@/queries/coupon"
 import type { CouponProps } from "@/types"
-import { useQuery } from "@tanstack/react-query"
-import { flexRender, getCoreRowModel, useReactTable, type ColumnDef } from "@tanstack/react-table"
+import { keepPreviousData, useQuery } from "@tanstack/react-query"
+import { type ColumnDef } from "@tanstack/react-table"
 import { format } from "date-fns"
 import { MoreHorizontal, Plus, Tag } from "lucide-react"
 import { Link, useSearchParams } from "react-router-dom"
-import {
-	Table,
-	TableBody,
-	TableCell,
-	TableHead,
-	TableHeader,
-	TableRow,
-} from "../components/ui/table"
 
 const tabs = ["all"]
 const defaultData: never[] = []
@@ -93,7 +84,7 @@ const Coupon = () => {
 	const [searchParams] = useSearchParams()
 	const page = Number(searchParams.get("page") || 1)
 
-	const { data, isPending } = useQuery({
+	const { data, isPending, isPlaceholderData } = useQuery({
 		queryFn: () =>
 			GetCouponsQuery({
 				page,
@@ -101,11 +92,7 @@ const Coupon = () => {
 				// status: status.toUpperCase(),
 			}),
 		queryKey: ["get-coupons", page],
-	})
-	const table = useReactTable({
-		data: data?.data || defaultData,
-		columns,
-		getCoreRowModel: getCoreRowModel(),
+		placeholderData: keepPreviousData,
 	})
 
 	const totalPages = Number(data?.pagination.pageCount)
@@ -135,53 +122,15 @@ const Coupon = () => {
 				</TabsList>
 
 				<TabsContent value="all">
-					<Table>
-						<TableHeader>
-							{table.getHeaderGroups().map((headerGroup) => (
-								<TableRow key={headerGroup.id}>
-									{headerGroup.headers.map((header) => {
-										return (
-											<TableHead key={header.id}>
-												{header.isPlaceholder
-													? null
-													: flexRender(header.column.columnDef.header, header.getContext())}
-											</TableHead>
-										)
-									})}
-								</TableRow>
-							))}
-						</TableHeader>
-
-						<TableBody>
-							{table.getRowModel().rows?.length ? (
-								table.getRowModel().rows.map((row) => (
-									<TableRow key={row.id} data-state={row.getIsSelected() && "selected"}>
-										{row.getVisibleCells().map((cell) => (
-											<TableCell key={cell.id}>
-												{flexRender(cell.column.columnDef.cell, cell.getContext())}
-											</TableCell>
-										))}
-									</TableRow>
-								))
-							) : (
-								<TableRow>
-									<TableCell colSpan={columns.length} className="h-24 text-center">
-										{isPending ? (
-											<div className="flex items-center justify-center">
-												<Spinner variant="primary" size="lg" />
-											</div>
-										) : (
-											<span>No coupons found.</span>
-										)}
-									</TableCell>
-								</TableRow>
-							)}
-						</TableBody>
-					</Table>
+					<DataTable
+						columns={columns}
+						data={data?.data || defaultData}
+						isLoading={isPending}
+						totalPages={totalPages}
+						isPlaceholderData={isPlaceholderData}
+					/>
 				</TabsContent>
 			</Tabs>
-
-			<Pagination totalPages={totalPages} />
 		</section>
 	)
 }

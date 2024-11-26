@@ -1,4 +1,5 @@
-import { OrdersTable } from "@/components/table"
+import { DataTable, Spinner } from "@/components/shared"
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
 import {
 	Select,
@@ -8,22 +9,113 @@ import {
 	SelectValue,
 } from "@/components/ui/select"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { frequencyFilter, ORDER_TABS } from "@/config"
+import { frequencyFilter, ORDER_TABS, PAGE_LIMIT, statusClass } from "@/config"
 import { usePageTitle } from "@/hooks"
-import { getWeekRanges } from "@/lib"
+import { capitalize, formatPrice, getInitials, getTimeFromNow, getWeekRanges } from "@/lib"
+import { GetOrdersQuery } from "@/queries"
 import type { TimelineProps } from "@/types"
+import { OrderProps } from "@/types"
+import { useQuery } from "@tanstack/react-query"
+import { type ColumnDef } from "@tanstack/react-table"
 import { MoreHorizontal } from "lucide-react"
 import React from "react"
-import { useSearchParams } from "react-router-dom"
+import { Link, useSearchParams } from "react-router-dom"
+
+const columns: ColumnDef<OrderProps>[] = [
+	{
+		header: "Orders ID",
+		accessorKey: "_id",
+		cell: ({ row }) => <p>#{row.original._id.substring(0, 8)}</p>,
+	},
+	{
+		header: "Buyer",
+		accessorKey: "user",
+		cell: ({ row }) => {
+			const full_name = `${row.original.user.FirstName} ${row.original.user.LastName}`
+			return (
+				<div className="flex items-center gap-2">
+					<Avatar className="size-9">
+						<AvatarImage src="" alt={row.getValue("user")} />
+						<AvatarFallback>{getInitials(full_name)}</AvatarFallback>
+					</Avatar>
+					<p className="capitalize">{full_name}</p>
+				</div>
+			)
+		},
+	},
+	{
+		header: "Created",
+		accessorKey: "createdAt",
+		cell: ({ row }) => getTimeFromNow(row.getValue("createdAt")),
+	},
+	{
+		header: "Total",
+		accessorKey: "total_amount",
+		cell: ({ row }) => formatPrice(row.getValue("total_amount")),
+	},
+	{
+		header: "Net Profit",
+		accessorKey: "grand_total",
+		cell: ({ row }) => formatPrice(row.getValue("grand_total")),
+	},
+	{
+		header: "Status",
+		accessorKey: "status",
+		cell: ({ row }) => (
+			<span
+				className={`text-sm capitalize ${statusClass[row.getValue("status") as keyof typeof statusClass]}`}>
+				{capitalize(row.getValue("status"))}
+			</span>
+		),
+	},
+	{
+		header: "Actions",
+		cell: ({ row }) => (
+			<Popover>
+				<PopoverTrigger>
+					<MoreHorizontal />
+				</PopoverTrigger>
+
+				<PopoverContent>
+					<Link
+						to={`/dashboard/orders/${row.original._id}`}
+						className="flex rounded-md px-4 py-2 text-xs transition-all hover:bg-primary hover:text-white">
+						Review order
+					</Link>
+
+					<button
+						type="button"
+						className="flex w-full rounded-md px-4 py-2 text-xs text-red-600 transition-all hover:bg-red-600 hover:text-white">
+						Cancel order
+					</button>
+				</PopoverContent>
+			</Popover>
+		),
+	},
+]
 
 const Orders = () => {
 	usePageTitle("Orders")
 	const [timeLine, setTimeLine] = React.useState<TimelineProps>("ALL")
 	const [searchParams, setSearchParams] = useSearchParams()
-	// const [page] = React.useState(1)
 	const ranges = getWeekRanges(new Date("2024-06-01"))
 
-	const status = searchParams.get("status")
+	const status = searchParams.get("status") || "pending"
+	const page = Number(searchParams.get("page") || 1)
+
+	const { data, isPending } = useQuery({
+		queryFn: () =>
+			GetOrdersQuery({
+				timeLine,
+				page,
+				limit: PAGE_LIMIT,
+				status: status.toUpperCase(),
+			}),
+		queryKey: ["get-orders", timeLine, page, status],
+	})
+
+	const totalPages = Number(data?.data.pagination.pageCount)
+	// const total = Number(data?.data.pagination.totalCount)
 
 	return (
 		<section className="flex flex-col gap-10">
@@ -53,40 +145,46 @@ const Orders = () => {
 				</div>
 			</header>
 
-			<Tabs
-				defaultValue={status ?? "pending"}
-				value={status ?? "pending"}
-				onValueChange={(value) => {
-					searchParams.set("status", value)
-					setSearchParams(searchParams)
-				}}>
-				<TabsList>
-					{ORDER_TABS.map((tab) => (
-						<TabsTrigger key={tab} value={tab}>
-							{tab}
-						</TabsTrigger>
-					))}
-				</TabsList>
-
-				<Select>
-					<SelectTrigger className="w-[166px] self-end border border-[#FFE8E3] shadow-card shadow-primary/[8%]">
-						<SelectValue placeholder="Select Range" />
-					</SelectTrigger>
-					<SelectContent>
-						{ranges.map((range, index) => (
-							<SelectItem key={index} value={range}>
-								{range}
-							</SelectItem>
+			{isPending ? (
+				<div className="flex items-center justify-center">
+					<Spinner variant="primary" size="lg" />
+				</div>
+			) : (
+				<Tabs
+					defaultValue={status ?? "pending"}
+					value={status ?? "pending"}
+					onValueChange={(value) => {
+						searchParams.set("status", value)
+						setSearchParams(searchParams)
+					}}>
+					<TabsList>
+						{ORDER_TABS.map((tab) => (
+							<TabsTrigger key={tab} value={tab}>
+								{tab}
+							</TabsTrigger>
 						))}
-					</SelectContent>
-				</Select>
+					</TabsList>
 
-				{ORDER_TABS.map((tab) => (
-					<TabsContent key={tab} value={tab}>
-						<OrdersTable timeLine={timeLine} />
-					</TabsContent>
-				))}
-			</Tabs>
+					<Select>
+						<SelectTrigger className="w-[166px] self-end border border-[#FFE8E3] shadow-card shadow-primary/[8%]">
+							<SelectValue placeholder="Select Range" />
+						</SelectTrigger>
+						<SelectContent>
+							{ranges.map((range, index) => (
+								<SelectItem key={index} value={range}>
+									{range}
+								</SelectItem>
+							))}
+						</SelectContent>
+					</Select>
+
+					{ORDER_TABS.map((tab) => (
+						<TabsContent key={tab} value={tab}>
+							<DataTable columns={columns} data={data?.data.data || []} totalPages={totalPages} />
+						</TabsContent>
+					))}
+				</Tabs>
+			)}
 		</section>
 	)
 }

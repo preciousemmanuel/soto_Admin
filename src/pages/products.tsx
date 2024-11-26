@@ -46,13 +46,11 @@ const Products = () => {
 			<header className="flex items-center justify-between gap-2">
 				<h2 className="text-3xl font-medium">Products Management</h2>
 
-				<div className="flex items-center gap-6">
-					<div className="flex items-center gap-3">
-						<Button variant="outline" className="border-primary hover:bg-primary/5">
-							Add interest
-						</Button>
-						<Button>Add Product</Button>
-					</div>
+				<div className="flex items-center gap-3">
+					<Button variant="outline" className="border-primary hover:bg-primary/5">
+						Add interest
+					</Button>
+					<Button>Add Product</Button>
 				</div>
 			</header>
 
