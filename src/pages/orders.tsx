@@ -15,7 +15,7 @@ import { capitalize, formatPrice, getInitials, getTimeFromNow, getWeekRanges } f
 import { GetOrdersQuery } from "@/queries"
 import type { TimelineProps } from "@/types"
 import { OrderProps } from "@/types"
-import { useQuery } from "@tanstack/react-query"
+import { keepPreviousData, useQuery } from "@tanstack/react-query"
 import { type ColumnDef } from "@tanstack/react-table"
 import { MoreHorizontal } from "lucide-react"
 import React from "react"
@@ -103,7 +103,7 @@ const Orders = () => {
 	const status = searchParams.get("status") || "pending"
 	const page = Number(searchParams.get("page") || 1)
 
-	const { data, isPending } = useQuery({
+	const { data, isPending, isPlaceholderData } = useQuery({
 		queryFn: () =>
 			GetOrdersQuery({
 				timeLine,
@@ -112,6 +112,7 @@ const Orders = () => {
 				status: status.toUpperCase(),
 			}),
 		queryKey: ["get-orders", timeLine, page, status],
+		placeholderData: keepPreviousData,
 	})
 
 	const totalPages = Number(data?.data.pagination.pageCount)
@@ -180,7 +181,12 @@ const Orders = () => {
 
 					{ORDER_TABS.map((tab) => (
 						<TabsContent key={tab} value={tab}>
-							<DataTable columns={columns} data={data?.data.data || []} totalPages={totalPages} />
+							<DataTable
+								columns={columns}
+								data={data?.data.data || []}
+								totalPages={totalPages}
+								isPlaceholderData={isPlaceholderData}
+							/>
 						</TabsContent>
 					))}
 				</Tabs>

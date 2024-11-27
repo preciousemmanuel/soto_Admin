@@ -37,6 +37,14 @@ const columns: ColumnDef<Transactions>[] = [
 	{
 		header: "User",
 		accessorKey: "user",
+		cell: ({ row }) => (
+			<div>
+				<p className="font-medium capitalize">
+					{row.original.user.FirstName} {row.original.user.LastName}
+				</p>
+				<p className="text-xs">{row.original.user.UserType}</p>
+			</div>
+		),
 	},
 	{
 		header: () => <p className="text-right">Amount</p>,

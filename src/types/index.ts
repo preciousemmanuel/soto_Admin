@@ -453,7 +453,13 @@ export type WalletOverviewProps = {
 		_id: string
 		reference: string
 		amount: number
-		user: string
+		user: {
+			_id: string
+			FirstName: string
+			LastName: string
+			Email: string
+			UserType: string
+		}
 		type: string
 		status: string
 		currency: string

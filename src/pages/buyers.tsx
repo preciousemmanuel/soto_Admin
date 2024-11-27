@@ -31,7 +31,7 @@ const columns: ColumnDef<BuyerDetails>[] = [
 		cell: ({ row }) => (
 			<div className="flex items-center gap-2.5">
 				<Avatar className="size-9">
-					<AvatarImage src="" alt={row.getValue("first_name")} />
+					<AvatarImage src={row.original.profile_image} alt={row.getValue("first_name")} />
 					<AvatarFallback>{getInitials(row.getValue("first_name"))}</AvatarFallback>
 				</Avatar>
 
@@ -189,15 +189,48 @@ const Buyers = () => {
 
 					<div className="grid grid-cols-5 gap-6">
 						<div className="col-span-3 flex flex-col gap-8 rounded-xl border-0.5 border-[#f8f3f3] bg-white p-6 shadow-card shadow-primary/[8%]">
-							<p className="font-medium text-gray-700">Revenue Generated from Sellers</p>
+							<p className="font-medium text-gray-700">Revenue Generated from Buyers</p>
 
 							{data && <ChartArea data={data?.data.revenue_from_buyers_chart || []} />}
 						</div>
 
 						<div className="col-span-2 flex flex-col gap-8 rounded-xl border-0.5 border-[#f8f3f3] bg-white p-6 shadow-card shadow-primary/[8%]">
-							<p className="font-medium">Sellers Status</p>
+							<p className="font-medium">Buyer Info</p>
 
-							{/* {data && <ChartPie data={formattedStats(data?.data.stats)} />} */}
+							<div className="text-sm">
+								<div className="flex flex-col items-center justify-center gap-2 border-b border-b-gray-200 pb-6 text-center">
+									<Avatar className="size-20">
+										<AvatarImage src="" alt={data?.data.data.at(0)?.first_name} />
+										<AvatarFallback className="text-xl">
+											{getInitials(data?.data.data.at(0)?.first_name || "")}
+										</AvatarFallback>
+									</Avatar>
+
+									<div>
+										<p className="font-bold capitalize">
+											{data?.data.data.at(0)?.first_name} {data?.data.data.at(0)?.last_name}
+										</p>
+										<p className="text-xs">{data?.data.data.at(0)?.email}</p>
+									</div>
+								</div>
+
+								<ul className="flex flex-col gap-2 pt-6">
+									<li>
+										<p className="font-medium">Total Orders</p>
+										<p>24</p>
+									</li>
+
+									<li>
+										<p className="font-medium">Total Spent</p>
+										<p>{formatCurrency(data?.data.data.at(0)?.total_spent || 0)}</p>
+									</li>
+
+									<li>
+										<p className="font-medium">Last Order Amount</p>
+										<p>{formatCurrency(data?.data.data.at(0)?.last_order_price || 0)}</p>
+									</li>
+								</ul>
+							</div>
 						</div>
 					</div>
 
