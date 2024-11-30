@@ -1,18 +1,18 @@
 import Cookies from "js-cookie"
 
 import { createPersistMiddleware } from "@/store/middleware"
-import { AdminProps, Maybe } from "@/types"
+import { Maybe, type SiginProps } from "@/types"
 
 interface UserStore {
-	user: Maybe<AdminProps>
+	user: Maybe<SiginProps>
 	isAuthenticated: boolean
-	signIn: (user: AdminProps, token: string) => void
+	signIn: (user: SiginProps, token: string) => void
 	signOut: (options?: { redirectTo?: string; soft?: boolean }) => void
 }
 
 const initialState: UserStore = {
 	user: null,
-	isAuthenticated: true,
+	isAuthenticated: false,
 	signIn: () => {},
 	signOut: () => {},
 }
@@ -20,7 +20,7 @@ const initialState: UserStore = {
 const useUserStore = createPersistMiddleware<UserStore>("SOTO_ADMIN", (set) => ({
 	...initialState,
 	signIn: (user, token) => {
-		set({ user, isAuthenticated: true })
+		set({ user, isAuthenticated: Boolean(token) })
 		Cookies.set("SOTO_ADMIN_TOKEN", token, {
 			sameSite: "None",
 			secure: true,
@@ -38,7 +38,7 @@ const useUserStore = createPersistMiddleware<UserStore>("SOTO_ADMIN", (set) => (
 		} catch (error) {
 			console.error("sign out error:", error)
 		} finally {
-			window.localStorage.removeItem("spaceet-user")
+			window.localStorage.removeItem("SOTO_ADMIN")
 			window.location.replace(options?.redirectTo || "/")
 		}
 	},

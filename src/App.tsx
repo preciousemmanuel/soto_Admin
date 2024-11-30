@@ -1,13 +1,12 @@
-import { RouterProvider, createBrowserRouter } from "react-router-dom"
 import { Suspense } from "react"
+import { Navigate, RouterProvider, createBrowserRouter } from "react-router-dom"
 
 import { DashboardLayout, ProtectedRoutes } from "@/layouts"
-import { ErrorBoundary } from "./components/shared"
-import { useUserStore } from "./store/z-store"
 import {
 	Buyer,
 	Buyers,
 	Coupon,
+	CreateCoupon,
 	CreateProduct,
 	Feedback,
 	ForgotPassword,
@@ -17,6 +16,7 @@ import {
 	Product,
 	Products,
 	Purchaser,
+	Purchasers,
 	Seller,
 	Sellers,
 	Settings,
@@ -25,14 +25,17 @@ import {
 	Wallet,
 	Withdrawal,
 } from "@/pages"
+import { ErrorBoundary } from "./components/shared"
+import { useUserStore } from "./store/z-store"
 
 function App() {
 	const { isAuthenticated } = useUserStore()
+	console.log("isAuthenticated", isAuthenticated)
 
 	const router = createBrowserRouter([
 		{
 			path: "/",
-			element: <Signin />,
+			element: isAuthenticated ? <Navigate to="/dashboard" /> : <Signin />,
 		},
 		{
 			path: "/forgot-password",
@@ -62,7 +65,7 @@ function App() {
 									element: <Transfer />,
 								},
 								{
-									path: "withdrawal",
+									path: "withdrawal-requests",
 									element: <Withdrawal />,
 								},
 							],
@@ -98,17 +101,30 @@ function App() {
 							],
 						},
 						{
-							path: "purchaser",
+							path: "purchasers",
 							children: [
 								{
 									index: true,
+									element: <Purchasers />,
+								},
+								{
+									path: ":id",
 									element: <Purchaser />,
 								},
 							],
 						},
 						{
 							path: "coupon-and-promo",
-							element: <Coupon />,
+							children: [
+								{
+									index: true,
+									element: <Coupon />,
+								},
+								{
+									path: "create",
+									element: <CreateCoupon />,
+								},
+							],
 						},
 						{
 							path: "buyers",

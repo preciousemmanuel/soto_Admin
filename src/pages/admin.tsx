@@ -1,20 +1,13 @@
-import { useQuery } from "@tanstack/react-query"
-import { useParams } from "react-router-dom"
-
-import { GetAdminQuery } from "@/queries/admin"
-import { usePageTitle } from "@/hooks"
-import { capitalize } from "@/lib"
-
 const Admin = () => {
-	const { id } = useParams()
+	// const { id } = useParams()
 
-	const { data: admin } = useQuery({
-		queryFn: () => GetAdminQuery(String(id)),
-		queryKey: ["get-admin", id],
-		enabled: !!id,
-	})
+	// const { data: admin } = useQuery({
+	// 	queryFn: () => GetAdminQuery(String(id)),
+	// 	queryKey: ["get-admin", id],
+	// 	enabled: !!id,
+	// })
 
-	usePageTitle(`${capitalize(`${admin?.data.FirstName} ${admin?.data.LastName}`)}`)
+	// usePageTitle(`${capitalize(`${admin?.data.FirstName} ${admin?.data.LastName}`)}`)
 
 	return (
 		<div>

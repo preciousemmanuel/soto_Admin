@@ -8,37 +8,33 @@ export interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> 
 	label?: string
 	labelClassName?: string
 	leadingIcon?: Icon
-	wrapperClassName?: string
 }
 
 const Input = React.forwardRef<HTMLInputElement, InputProps>(
-	(
-		{ className, error, label, labelClassName, leadingIcon: Icon, type, wrapperClassName, ...props },
-		ref
-	) => {
+	({ className, error, label, labelClassName, leadingIcon: Icon, type, ...props }, ref) => {
 		const [showPassword, setShowPassword] = React.useState(false)
 
 		return (
-			<div className="flex w-full flex-col gap-4">
+			<div className="flex w-full flex-col gap-2.5">
 				{label && (
 					<label
 						className={cn(
-							"text-2xl font-medium leading-none text-[#5d5c5c] peer-disabled:cursor-not-allowed peer-disabled:opacity-70",
+							"text-sm font-medium leading-none text-[#5d5c5c] peer-disabled:cursor-not-allowed peer-disabled:opacity-70",
 							labelClassName
 						)}>
 						{label}
 					</label>
 				)}
-				<div
-					className={cn(
-						"flex h-[70px] w-full items-center gap-2 rounded-3xl bg-white px-3 py-2",
-						wrapperClassName
-					)}>
-					{Icon && <Icon size={24} className="text-neutral-400" />}
+
+				<div className="relative">
+					{Icon && (
+						<Icon size={24} className="absolute left-4 top-1/2 -translate-y-1/2 text-neutral-400" />
+					)}
+
 					<input
 						type={showPassword ? "text" : type}
 						className={cn(
-							"flex h-full w-full bg-transparent text-xl outline-none file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-neutral-950 placeholder:text-neutral-500 disabled:cursor-not-allowed disabled:opacity-50",
+							`flex w-full rounded border-0 bg-neutral-50 px-4 py-2.5 text-base font-normal outline-none ring-1 ring-[#E5E5E5] file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-neutral-950 placeholder:font-normal placeholder:text-neutral-500 focus:ring-2 focus:ring-primary focus:ring-offset-1 disabled:cursor-not-allowed disabled:opacity-50 ${Icon && "pl-12"}`,
 							className
 						)}
 						ref={ref}
@@ -48,12 +44,13 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
 						<button
 							type="button"
 							onClick={() => setShowPassword(!showPassword)}
-							className="flex items-center justify-center">
+							className="absolute right-4 top-1/2 -translate-y-1/2 text-neutral-400">
 							{showPassword ? <EyeSlash size={24} /> : <Eye size={24} />}
 						</button>
 					)}
 				</div>
-				{error && <p className="text-xs text-red-500">{error}</p>}
+
+				{error && <p className="text-xs text-red-600">{error}</p>}
 			</div>
 		)
 	}

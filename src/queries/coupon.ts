@@ -1,8 +1,15 @@
-import { CouponProps, HttpResponse, PaginationProps, PaginationResponse } from "@/types"
 import { endpoints } from "@/config"
 import { axios } from "@/lib"
+import {
+	CouponProps,
+	HttpResponse,
+	PaginationProps,
+	PaginationResponse,
+	type CreateCouponPayload,
+	type UpdateCouponPayload,
+} from "@/types"
 
-const CreateCouponMutation = async (payload: CouponProps) => {
+const CreateCouponMutation = async (payload: CreateCouponPayload) => {
 	return axios
 		.post<HttpResponse<CouponProps>>(endpoints().coupons.create, payload)
 		.then((res) => res.data)
@@ -13,7 +20,7 @@ const GetCouponsQuery = async (params: PaginationProps & {}) => {
 		.get<HttpResponse<PaginationResponse<CouponProps>>>(endpoints().coupons.get_all, {
 			params: {
 				...params,
-				timeLine: params?.timeLine === "ALL" ? "" : params?.timeLine,
+				// timeLine: params?.timeLine === "ALL" ? "" : params?.timeLine,
 			},
 		})
 		.then((res) => res.data.data)
@@ -23,4 +30,14 @@ const GetCouponQuery = async () => {
 	return axios.get<HttpResponse<CouponProps>>(endpoints().coupons.get_one).then((res) => res.data)
 }
 
-export { CreateCouponMutation, GetCouponQuery, GetCouponsQuery }
+type CouponPayload = {
+	payload: UpdateCouponPayload
+	id: string
+}
+const UpdateCouponMutation = async (payload: CouponPayload) => {
+	return axios
+		.put<HttpResponse<CouponProps>>(endpoints(payload.id).coupons.update, payload)
+		.then((res) => res.data)
+}
+
+export { CreateCouponMutation, GetCouponQuery, GetCouponsQuery, UpdateCouponMutation }

@@ -1,4 +1,4 @@
-import { Area, AreaChart, CartesianGrid, XAxis } from "recharts"
+import { Area, AreaChart, CartesianGrid, XAxis, YAxis } from "recharts"
 
 import {
 	ChartConfig,
@@ -6,6 +6,7 @@ import {
 	ChartTooltip,
 	ChartTooltipContent,
 } from "@/components/ui/chart"
+import { formatDate } from "date-fns"
 
 interface Props {
 	data: {
@@ -28,26 +29,27 @@ export const ChartArea = ({ data }: Props) => {
 				accessibilityLayer
 				data={data}
 				margin={{
-					left: 12,
-					right: 12,
+					left: 0,
+					right: 0,
+					bottom: 24,
 				}}>
-				<CartesianGrid vertical={false} />
+				<CartesianGrid vertical={false} strokeDasharray="3 3" strokeOpacity={0.8} />
 				<XAxis
-					dataKey="month"
+					dataKey="day_or_month"
 					tickLine={false}
 					axisLine={false}
 					tickMargin={8}
-					tickFormatter={(value) =>
-						new Intl.DateTimeFormat("en-NG", { day: "2-digit" }).format(new Date(value))
-					}
+					tickFormatter={(value) => formatDate(new Date(value), "dd/MM/yyyy")}
 				/>
+				<YAxis tickFormatter={(value) => value?.toLocaleString()} />
 				<ChartTooltip cursor={false} content={<ChartTooltipContent indicator="line" />} />
 				<Area
-					dataKey="desktop"
+					dataKey="amount"
 					type="natural"
-					fill="var(--color-desktop)"
-					fillOpacity={0.4}
-					stroke="var(--color-desktop)"
+					fill="#ff5733"
+					fillOpacity={0.2}
+					strokeWidth={1.5}
+					stroke="#ff5733"
 				/>
 			</AreaChart>
 		</ChartContainer>

@@ -23,3 +23,16 @@ export const productStatus = {
 	OUT_OF_STOCK: "out of stock",
 	RETURNED: "returned products",
 }
+
+export const transactionStatusClass = {
+	SUCCESSFUL: "text-green-600",
+	PENDING: "text-yellow-600",
+	FAILED: "text-red-600",
+}
+
+export const pickupsStatusClass = {
+	PENDING: "text-yellow-600",
+	DELIVERED: "text-green-600",
+	CANCELLED: "text-red-600",
+	PICKED_UP: "text-purple-600",
+}

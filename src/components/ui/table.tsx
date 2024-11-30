@@ -5,7 +5,11 @@ import { cn } from "@/lib/utils"
 const Table = React.forwardRef<HTMLTableElement, React.HTMLAttributes<HTMLTableElement>>(
 	({ className, ...props }, ref) => (
 		<div className="relative w-full overflow-auto">
-			<table ref={ref} className={cn("w-full caption-bottom text-sm", className)} {...props} />
+			<table
+				ref={ref}
+				className={cn("w-full caption-bottom whitespace-nowrap text-sm", className)}
+				{...props}
+			/>
 		</div>
 	)
 )
@@ -44,14 +48,7 @@ TableFooter.displayName = "TableFooter"
 
 const TableRow = React.forwardRef<HTMLTableRowElement, React.HTMLAttributes<HTMLTableRowElement>>(
 	({ className, ...props }, ref) => (
-		<tr
-			ref={ref}
-			className={cn(
-				"border-b transition-colors hover:bg-neutral-100/50 data-[state=selected]:bg-neutral-100 dark:hover:bg-neutral-800/50 dark:data-[state=selected]:bg-neutral-800",
-				className
-			)}
-			{...props}
-		/>
+		<tr ref={ref} className={cn("border-b transition-colors", className)} {...props} />
 	)
 )
 TableRow.displayName = "TableRow"
@@ -63,7 +60,7 @@ const TableHead = React.forwardRef<
 	<th
 		ref={ref}
 		className={cn(
-			"h-12 px-4 text-left align-middle font-medium text-neutral-500 dark:text-neutral-400 [&:has([role=checkbox])]:pr-0",
+			"h-12 bg-[#F8F8F8] px-5 py-4 text-left align-middle font-medium text-neutral-700 dark:text-neutral-400 [&:has([role=checkbox])]:pr-0",
 			className
 		)}
 		{...props}
@@ -77,7 +74,7 @@ const TableCell = React.forwardRef<
 >(({ className, ...props }, ref) => (
 	<td
 		ref={ref}
-		className={cn("p-4 align-middle [&:has([role=checkbox])]:pr-0", className)}
+		className={cn("p-5 align-middle text-[#666666] [&:has([role=checkbox])]:pr-0", className)}
 		{...props}
 	/>
 ))
@@ -95,4 +92,4 @@ const TableCaption = React.forwardRef<
 ))
 TableCaption.displayName = "TableCaption"
 
-export { Table, TableHeader, TableBody, TableFooter, TableHead, TableRow, TableCell, TableCaption }
+export { Table, TableBody, TableCaption, TableCell, TableFooter, TableHead, TableHeader, TableRow }

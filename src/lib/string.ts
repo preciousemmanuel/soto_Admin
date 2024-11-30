@@ -46,6 +46,12 @@ export const formatPrice = (price: number) => {
 	}
 }
 
+export const formatNumberAsPercentage = (value: number) => {
+	return new Intl.NumberFormat("en-NG", {
+		style: "percent",
+	}).format(Number(value))
+}
+
 export const getTimeFromNow = (date: Date | string) => {
 	const now = new Date()
 	const diffInMilliseconds = now.getTime() - new Date(date).getTime()
@@ -77,4 +83,8 @@ export const aggregateAmount = (data?: RangeProps[]) => {
 	return data.reduce((acc, curr) => {
 		return acc + curr.amount
 	}, 0)
+}
+
+export const replaceSpaceWithUnderscore = (value: string) => {
+	return value.replace(/ /g, "_")
 }

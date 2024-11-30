@@ -1,13 +1,13 @@
 import { useMutation } from "@tanstack/react-query"
-import { useNavigate } from "react-router-dom"
-import { Lock } from "iconsax-react"
 import { useFormik } from "formik"
+import { Lock } from "iconsax-react"
 import React from "react"
+import { useNavigate } from "react-router-dom"
 
-import { ForgotPasswordMutation, ResetPasswordMutation, VerifyOtpMutation } from "@/queries"
 import { OtpInput, Spinner } from "@/components/shared"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
+import { ForgotPasswordMutation, ResetPasswordMutation, VerifyOtpMutation } from "@/queries"
 
 type ComponentProps = {
 	handleBack: () => void
@@ -53,7 +53,6 @@ function EmailScreen({ handleBack, handleNext }: ComponentProps) {
 						name="email"
 						type="email"
 						onChange={handleChange}
-						wrapperClassName="bg-[#fbf3f1] rounded-3xl h-[60px]"
 						className="text-sm text-black placeholder:text-neutral-500"
 					/>
 					<Button type="submit" className="h-20 rounded-3xl">
@@ -148,7 +147,6 @@ function NewPasswordScreen({ handleBack, handleNext }: ComponentProps) {
 						name="password"
 						type="password"
 						onChange={handleChange}
-						wrapperClassName="bg-[#fbf3f1] rounded-3xl h-[60px]"
 						className="text-sm text-black placeholder:text-neutral-500"
 					/>
 					<Input
@@ -158,7 +156,6 @@ function NewPasswordScreen({ handleBack, handleNext }: ComponentProps) {
 						name="password"
 						type="password"
 						onChange={handleChange}
-						wrapperClassName="bg-[#fbf3f1] rounded-3xl h-[60px]"
 						className="text-sm text-black placeholder:text-neutral-500"
 					/>
 					<Button type="submit" className="h-20 rounded-3xl">

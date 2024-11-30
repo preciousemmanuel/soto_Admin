@@ -1,13 +1,12 @@
-import { AdminProps, HttpResponse, PaginationProps, PaginationResponse } from "@/types"
 import { endpoints } from "@/config"
 import { axios } from "@/lib"
+import { AdminProps, HttpResponse, PaginationProps } from "@/types"
 
 const GetAdminsQuery = async (params: PaginationProps & {}) => {
 	return axios
-		.get<HttpResponse<PaginationResponse<AdminProps>>>(endpoints().admin.get_all, {
+		.get<HttpResponse<AdminProps>>(endpoints().admin.get_all, {
 			params: {
 				...params,
-				timeLine: params?.timeLine === "ALL" ? "" : params?.timeLine,
 			},
 		})
 		.then((res) => res.data)

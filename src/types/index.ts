@@ -87,32 +87,170 @@ export type Node = {
 	updatedAt: Maybe<Date | string>
 }
 
-export type AdminProps = Node & {
-	Email: string
-	FirstName: string
-	LastName: string
-}
-
 export type UserProps = Node & {
 	email: string
 	full_name: string
 	profile_image: string
 }
 
-export type SellerProps = Node & {
-	address: string
-	email: string
-	full_name: string
-	phone_number: string
-	profile_image: string
+export type SiginProps = Node & {
+	Email: string
+	FirstName: string
+	LastName: string
+	Token: string
 }
 
-export type BuyerProps = Node & {
-	address: string
-	email: string
-	full_name: string
-	phone_number: string
-	profile_image: string
+// export type SellerProps = Node & {
+// 	address: string
+// 	email: string
+// 	full_name: string
+// 	phone_number: string
+// 	profile_image: string
+// }
+
+export type SellersProps = {
+	stats: {
+		active_percentage: number
+		inactive_percentage: number
+		blocked_percentage: number
+		others_percentage: number
+	}
+	revenue_from_sellers_chart: Array<{
+		day_or_month: string
+		amount: number
+	}>
+	sellers_data: {
+		data: Array<{
+			_id: string
+			first_name: string
+			last_name: string
+			email: string
+			createdAt: string
+			is_active: boolean
+			is_verified: boolean
+			total_quantity: number
+			category?: string
+			product?: string
+			is_blocked: boolean
+		}>
+		pagination: {
+			pageSize: number
+			totalCount: number
+			pageCount: number
+			currentPage: number
+			hasNext: boolean
+		}
+	}
+}
+
+export type SellerProps = {
+	user: {
+		ShippingAddress: {
+			country: string
+		}
+		IsBlocked: boolean
+		Rank: string
+		_id: string
+		FirstName: string
+		LastName: string
+		Email: string
+		Password: string
+		UserType: string
+		SignupChannel: string
+		IsVerified: boolean
+		IsActive: boolean
+		isBlocked: boolean
+		business: {
+			_id: string
+			business_name: string
+			email: string
+			phone_number: string
+			adress: string
+			category: string
+			description: string
+			business_logo: string
+			createdAt: string
+			updatedAt: string
+			__v: number
+			user: string
+		}
+		createdAt: string
+		updatedAt: string
+		__v: number
+		Token: string
+		wallet: string
+	}
+	total_amount_sold: number
+	product_records: PaginationResponse<{
+		_id: string
+		product_name: string
+		createdAt: string
+		unit_price: number
+		product_quantity: number
+		is_verified: boolean
+	}>
+}
+
+export type BuyersProps = {
+	revenue_from_buyers_chart: Array<{
+		day_or_month: string
+		amount: number
+	}>
+	data: Array<{
+		_id: string
+		first_name: string
+		last_name: string
+		email: string
+		profile_image: string
+		createdAt: string
+		rank?: string
+		total_spent: number
+		last_order_price: number
+		total_orders: number
+		total_items_ordered: number
+	}>
+	pagination: {
+		pageSize: number
+		totalCount: number
+		pageCount: number
+		currentPage: number
+		hasNext: boolean
+	}
+}
+
+export type BuyerProps = {
+	user: {
+		ShippingAddress: {
+			full_address: string
+			address: string
+			city: string
+			state: string
+			postal_code: string
+			country: string
+		}
+		Rank: string
+		_id: string
+		FirstName: string
+		LastName: string
+		Email: string
+		Password: string
+		PhoneNumber: string
+		UserType: string
+		SignupChannel: string
+		createdAt: string
+		updatedAt: string
+		__v: number
+		Token: string
+		IsVerified: boolean
+	}
+	total_amount_spent: number
+	orderRecords: PaginationResponse<{
+		_id: string
+		tracking_id: string
+		createdAt: string
+		status: string
+		grand_total: number
+	}>
 }
 
 export type ProductProps = Node & {
@@ -121,10 +259,20 @@ export type ProductProps = Node & {
 	description: string
 	height: number
 	images: string[]
+	in_stock: boolean
+	is_verified: boolean
+	is_deleted: boolean
 	is_discounted: boolean
-	product_id: string
+	discount_price: number
+	total_quantity_sold: number | undefined
+	product_id:
+		| string
+		| {
+				total_quantity_sold: number
+				images: string[]
+		  }
 	product_name: string
-	quantity: number
+	product_quantity: number
 	unit_price: number
 	vendor: {
 		Email: string
@@ -132,6 +280,53 @@ export type ProductProps = Node & {
 	}
 	weight: number
 	width: number
+}
+
+export type SingleProductProps = {
+	product: {
+		_id: string
+		product_name: string
+		description: string
+		category: {
+			_id: string
+			name: string
+			__v: number
+			createdAt: string
+			updatedAt: string
+			image: string
+		}
+		images: Array<string>
+		vendor: string
+		unit_price: number
+		product_quantity: number
+		total_quantity_sold: number
+		height: number
+		width: number
+		weight: number
+		is_discounted: boolean
+		in_stock: boolean
+		is_verified: boolean
+		is_deleted: boolean
+		createdAt: string
+		updatedAt: string
+		__v: number
+	}
+	reviews: Array<{
+		_id: string
+		comment: string
+		product: string
+		user?: {
+			_id: string
+			FirstName: string
+			LastName: string
+			Email: string
+		}
+		rating: number
+		createdAt: string
+		updatedAt: string
+		__v: number
+	}>
+	total_reviews: number
 }
 
 export type OrderProps = Node & {
@@ -153,6 +348,21 @@ export type OrderProps = Node & {
 		LastName: string
 		PhoneNumber: string
 	}
+	payment_details: Array<{
+		payment_provider: string
+		_id: string
+		reference: string
+		amount: number
+		user: string
+		type: string
+		status: string
+		currency: string
+		narration: string
+		narration_id: string
+		createdAt: string
+		updatedAt: string
+		__v: number
+	}>
 }
 
 export type TransactionProps = Node & {
@@ -177,18 +387,45 @@ export type LatestOrderProps = Node & {
 	createdAt: Date | string
 	status: StatusProps
 	total_price: number
+	order: string
+	images: string[]
+}
+
+export type CreateCouponPayload = {
+	name: string
+	coupon_type: string
+	amount: number
+	applied_to: string
+	activation_date: string
+	expiry_date: string
+	remove_expiry_date: string
+	remove_usage_limit: string
+	usage_limit: number
+}
+
+export type UpdateCouponPayload = {
+	amount: number
+	active_status: string
+	usage_limit: number
 }
 
 export type CouponProps = Node & {
-	activation_date: Date | string
-	amount: number
-	applied_to: "USER" | "VENDOR"
-	expiry_date: Date | string
-	coupon_type: CouponTypeProps
+	total_usage: number
 	name: string
+	audience: string
+	code: string
+	activation_date: string
+	expiry_date: string
 	remove_expiry_date: boolean
+	amount_type: string
+	coupon_type: string
+	condition: string
+	is_condition: boolean
+	usage_limit: number
 	remove_usage_limit: boolean
-	usage_limit: string
+	total_subscribers: number
+	active_status: boolean
+	amount: number
 }
 
 export type CouponTypeProps =
@@ -196,3 +433,193 @@ export type CouponTypeProps =
 	| "FIXED_DISCOUNT"
 	| "PERCENTAGE_DISCOUNT"
 	| "FREE_SHIPPING"
+
+export type WalletOverviewProps = {
+	transaction: {
+		amount: number
+		percentage_change: number
+	}
+	income: {
+		amount: number
+		percentage_change: number
+	}
+	withdrawal: {
+		amount: number
+		percentage_change: number
+	}
+	remittance: {
+		amount: number
+		percentage_change: number
+	}
+	transaction_logs: PaginationResponse<{
+		_id: string
+		reference: string
+		amount: number
+		user: {
+			_id: string
+			FirstName: string
+			LastName: string
+			Email: string
+			UserType: string
+		}
+		type: string
+		status: string
+		currency: string
+		narration: string
+		narration_id: string
+		createdAt: string
+		updatedAt: string
+		__v: number
+	}>
+}
+
+export type WithdrawalRequestsProps = PaginationResponse<{
+	_id: string
+	amount: number
+	account_name: string
+	account_number: string
+	status: string
+	createdAt: string
+	vendor_name: string
+	vendor_email: string
+	vendor_logo: string
+	bank: string
+}>
+
+export type SettingsProps = {
+	ShippingAddress: {
+		country: string
+		full_address: string
+		address: string
+		city: string
+		state: string
+		postal_code: string
+	}
+	withdrawals: {
+		manual: string
+		scheduled: string
+		frequency: number
+	}
+	interest_rates: {
+		flat: number
+		special: number
+	}
+	_id: string
+	createdAt: string
+	updatedAt: string
+	__v: number
+}
+
+export type PurchasersProps = PaginationResponse<{
+	address_details: {
+		coordinates: {
+			lat: number
+			lng: number
+		}
+		full_address: string
+		address: string
+		address_id: string
+		city: string
+		country: string
+		postal_code: string
+	}
+	_id: string
+	FirstName: string
+	LastName: string
+	Email: string
+	PhoneNumber: string
+	Password: string
+	Role: string
+	coordinate: Array<number>
+	createdAt: string
+	updatedAt: string
+	__v: number
+	Token: string
+	address_id: string
+}>
+
+export type PickupsProps = PaginationResponse<{
+	tracking_id: string
+	order_id: string
+	purchaser: {
+		_id: string
+		profile_image: string
+		first_name: string
+		last_name: string
+	}
+	createdAt: string
+	quantity: number
+	vendor_contact: {
+		first_name: string
+		last_name: string
+		phone_number: string
+	}
+	status: string
+}>
+
+export type ProfileProps = {
+	address_details: {
+		coordinates: {
+			lat: number
+			lng: number
+		}
+		full_address: string
+		address: string
+		address_id: string
+		city: string
+		country: string
+		postal_code: string
+	}
+	_id: string
+	FirstName: string
+	LastName: string
+	ProfileImage: string
+	Email: string
+	PhoneNumber: string
+	Password: string
+	Role: {
+		admin: {
+			read: string
+			write: string
+		}
+		config: {
+			read: string
+			write: string
+		}
+		order: {
+			read: string
+			write: string
+		}
+		buyer: {
+			read: string
+			write: string
+		}
+		seller: {
+			read: string
+			write: string
+		}
+		product: {
+			read: string
+			write: string
+		}
+		transaction: {
+			read: string
+			write: string
+		}
+		_id: string
+		name: string
+		createdAt: string
+		updatedAt: string
+		__v: number
+	}
+	coordinate: Array<number>
+	createdAt: string
+	updatedAt: string
+	__v: number
+	Token: string
+	address_id: string
+}
+
+export type RolesProps = PaginationResponse<ProfileProps["Role"]>
+
+export type AdminProps = PaginationResponse<ProfileProps>

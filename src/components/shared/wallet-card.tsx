@@ -4,7 +4,7 @@ import React from "react"
 import { formatCurrency } from "@/lib"
 
 type LabelProps = "transaction amount" | "total income" | "total withdraw" | "remittance balance"
-type ColorProps = "red" | "green" | "yellow"
+type ColorProps = "red" | "green" | "yellow" | "primary"
 interface Props {
 	amount?: number
 	color?: ColorProps
@@ -20,12 +20,13 @@ const cardIcon: Record<LabelProps, Icon> = {
 }
 
 const chartColor: Record<ColorProps, string> = {
-	red: "#ff5733",
+	red: "#FA484B",
 	green: "#15ac77",
-	yellow: "#fe9431",
+	yellow: "#FE9431",
+	primary: "#FF5733",
 }
 
-export const WalletCard = ({ amount, color = "red", label, percentage_change }: Props) => {
+export const WalletCard = ({ amount, color = "primary", label, percentage_change }: Props) => {
 	const points = [10, 30, 20, 45, 25, 35, 15, 40, 30, 20]
 
 	// Calculate the points for the SVG path
@@ -53,19 +54,26 @@ export const WalletCard = ({ amount, color = "red", label, percentage_change }: 
 	}, "")
 
 	return (
-		<div className="flex aspect-[1.18/1] w-full flex-col justify-between rounded-md bg-white shadow-card shadow-primary/[8%]">
+		<div className="flex aspect-[1.18/1] w-full flex-col justify-between rounded-md bg-white font-body shadow-card shadow-primary/[8%]">
 			<div className="flex w-full items-start justify-between p-6">
 				<div className="flex w-[170px] flex-col gap-3">
 					<p className="capitalize text-neutral-400">{label}</p>
-					<p className="text-2xl font-semibold">{formatCurrency(amount ?? 0)}</p>
-					<p className="text-neutral-400">
-						<span className={``}>{percentage_change}</span>
+					<p className="text-2xl font-semibold text-[#14181F]">{formatCurrency(amount ?? 0)}</p>
+
+					<p
+						className={`flex items-center gap-1 text-sm font-medium ${Number(percentage_change) > 1 ? "text-[#15AC77]" : "text-[#EC0509]"}`}>
+						<span>{percentage_change}%</span>
+						{Number(percentage_change) > 1 ? (
+							<ArrowUp className="size-4" />
+						) : (
+							<ArrowDown className="size-4" />
+						)}
 					</p>
 				</div>
 				<div
-					style={{ background: color }}
+					style={{ backgroundColor: color }}
 					className="grid size-[30px] place-items-center rounded-full text-white">
-					{React.createElement(cardIcon[label as LabelProps], { className: "size-5" })}
+					{React.createElement(cardIcon[label as LabelProps], { className: "size-4" })}
 				</div>
 			</div>
 			<svg

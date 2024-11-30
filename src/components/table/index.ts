@@ -1,5 +1,5 @@
-export * from "./buyer"
-export * from "./order"
-export * from "./overview"
-export * from "./product"
-export * from "./seller"
+export * from "./best-selling-products"
+export * from "./latest-orders"
+export * from "./pickups"
+export * from "./product-item"
+

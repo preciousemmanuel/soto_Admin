@@ -1,65 +1,135 @@
-import { useQuery } from "@tanstack/react-query"
-import { useParams } from "react-router-dom"
-import { format } from "date-fns"
-import React from "react"
-
+import { Spinner } from "@/components/shared"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
-import { formatPrice, getInitials } from "@/lib"
-import { TabPanel } from "@/components/shared"
+import { Button } from "@/components/ui/button"
+import {
+	Table,
+	TableBody,
+	TableCell,
+	TableHead,
+	TableHeader,
+	TableRow,
+} from "@/components/ui/table"
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import { statusClass } from "@/config"
+import { usePageTitle } from "@/hooks"
+import { formatCurrency, formatPrice, getInitials } from "@/lib"
 import { GetOrderQuery } from "@/queries"
+import type { OrderProps } from "@/types"
+import { useQuery } from "@tanstack/react-query"
+import { flexRender, getCoreRowModel, useReactTable, type ColumnDef } from "@tanstack/react-table"
+import { format } from "date-fns"
+import { useNavigate, useParams, useSearchParams } from "react-router-dom"
 
 const tabs = ["order details", "product", "invoice"] as const
 type Tabs = (typeof tabs)[number]
 
-const Order = () => {
-	const [current, setCurrent] = React.useState<Tabs>("order details")
-	const { id } = useParams()
+type OrderItem = OrderProps["items"][number]
+const columns: ColumnDef<OrderItem>[] = [
+	{
+		header: "Product",
+		accessorKey: "product_name",
+		cell: ({ row }) => (
+			<div className="flex items-center gap-2">
+				<Avatar className="size-9">
+					<AvatarImage src={row.original.images[0]} alt={row.getValue("product_name")} />
+					<AvatarFallback>{getInitials(row.getValue("product_name"))}</AvatarFallback>
+				</Avatar>
+				<p className="capitalize">{row.getValue("product_name")}</p>
+			</div>
+		),
+	},
+	{
+		header: "Price",
+		accessorKey: "unit_price",
+		cell: ({ row }) => formatPrice(row.getValue("unit_price")),
+	},
+	{
+		header: () => <p className="text-center">Quantity</p>,
+		accessorKey: "quantity",
+		cell: ({ row }) => <p className="text-center">x{row.getValue("quantity")}</p>,
+	},
+	{
+		header: "Total price",
+		accessorKey: "total_price",
+		// @ts-expect-error nil
+		cell: ({ row }) => formatCurrency(row.getValue("unit_price") * row.getValue("quantity")),
+	},
+]
 
-	const { data: order } = useQuery({
+const Order = () => {
+	usePageTitle("Order")
+	const [searchParams, setSearchParams] = useSearchParams()
+	const { id } = useParams()
+	const navigate = useNavigate()
+
+	const tab = searchParams.get("tab")
+
+	const { data: order, isPending } = useQuery({
 		queryFn: () => GetOrderQuery(String(id)),
 		queryKey: ["get-order", id],
 		enabled: !!id,
 	})
 
+	const table = useReactTable({
+		data: order?.data.items || [],
+		columns,
+		getCoreRowModel: getCoreRowModel(),
+	})
+
 	return (
-		<div>
-			<div className="flex w-full items-center justify-between pb-[27px] pt-[72px]">
-				<p className="text-[32px] font-medium">Order Details</p>
-				<div className="flex items-center gap-6"></div>
-			</div>
-			<div className="my-5 flex w-full flex-col gap-14">
-				<div className="flex w-full flex-col rounded-xl shadow-card shadow-primary/[8%]">
-					<div className="flex w-full items-center gap-[31px] border-b px-8 pb-5 pt-7">
-						{tabs.map((tab) => (
-							<button
-								key={tab}
-								onClick={() => setCurrent(tab)}
-								className={`relative h-9 text-sm font-medium capitalize before:absolute before:bottom-0 before:left-0 before:h-0.5 before:bg-primary ${tab === current ? "text-primary before:w-full" : "before:w-0"}`}>
-								{tab}
-							</button>
-						))}
-					</div>
-					<div className="w-full p-8">
-						<TabPanel
-							selectedTab={current}
-							tabValue="order details"
-							className="flex w-full flex-col gap-5">
-							<p className="text-lg font-semibold">
+		<section className="flex flex-col gap-10">
+			<header className="flex items-center justify-between gap-2">
+				<h2 className="font-body text-3xl font-medium">Order Details</h2>
+
+				<div className="flex items-center gap-3">
+					<Button variant="outline" onClick={() => navigate(-1)}>
+						Back
+					</Button>
+					<Button>Cancel Order</Button>
+				</div>
+			</header>
+
+			<Tabs
+				defaultValue={tab ?? "order_details"}
+				value={tab ?? "order_details"}
+				onValueChange={(value) => {
+					searchParams.set("tab", value.replace(" ", "_"))
+					setSearchParams(searchParams)
+				}}>
+				<TabsList>
+					{tabs.map((tab) => (
+						<TabsTrigger key={tab} value={tab.replace(" ", "_")}>
+							{tab}
+						</TabsTrigger>
+					))}
+				</TabsList>
+
+				{/* ORDER DETAILS TAB */}
+				<TabsContent className="text-[#3A3C40]" value="order_details">
+					{isPending ? (
+						<div className="flex items-center justify-center">
+							<Spinner variant="primary" size="lg" />
+						</div>
+					) : (
+						<>
+							<h3 className="text-lg font-semibold">
 								Order Details - <span className="text-neutral-400">#{order?.data._id.substring(0, 6)}</span>
-							</p>
-							<div className="grid w-full grid-cols-3 text-sm">
-								<div className="flex w-full flex-col gap-6">
+							</h3>
+
+							<div className="grid w-full grid-cols-3 items-center justify-between gap-10 pt-12 text-sm">
+								<div className="flex flex-col gap-8">
 									<div className="flex flex-col">
-										<p className="font-semibold">Order From</p>
+										<p className="font-semibold">Order from:</p>
 										<p className="capitalize">
 											{order?.data.user.FirstName} {order?.data.user.LastName}
 										</p>
 									</div>
+
 									<div className="flex flex-col">
 										<p className="">{order?.data.shipping_address}</p>
 										<p className="">Phone Number</p>
 									</div>
-									<div className="flex items-center gap-2">
+									{/* <div className="flex items-center gap-2">
 										<Avatar>
 											<AvatarImage src="" alt="" />
 											<AvatarFallback>{getInitials("")}</AvatarFallback>
@@ -68,31 +138,47 @@ const Order = () => {
 											<p className="font-semibold">Product Seller</p>
 											<p>Product Seller</p>
 										</div>
-									</div>
+									</div> */}
 								</div>
-								<div className="flex w-full flex-col gap-6">
-									<p className="font-semibold">Payment Method</p>
-									<div className="flex w-full flex-col gap-3">
-										<p></p>
+
+								<div className="flex flex-col gap-4">
+									<div className="flex flex-col">
+										<p className="font-semibold">Payment Method:</p>
+										<p className="capitalize">{order?.data.payment_details.at(0)?.payment_provider}</p>
+									</div>
+
+									<div className="flex w-full flex-col gap-2 font-medium">
 										<p>Amount: {formatPrice(order?.data.total_amount ?? 0)}</p>
 										<p>Payment ID: {}</p>
 										<p>
 											Date:{" "}
 											{order?.data.createdAt && format(new Date(String(order?.data.createdAt)), "dd-MM-yyyy")}
 										</p>
-										<p>Status: {}</p>
+										<p>
+											Status:{" "}
+											<span className={`${statusClass[order?.data.status as keyof typeof statusClass]}`}>
+												{order?.data.status}
+											</span>
+										</p>
+										<p>
+											Payment Status:{" "}
+											<span className={`${statusClass[order?.data.status as keyof typeof statusClass]}`}>
+												{order?.data.payment_details.at(0)?.status}
+											</span>
+										</p>
 									</div>
 								</div>
-								<div className="flex w-full flex-col gap-6">
+
+								<div className="flex flex-col gap-6">
 									<p className="font-semibold">Shipping Details</p>
 									<div className="flex w-full flex-col gap-3">
 										<div className="flex flex-col">
 											<p className="font-medium">Address</p>
-											<p>{order?.data.shipping_address}</p>
+											<p className="text-[#939393]">{order?.data.shipping_address}</p>
 										</div>
 										<div className="flex flex-col">
 											<p className="font-medium">Email</p>
-											<p>{order?.data.user.Email}</p>
+											<p className="text-[#939393]">{order?.data.user.Email}</p>
 										</div>
 										<div className="flex items-center gap-2">
 											<p className="font-medium">Contact</p>
@@ -101,81 +187,136 @@ const Order = () => {
 									</div>
 								</div>
 							</div>
-						</TabPanel>
-						<TabPanel selectedTab={current} tabValue="product" className="flex w-full flex-col gap-5">
-							<p className="text-lg font-semibold">Product</p>
-							<div className="flex flex-col text-sm">
-								<div className="grid h-9 w-full grid-cols-5 font-medium text-neutral-400">
-									<div className="col-span-2 flex items-center">Product</div>
-									<div className="flex items-center">Price</div>
-									<div className="flex items-center">Quantity</div>
-									<div className="flex items-center">Total</div>
-								</div>
-								{order?.data.items.map((item) => (
-									<div key={item._id} className="grid h-9 w-full grid-cols-5 border-t">
-										<div className="col-span-2 flex items-center capitalize">{item.product_name}</div>
-										<div className="flex items-center">{formatPrice(item.unit_price)}</div>
-										<div className="flex items-center">{item.quantity}</div>
-										<div className="flex items-center">{formatPrice(item.unit_price * item.quantity)}</div>
-									</div>
-								))}
-							</div>
-						</TabPanel>
-						<TabPanel selectedTab={current} tabValue="invoice" className="flex w-full flex-col gap-5">
-							<p className="text-lg font-semibold">Invoice</p>
-							<div className="flex items-center gap-2">
-								<div className="size-40 rounded-md bg-white p-1">
-									<img src="" alt="" className="size-full rounded-md object-cover" />
-								</div>
-								<div className="flex flex-col justify-center">
-									<p className="font-medium capitalize">
-										{order?.data.items.map((item) => item.product_name).join(" x ")}
-									</p>
-									<p className="text-sm">{order?.data.shipping_address}</p>
-									<p className="text-sm"></p>
-								</div>
-							</div>
-							<div className="flex flex-col text-sm">
-								<div className="grid h-9 w-full grid-cols-5 font-medium text-neutral-400">
-									<div className="col-span-2 flex items-center">Product</div>
-									<div className="flex items-center">Price</div>
-									<div className="flex items-center">Quantity</div>
-									<div className="flex items-center">Total</div>
-								</div>
-								{order?.data.items.map((item) => (
-									<div key={item._id} className="grid h-9 w-full grid-cols-5 border-t">
-										<div className="col-span-2 flex items-center capitalize">{item.product_name}</div>
-										<div className="flex items-center">{formatPrice(item.unit_price)}</div>
-										<div className="flex items-center">{item.quantity}</div>
-										<div className="flex items-center">{formatPrice(item.unit_price * item.quantity)}</div>
-									</div>
-								))}
-							</div>
-							<div className="flex w-full justify-end font-semibold">
-								<div className="flex min-w-[300px] flex-col gap-5">
-									<div className="flex items-center justify-between">
-										<p>Subtotal</p>
-										<p>{formatPrice(Number(order?.data.total_amount))}</p>
-									</div>
-									<div className="flex items-center justify-between">
-										<p>Discount</p>
-										<p>{formatPrice(Number(0))}</p>
-									</div>
-									<div className="flex items-center justify-between">
-										<p>Fees</p>
-										<p>{formatPrice(Number(0))}</p>
-									</div>
-									<div className="flex items-center justify-between border-t py-3 text-red-500">
-										<p>Total</p>
-										<p>{formatPrice(Number(order?.data.grand_total))}</p>
-									</div>
-								</div>
-							</div>
-						</TabPanel>
-					</div>
-				</div>
-			</div>
-		</div>
+						</>
+					)}
+				</TabsContent>
+
+				{/* ORDER ITEMS TAB */}
+				<TabsContent className="flex flex-col gap-4 text-[#3A3C40]" value="product">
+					<h3 className="text-lg font-semibold">Order Products</h3>
+
+					<Table>
+						<TableHeader>
+							{table.getHeaderGroups().map((headerGroup) => (
+								<TableRow key={headerGroup.id}>
+									{headerGroup.headers.map((header) => {
+										return (
+											<TableHead key={header.id}>
+												{header.isPlaceholder
+													? null
+													: flexRender(header.column.columnDef.header, header.getContext())}
+											</TableHead>
+										)
+									})}
+								</TableRow>
+							))}
+						</TableHeader>
+
+						<TableBody>
+							{table.getRowModel().rows?.length ? (
+								table.getRowModel().rows.map((row) => (
+									<TableRow key={row.id} data-state={row.getIsSelected() && "selected"}>
+										{row.getVisibleCells().map((cell) => (
+											<TableCell key={cell.id}>
+												{flexRender(cell.column.columnDef.cell, cell.getContext())}
+											</TableCell>
+										))}
+									</TableRow>
+								))
+							) : (
+								<TableRow>
+									<TableCell colSpan={columns.length} className="h-24 text-center">
+										{isPending ? (
+											<div className="flex items-center justify-center">
+												<Spinner variant="primary" size="lg" />
+											</div>
+										) : (
+											<span>No latest order(s).</span>
+										)}
+									</TableCell>
+								</TableRow>
+							)}
+						</TableBody>
+					</Table>
+				</TabsContent>
+
+				{/* ORDER ITEM INVOICE */}
+				<TabsContent className="flex flex-col gap-4 text-[#3A3C40]" value="invoice">
+					<h3 className="text-lg font-semibold">Invoice</h3>
+
+					<Table>
+						<TableHeader>
+							{table.getHeaderGroups().map((headerGroup) => (
+								<TableRow key={headerGroup.id}>
+									{headerGroup.headers.map((header) => {
+										return (
+											<TableHead key={header.id}>
+												{header.isPlaceholder
+													? null
+													: flexRender(header.column.columnDef.header, header.getContext())}
+											</TableHead>
+										)
+									})}
+								</TableRow>
+							))}
+						</TableHeader>
+
+						<TableBody>
+							{table.getRowModel().rows?.length ? (
+								table.getRowModel().rows.map((row) => (
+									<TableRow key={row.id} data-state={row.getIsSelected() && "selected"}>
+										{row.getVisibleCells().map((cell) => (
+											<TableCell key={cell.id}>
+												{flexRender(cell.column.columnDef.cell, cell.getContext())}
+											</TableCell>
+										))}
+									</TableRow>
+								))
+							) : (
+								<TableRow>
+									<TableCell colSpan={columns.length} className="h-24 text-center">
+										{isPending ? (
+											<div className="flex items-center justify-center">
+												<Spinner variant="primary" size="lg" />
+											</div>
+										) : (
+											<span>No latest order(s).</span>
+										)}
+									</TableCell>
+								</TableRow>
+							)}
+
+							<TableRow>
+								<TableCell></TableCell>
+								<TableCell></TableCell>
+								<TableCell className="text-center">Subtotal</TableCell>
+								<TableCell>{formatCurrency(Number(order?.data.total_amount))}</TableCell>
+							</TableRow>
+							<TableRow>
+								<TableCell></TableCell>
+								<TableCell></TableCell>
+								<TableCell className="text-center">Discount</TableCell>
+								<TableCell>{formatCurrency(Number(0))}</TableCell>
+							</TableRow>
+							<TableRow>
+								<TableCell></TableCell>
+								<TableCell></TableCell>
+								<TableCell className="text-center">Fees</TableCell>
+								<TableCell>{formatCurrency(Number(0))}</TableCell>
+							</TableRow>
+							<TableRow>
+								<TableCell></TableCell>
+								<TableCell></TableCell>
+								<TableCell className="text-center font-body text-primary">Total</TableCell>
+								<TableCell className="font-body text-lg font-bold text-primary">
+									{formatCurrency(Number(order?.data.grand_total))}
+								</TableCell>
+							</TableRow>
+						</TableBody>
+					</Table>
+				</TabsContent>
+			</Tabs>
+		</section>
 	)
 }
 

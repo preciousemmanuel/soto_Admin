@@ -7,7 +7,6 @@ import {
 	People,
 	Setting2,
 	UserOctagon,
-	UserTick,
 	Wallet2,
 } from "iconsax-react"
 
@@ -48,19 +47,14 @@ export const dashboard_links = [
 		icon: People,
 	},
 	{
-		label: "Purchaser",
-		href: "/dashboard/purchaser",
+		label: "Purchasers",
+		href: "/dashboard/purchasers",
 		icon: UserOctagon,
 	},
 	{
 		label: "Settings and Profile",
 		href: "/dashboard/settings-and-profile",
 		icon: Setting2,
-	},
-	{
-		label: "Admins",
-		href: "/dashboard/admins",
-		icon: UserTick,
 	},
 	{
 		label: "Feedback",

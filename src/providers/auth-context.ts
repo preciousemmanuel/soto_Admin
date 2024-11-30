@@ -9,7 +9,7 @@ interface AuthContextProps {
 }
 
 export const AuthContext = React.createContext<AuthContextProps>({
-	isAuthenticated: true,
+	isAuthenticated: false,
 	signin: () => {},
 	signout: () => {},
 })

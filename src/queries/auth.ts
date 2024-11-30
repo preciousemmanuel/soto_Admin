@@ -1,10 +1,10 @@
-import { AdminProps, HttpResponse } from "@/types"
 import { endpoints } from "@/config"
 import { axios } from "@/lib"
+import { HttpResponse, type SiginProps } from "@/types"
 
 const SigninMutation = async (payload: { email: string; password: string }) => {
 	return axios
-		.post<HttpResponse<AdminProps>>(endpoints().auth.signin, payload)
+		.post<HttpResponse<SiginProps>>(endpoints().auth.signin, payload)
 		.then((res) => res.data)
 }
 

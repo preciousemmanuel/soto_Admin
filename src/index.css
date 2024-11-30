@@ -46,7 +46,7 @@ html {
 
 body {
 	background: #fff;
-	color: hsl(var(--foreground));
+	color: var(--foreground);
 	overflow-x: hidden;
 	user-select: none;
 	width: 100%;
@@ -82,19 +82,19 @@ input {
 }
 
 /* Override WebKit autofill styles */
-input:-webkit-autofill,
+/* input:-webkit-autofill,
 input:-webkit-autofill:hover,
 input:-webkit-autofill:focus {
 	-webkit-text-fill-color: hsl(var(--foreground));
 	-webkit-box-shadow: 0 0 0px 1000px hsl(var(--background)) inset;
 	transition: background-color 5000s ease-in-out 0s;
-}
+} */
 
 /* Override Mozilla Firefox autofill styles */
-input:autofill {
+/* input:autofill {
 	background-color: hsl(var(--background)) !important;
 	color: hsl(var(--foreground)) !important;
-}
+} */
 
 /* Removes arrows from input type number */
 input[type="number"]::-webkit-inner-spin-button,
@@ -102,6 +102,10 @@ input[type="number"]::-webkit-outer-spin-button {
 	-webkit-appearance: none;
 	appearance: none;
 	margin: 0;
+}
+
+input[type=number] {
+    -moz-appearance:textfield;
 }
 
 /* Removes close icon from input type search */

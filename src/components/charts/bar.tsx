@@ -1,5 +1,5 @@
-import { CartesianGrid, Bar, BarChart, XAxis, YAxis } from "recharts"
 import { format } from "date-fns"
+import { Bar, BarChart, CartesianGrid, XAxis, YAxis } from "recharts"
 
 import {
 	ChartConfig,
@@ -30,7 +30,8 @@ export const ChartBar = ({ data }: BarChartProps) => {
 	return (
 		<ChartContainer config={config} className="h-[300px]">
 			<BarChart accessibilityLayer data={data}>
-				<CartesianGrid vertical={false} />
+				<CartesianGrid vertical={false} strokeDasharray="3 3" strokeOpacity={0.8} />
+
 				<XAxis
 					dataKey="day_or_month"
 					tickLine={false}
@@ -39,13 +40,14 @@ export const ChartBar = ({ data }: BarChartProps) => {
 					minTickGap={64}
 					tickFormatter={(value) => format(new Date(value), "dd")}
 				/>
+				<YAxis tickFormatter={(value) => value?.toLocaleString()} />
+
 				<ChartTooltip
 					content={
 						<ChartTooltipContent nameKey="amount" labelFormatter={(value) => format(value, "dd/MM/yy")} />
 					}
 				/>
-				<Bar dataKey="amount" fill="var(--primary)" className="w-3" radius={4} />
-				<YAxis />
+				<Bar barSize={4} dataKey="amount" fill="var(--primary)" radius={4} />
 			</BarChart>
 		</ChartContainer>
 	)

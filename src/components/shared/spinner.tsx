@@ -16,7 +16,7 @@ const spinnerVariants = cva("size-5 rounded-full animate-spin", {
 		size: {
 			sm: "size-4 border",
 			md: "size-5 border-2",
-			lg: "size-6 border-4",
+			lg: "size-6 border-2",
 			xl: "size-7 border-6",
 		},
 	},

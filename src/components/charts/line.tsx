@@ -24,7 +24,7 @@ export const ChartLine = ({ data }: LineChartProps) => {
 	} satisfies ChartConfig
 
 	return (
-		<div className="h-[165px] w-full">
+		<div className="h-full w-fit">
 			<ChartContainer config={config}>
 				<LineChart
 					accessibilityLayer
@@ -33,13 +33,13 @@ export const ChartLine = ({ data }: LineChartProps) => {
 						left: 12,
 						right: 12,
 					}}>
-					<CartesianGrid vertical={false} />
+					<CartesianGrid vertical={false} strokeDasharray="3 3" />
 					<XAxis
 						dataKey="day_or_month"
 						tickLine={false}
 						axisLine={false}
 						tickMargin={8}
-						tickFormatter={(value) => value.slice(0, 3)}
+						// tickFormatter={(value) => value.slice(0, 3)}
 					/>
 					<ChartTooltip cursor={false} content={<ChartTooltipContent hideLabel />} />
 					<Line
