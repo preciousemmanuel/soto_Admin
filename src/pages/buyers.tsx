@@ -45,6 +45,11 @@ const columns: ColumnDef<BuyerDetails>[] = [
 		),
 	},
 	{
+		header: () => <p className="text-center">Total Orders</p>,
+		accessorKey: "total_orders",
+		cell: ({ row }) => <p className="text-center">{row.getValue("total_orders")}</p>,
+	},
+	{
 		header: "Total Spent",
 		accessorKey: "total_spent",
 		cell: ({ row }) => (
@@ -214,19 +219,23 @@ const Buyers = () => {
 									</div>
 								</div>
 
-								<ul className="flex flex-col gap-2 pt-6">
+								<ul className="grid grid-cols-2 gap-6 p-6">
 									<li>
-										<p className="font-medium">Total Orders</p>
-										<p>24</p>
+										<p className="text-xs font-medium">Total Orders</p>
+										<p>{data?.data.data.at(0)?.total_orders}</p>
+									</li>
+									<li>
+										<p className="text-xs font-medium">Total Items Ordered</p>
+										<p>{data?.data.data.at(0)?.total_items_ordered}</p>
 									</li>
 
 									<li>
-										<p className="font-medium">Total Spent</p>
+										<p className="text-xs font-medium">Total Spent</p>
 										<p>{formatCurrency(data?.data.data.at(0)?.total_spent || 0)}</p>
 									</li>
 
 									<li>
-										<p className="font-medium">Last Order Amount</p>
+										<p className="text-xs font-medium">Last Order Amount</p>
 										<p>{formatCurrency(data?.data.data.at(0)?.last_order_price || 0)}</p>
 									</li>
 								</ul>

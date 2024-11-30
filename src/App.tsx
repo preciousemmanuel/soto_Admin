@@ -16,6 +16,7 @@ import {
 	Product,
 	Products,
 	Purchaser,
+	Purchasers,
 	Seller,
 	Sellers,
 	Settings,
@@ -100,10 +101,14 @@ function App() {
 							],
 						},
 						{
-							path: "purchaser",
+							path: "purchasers",
 							children: [
 								{
 									index: true,
+									element: <Purchasers />,
+								},
+								{
+									path: ":id",
 									element: <Purchaser />,
 								},
 							],

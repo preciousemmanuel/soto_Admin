@@ -1,3 +1,4 @@
+export * from "./add-admin"
 export * from "./approve"
 export * from "./confirmation"
 export * from "./remove"

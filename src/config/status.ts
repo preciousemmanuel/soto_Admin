@@ -29,3 +29,10 @@ export const transactionStatusClass = {
 	PENDING: "text-yellow-600",
 	FAILED: "text-red-600",
 }
+
+export const pickupsStatusClass = {
+	PENDING: "text-yellow-600",
+	DELIVERED: "text-green-600",
+	CANCELLED: "text-red-600",
+	PICKED_UP: "text-purple-600",
+}

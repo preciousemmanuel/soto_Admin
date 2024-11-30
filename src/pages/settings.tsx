@@ -1,6 +1,11 @@
+import { AddAdminModal } from "@/components/modals"
 import { LogoutModal } from "@/components/modals/logout"
-import { Button } from "@/components/ui/button"
+import { WithdrawalTab } from "@/components/shared"
+import { ProfileTab } from "@/components/shared/profile-tab"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import { PAGE_LIMIT } from "@/config"
+import { GetRolesQuery } from "@/queries/settings"
+import { usePrefetchQuery } from "@tanstack/react-query"
 import { Message2, Notification } from "iconsax-react"
 import { useSearchParams } from "react-router-dom"
 
@@ -10,6 +15,11 @@ type Tabs = (typeof tabs)[number]
 const Settings = () => {
 	const [searchParams, setSearchParams] = useSearchParams()
 	const status = searchParams.get("status")
+
+	usePrefetchQuery({
+		queryFn: () => GetRolesQuery({ page: 1, limit: PAGE_LIMIT }),
+		queryKey: ["get-roles", 1],
+	})
 
 	return (
 		<section className="flex flex-col gap-10">
@@ -23,9 +33,8 @@ const Settings = () => {
 					<button className="relative grid size-10 place-items-center">
 						<Notification />
 					</button>
-					<Button variant="outline" className="w-32 border-primary hover:bg-primary/5">
-						Add Admin
-					</Button>
+
+					<AddAdminModal />
 
 					<LogoutModal />
 				</div>
@@ -46,14 +55,13 @@ const Settings = () => {
 					))}
 				</TabsList>
 
-				{tabs.map((tab) => (
-					<TabsContent key={tab} value={tab}>
-						<p>
-							Lorem ipsum dolor sit amet consectetur, adipisicing elit. Tempore ad error velit temporibus
-							a. Harum quod ea natus sit ipsam.
-						</p>
-					</TabsContent>
-				))}
+				<TabsContent value="profile">
+					<ProfileTab />
+				</TabsContent>
+
+				<TabsContent value="withdrawal">
+					<WithdrawalTab />
+				</TabsContent>
 			</Tabs>
 		</section>
 	)

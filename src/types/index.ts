@@ -87,17 +87,17 @@ export type Node = {
 	updatedAt: Maybe<Date | string>
 }
 
-export type AdminProps = Node & {
-	Email: string
-	FirstName: string
-	LastName: string
-	Token: string
-}
-
 export type UserProps = Node & {
 	email: string
 	full_name: string
 	profile_image: string
+}
+
+export type SiginProps = Node & {
+	Email: string
+	FirstName: string
+	LastName: string
+	Token: string
 }
 
 // export type SellerProps = Node & {
@@ -206,6 +206,8 @@ export type BuyersProps = {
 		rank?: string
 		total_spent: number
 		last_order_price: number
+		total_orders: number
+		total_items_ordered: number
 	}>
 	pagination: {
 		pageSize: number
@@ -507,3 +509,117 @@ export type SettingsProps = {
 	updatedAt: string
 	__v: number
 }
+
+export type PurchasersProps = PaginationResponse<{
+	address_details: {
+		coordinates: {
+			lat: number
+			lng: number
+		}
+		full_address: string
+		address: string
+		address_id: string
+		city: string
+		country: string
+		postal_code: string
+	}
+	_id: string
+	FirstName: string
+	LastName: string
+	Email: string
+	PhoneNumber: string
+	Password: string
+	Role: string
+	coordinate: Array<number>
+	createdAt: string
+	updatedAt: string
+	__v: number
+	Token: string
+	address_id: string
+}>
+
+export type PickupsProps = PaginationResponse<{
+	tracking_id: string
+	order_id: string
+	purchaser: {
+		_id: string
+		profile_image: string
+		first_name: string
+		last_name: string
+	}
+	createdAt: string
+	quantity: number
+	vendor_contact: {
+		first_name: string
+		last_name: string
+		phone_number: string
+	}
+	status: string
+}>
+
+export type ProfileProps = {
+	address_details: {
+		coordinates: {
+			lat: number
+			lng: number
+		}
+		full_address: string
+		address: string
+		address_id: string
+		city: string
+		country: string
+		postal_code: string
+	}
+	_id: string
+	FirstName: string
+	LastName: string
+	ProfileImage: string
+	Email: string
+	PhoneNumber: string
+	Password: string
+	Role: {
+		admin: {
+			read: string
+			write: string
+		}
+		config: {
+			read: string
+			write: string
+		}
+		order: {
+			read: string
+			write: string
+		}
+		buyer: {
+			read: string
+			write: string
+		}
+		seller: {
+			read: string
+			write: string
+		}
+		product: {
+			read: string
+			write: string
+		}
+		transaction: {
+			read: string
+			write: string
+		}
+		_id: string
+		name: string
+		createdAt: string
+		updatedAt: string
+		__v: number
+	}
+	coordinate: Array<number>
+	createdAt: string
+	updatedAt: string
+	__v: number
+	Token: string
+	address_id: string
+}
+
+export type RolesProps = PaginationResponse<ProfileProps["Role"]>
+
+export type AdminProps = PaginationResponse<ProfileProps>

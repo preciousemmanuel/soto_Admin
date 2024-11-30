@@ -47,8 +47,8 @@ export const dashboard_links = [
 		icon: People,
 	},
 	{
-		label: "Purchaser",
-		href: "/dashboard/purchaser",
+		label: "Purchasers",
+		href: "/dashboard/purchasers",
 		icon: UserOctagon,
 	},
 	{

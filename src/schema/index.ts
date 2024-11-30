@@ -38,4 +38,19 @@ export const updateCouponSchema = Yup.object({
 		.integer("Usage limit must be a whole number!"),
 })
 
+export const addAdminSchema = Yup.object({
+	first_name: Yup.string().required("First name is required!"),
+	last_name: Yup.string().required("Last name is required!"),
+	email: Yup.string().email("Please enter a valid email!").required("Email is required!"),
+	phone_number: Yup.string()
+		.required("Phone is required!")
+		.max(11, "Phone number must be 11 digits!"),
+	role: Yup.string().required("Role is required!"),
+	address: Yup.string().required("Address is required!"),
+	city: Yup.string().required("City is required!"),
+	postal_code: Yup.string().required("Postal code is required!"),
+	state: Yup.string().required("State is required!"),
+	country: Yup.string().required("Country is required!"),
+})
+
 

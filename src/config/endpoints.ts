@@ -13,12 +13,17 @@ export const endpoints = (id?: string) => {
 	}
 
 	const admin = {
-		get_all: `${baseURL}/admin`,
+		get_all: `${baseURL}/admin/staffs/fetch`,
 		get_one: `${baseURL}/admin`,
 		create: `${baseURL}/admin`,
 		delete: `${baseURL}/admin`,
 		update: `${baseURL}/admin`,
-	}
+	} as const
+
+	const profile = {
+		get_profile: `${baseURL}/admin/profile`,
+		update_profile: `${baseURL}/admin/edit-profile`,
+	} as const
 
 	const overview = {
 		overview: `${baseURL}/admin/overview`,
@@ -67,6 +72,13 @@ export const endpoints = (id?: string) => {
 	const settings = {
 		get_all: `${baseURL}/admin/get-settings`,
 		update: `${baseURL}/admin/update-settings`,
+		get_roles: `${baseURL}/admin/role/fetch`,
+	} as const
+
+	const purchasers = {
+		get_all: `${baseURL}/admin/purchasers/get-all`,
+		get_one: `${baseURL}/admin/purchasers/view-one/${id}`,
+		get_pickups: `${baseURL}/admin/purchasers/get-pickups`,
 	} as const
 
 	const feedback = {}
@@ -83,5 +95,7 @@ export const endpoints = (id?: string) => {
 		sellers,
 		wallet,
 		settings,
+		purchasers,
+		profile,
 	}
 }

@@ -1,12 +1,12 @@
 import Cookies from "js-cookie"
 
 import { createPersistMiddleware } from "@/store/middleware"
-import { AdminProps, Maybe } from "@/types"
+import { Maybe, type SiginProps } from "@/types"
 
 interface UserStore {
-	user: Maybe<AdminProps>
+	user: Maybe<SiginProps>
 	isAuthenticated: boolean
-	signIn: (user: AdminProps, token: string) => void
+	signIn: (user: SiginProps, token: string) => void
 	signOut: (options?: { redirectTo?: string; soft?: boolean }) => void
 }
 

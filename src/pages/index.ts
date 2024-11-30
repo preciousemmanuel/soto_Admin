@@ -13,6 +13,7 @@ const Orders = React.lazy(() => import("./orders"))
 const Product = React.lazy(() => import("./product"))
 const Products = React.lazy(() => import("./products"))
 const CreateProduct = React.lazy(() => import("./create-product"))
+const Purchasers = React.lazy(() => import("./purchasers"))
 const Purchaser = React.lazy(() => import("./purchaser"))
 const Buyer = React.lazy(() => import("./buyer"))
 const Buyers = React.lazy(() => import("./buyers"))
@@ -35,6 +36,7 @@ export {
 	Product,
 	Products,
 	Purchaser,
+	Purchasers,
 	Seller,
 	Sellers,
 	Settings,
