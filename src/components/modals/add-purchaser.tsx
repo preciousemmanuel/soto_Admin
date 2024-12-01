@@ -1,7 +1,7 @@
 import { PAGE_LIMIT, STATES } from "@/config"
 import { CreateAdminMutation } from "@/queries/admin"
 import { GetRolesQuery } from "@/queries/settings"
-import { addAdminSchema } from "@/schema"
+import { addAdminSchema, addPurchaserSchema } from "@/schema"
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import { useFormik } from "formik"
 import * as React from "react"
@@ -18,16 +18,14 @@ const initialValues = {
 	email: "",
 	phone_number: "",
 	address: "",
-	role: "",
 	city: "",
 	postal_code: "",
 	state: "",
-	country: "",
 }
 
 type Payload = Yup.InferType<typeof addAdminSchema>
 
-export const AddAdminModal = () => {
+export const AddPurchaserModal = () => {
 	const [open, setOpen] = React.useState(false)
 	const queryClient = useQueryClient()
 
@@ -38,11 +36,9 @@ export const AddAdminModal = () => {
 
 	const { isPending, mutate } = useMutation({
 		mutationFn: (values: Payload) => CreateAdminMutation(values),
-		mutationKey: ["create-admin"],
+		mutationKey: ["add-purchaser"],
 		onSuccess: () => {
-			queryClient.invalidateQueries({
-				queryKey: ["get-admins"],
-			})
+			queryClient.invalidateQueries()
 			setOpen(false)
 		},
 		onError: (error) => {
@@ -52,24 +48,26 @@ export const AddAdminModal = () => {
 
 	const { handleSubmit, errors, handleChange } = useFormik({
 		initialValues,
-		validationSchema: addAdminSchema,
+		validationSchema: addPurchaserSchema,
 		enableReinitialize: true,
 		onSubmit: (values) => {
-			mutate(values)
+			mutate({
+				...values,
+				role: String(roles?.data.data.find((role) => role.name.toLowerCase() === "purchaser")?._id),
+				country: "Nigeria",
+			})
 		},
 	})
 
 	return (
 		<Dialog open={open} onOpenChange={setOpen}>
 			<DialogTrigger asChild>
-				<Button variant="outline" className="w-32 border-primary hover:bg-primary/5">
-					Add Admin
-				</Button>
+				<Button>Add Purchaser</Button>
 			</DialogTrigger>
 
 			<DialogContent className="max-w-2xl">
 				<DialogHeader className="flex flex-col gap-1">
-					<DialogTitle>Add Admin</DialogTitle>
+					<DialogTitle>Add Purchaser</DialogTitle>
 				</DialogHeader>
 
 				<form onSubmit={handleSubmit} className="grid grid-cols-2 gap-8 py-4">
@@ -95,29 +93,6 @@ export const AddAdminModal = () => {
 						onChange={handleChange}
 						error={errors.phone_number}
 					/>
-
-					<label className="flex w-full flex-col gap-2.5">
-						<p className="text-sm font-medium leading-none text-[#5d5c5c] peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
-							Role
-						</p>
-						<Select
-							name="role"
-							onValueChange={(value) => handleChange({ target: { name: "role", value } })}>
-							<SelectTrigger className="flex w-full rounded border-0 bg-neutral-50 px-4 py-[22px] text-base font-normal capitalize outline-none ring-1 ring-[#E5E5E5] focus:ring-2 focus:ring-primary focus:ring-offset-1 disabled:cursor-not-allowed disabled:opacity-50 data-[placeholder]:font-normal data-[placeholder]:text-neutral-500">
-								<SelectValue placeholder="Select a value" />
-							</SelectTrigger>
-
-							<SelectContent>
-								{roles?.data.data.map((role) => (
-									<SelectItem key={role._id} value={role._id} className="capitalize">
-										{role.name}
-									</SelectItem>
-								))}
-							</SelectContent>
-						</Select>
-
-						{errors.role && <p className="text-xs text-red-600">{errors.role}</p>}
-					</label>
 
 					<Input
 						type="text"
@@ -158,29 +133,8 @@ export const AddAdminModal = () => {
 						{errors.state && <p className="text-xs text-red-600">{errors.state}</p>}
 					</label>
 
-					<label className="flex w-full flex-col gap-2.5">
-						<p className="text-sm font-medium leading-none text-[#5d5c5c] peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
-							Country
-						</p>
-						<Select
-							name="country"
-							onValueChange={(value) => handleChange({ target: { name: "country", value } })}>
-							<SelectTrigger className="flex w-full rounded border-0 bg-neutral-50 px-4 py-[22px] text-base font-normal outline-none ring-1 ring-[#E5E5E5] focus:ring-2 focus:ring-primary focus:ring-offset-1 disabled:cursor-not-allowed disabled:opacity-50 data-[placeholder]:font-normal data-[placeholder]:text-neutral-500">
-								<SelectValue placeholder="Select a value" />
-							</SelectTrigger>
-
-							<SelectContent>
-								<SelectItem value="Nigeria" className="capitalize">
-									Nigeria
-								</SelectItem>
-							</SelectContent>
-						</Select>
-
-						{errors.country && <p className="text-xs text-red-600">{errors.country}</p>}
-					</label>
-
 					<Button type="submit" disabled={isPending} className="col-span-full">
-						{isPending ? <Spinner /> : "Add Admin"}
+						{isPending ? <Spinner /> : "Add Purchaser"}
 					</Button>
 				</form>
 			</DialogContent>

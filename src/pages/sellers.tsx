@@ -4,13 +4,6 @@ import { ApproveUserModal, RemoveUserModal } from "@/components/modals"
 import { DataCard, DataTable, Spinner } from "@/components/shared"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
-import {
-	Select,
-	SelectContent,
-	SelectItem,
-	SelectTrigger,
-	SelectValue,
-} from "@/components/ui/select"
 import { PAGE_LIMIT } from "@/config"
 import { useDebounce, usePageTitle } from "@/hooks"
 import { formattedStats, getInitials, getWeekRanges } from "@/lib"
@@ -160,7 +153,7 @@ const Sellers = () => {
 						/>
 					</div>
 
-					<Select value={timeLine} onValueChange={setTimeLine}>
+					{/* <Select value={timeLine} onValueChange={setTimeLine}>
 						<SelectTrigger className="w-[166px] border-0">
 							<SelectValue placeholder="Select Range" />
 						</SelectTrigger>
@@ -178,7 +171,7 @@ const Sellers = () => {
 							<MoreHorizontal />
 						</PopoverTrigger>
 						<PopoverContent></PopoverContent>
-					</Popover>
+					</Popover> */}
 				</div>
 			</header>
 

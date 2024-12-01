@@ -1,13 +1,21 @@
 import { DataTable, Spinner, WalletCard } from "@/components/shared"
 import { Button } from "@/components/ui/button"
-import { PAGE_LIMIT, transactionStatusClass } from "@/config"
+import {
+	Select,
+	SelectContent,
+	SelectItem,
+	SelectTrigger,
+	SelectValue,
+} from "@/components/ui/select"
+import { frequencyFilter, PAGE_LIMIT, transactionStatusClass } from "@/config"
 import { usePageTitle } from "@/hooks"
 import { formatCurrency } from "@/lib"
 import { GetWalletOverviewQuery } from "@/queries"
-import type { WalletOverviewProps } from "@/types"
+import type { TimelineProps, WalletOverviewProps } from "@/types"
 import { keepPreviousData, useQuery } from "@tanstack/react-query"
 import type { ColumnDef } from "@tanstack/react-table"
 import { format } from "date-fns"
+import * as React from "react"
 import { Link, useSearchParams } from "react-router-dom"
 
 const typeClass = {
@@ -90,12 +98,14 @@ const columns: ColumnDef<Transactions>[] = [
 
 const Wallet = () => {
 	usePageTitle("Wallet")
+	const [timeLine, setTimeLine] = React.useState<TimelineProps>("")
+
 	const [searchParams] = useSearchParams()
 	const page = Number(searchParams.get("page") || 1)
 
 	const { data, isPending, isPlaceholderData } = useQuery({
-		queryFn: () => GetWalletOverviewQuery({ page, limit: PAGE_LIMIT }),
-		queryKey: ["get-wallet", page],
+		queryFn: () => GetWalletOverviewQuery({ page, limit: PAGE_LIMIT, timeLine }),
+		queryKey: ["get-wallet", page, timeLine],
 		placeholderData: keepPreviousData,
 	})
 	const totalPages = Number(data?.data.transaction_logs.pagination.pageCount)
@@ -107,6 +117,19 @@ const Wallet = () => {
 				<h2 className="font-body text-3xl font-medium">Wallet</h2>
 
 				<div className="flex items-center gap-6">
+					<Select value={timeLine} onValueChange={setTimeLine}>
+						<SelectTrigger className="w-[166px] border-0">
+							<SelectValue placeholder="Select Range" />
+						</SelectTrigger>
+						<SelectContent>
+							{frequencyFilter.map(({ label, value }) => (
+								<SelectItem key={value} value={value}>
+									{label}
+								</SelectItem>
+							))}
+						</SelectContent>
+					</Select>
+
 					<Button asChild>
 						<Link to="/dashboard/wallet/withdrawal-requests">Withdrawal Requests</Link>
 					</Button>

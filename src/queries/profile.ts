@@ -8,4 +8,16 @@ const GetProfileQuery = async () => {
 		.then((res) => res.data)
 }
 
-export { GetProfileQuery }
+type UpdateProfilePayload = {
+	first_name: string
+	last_name: string
+	phone_number: string
+	password: string
+}
+const UpdateProfileMutation = async (payload: UpdateProfilePayload) => {
+	return axios
+		.post<HttpResponse<ProfileProps>>(endpoints().profile.update_profile, payload)
+		.then((res) => res.data)
+}
+
+export { GetProfileQuery, UpdateProfileMutation }

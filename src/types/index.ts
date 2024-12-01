@@ -276,6 +276,9 @@ export type ProductProps = Node & {
 	unit_price: number
 	vendor: {
 		Email: string
+		FirstName: string
+		LastName: string
+		images: Array<string>
 		_id: string
 	}
 	weight: number
@@ -332,15 +335,40 @@ export type SingleProductProps = {
 export type OrderProps = Node & {
 	__typename?: "Order"
 	_id: string
-	delivery_amount: number
-	grand_total: number
 	items: ProductProps[]
-	order_itinerary: string
-	payment_type: "INSTANT"
-	shipping_address: string
 	status: StatusProps
 	total_amount: number
+	delivery_amount: number
+	shipping_address: string
+	order_itinerary: string
 	tracking_id: string
+	grand_total: number
+	payment_type: string
+	is_coupon_applied: boolean
+	shipment_charges: boolean
+	applied_coupon: string
+	general_coupon: {
+		_id: string
+		name: string
+		audience: string
+		code: string
+		activation_date: string
+		expiry_date: string
+		remove_expiry_date: boolean
+		amount_type: string
+		coupon_type: string
+		condition: string
+		is_condition: boolean
+		usage_limit: number
+		remove_usage_limit: boolean
+		total_subscribers: number
+		active_status: boolean
+		createdAt: string
+		updatedAt: string
+		__v: number
+		amount: number
+		total_usage: number
+	}
 	user: {
 		_id: string
 		Email: string

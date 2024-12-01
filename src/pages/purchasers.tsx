@@ -1,7 +1,7 @@
+import { AddPurchaserModal } from "@/components/modals"
 import { DataTable } from "@/components/shared"
 import { PickupsTable } from "@/components/table"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
-import { Button } from "@/components/ui/button"
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { PAGE_LIMIT } from "@/config"
@@ -55,7 +55,7 @@ const columns: ColumnDef<PurchaserDetails>[] = [
 	{
 		header: "Joined Date",
 		accessorKey: "createdAt",
-		cell: ({ row }) => format(new Date(row.getValue("createdAt")), "MMM d, yyyy hh:mm a"),
+		cell: ({ row }) => format(new Date(row.getValue("createdAt")), "d MMM, yyyy hh:mm a"),
 	},
 	{
 		header: "Actions",
@@ -87,8 +87,7 @@ const Purchasers = () => {
 	usePageTitle("Purchasers")
 	const [searchParams, setSearchParams] = useSearchParams()
 	const page = Number(searchParams.get("page")) || 1
-	// @ts-expect-error err
-	const status = replaceSpaceWithUnderscore(searchParams.get("status")) || tabs[0]
+	const status = searchParams.get("status") ?? tabs[0]
 
 	const [query, setQuery] = React.useState("")
 	const purchaser_name = useDebounce(query, 500)
@@ -105,20 +104,7 @@ const Purchasers = () => {
 			<header className="flex items-center justify-between gap-2">
 				<h2 className="font-body text-3xl font-medium">Purchaser Management</h2>
 
-				<div className="flex items-center gap-3">
-					<div className="relative flex items-center gap-2">
-						<SearchNormal1 className="absolute left-4 top-1/2 size-5 -translate-y-1/2 text-[#5F6B7A]" />
-						<input
-							type="search"
-							value={query}
-							onChange={(e) => setQuery(e.target.value)}
-							className="w-96 rounded-md border-0 bg-neutral-50 px-3 py-2 pl-12 outline-none ring-1 ring-[#E5E5E5] focus:ring-2 focus-visible:ring-primary"
-							placeholder="Search by purchasers's name"
-						/>
-					</div>
-
-					<Button>Add Purchaser</Button>
-				</div>
+				<AddPurchaserModal />
 			</header>
 
 			<Tabs
@@ -139,13 +125,26 @@ const Purchasers = () => {
 				{tabs.map((tab) => (
 					<TabsContent key={tab} value={replaceSpaceWithUnderscore(tab)}>
 						{tab === "purchasers" ? (
-							<DataTable
-								columns={columns}
-								data={data?.data.data || []}
-								totalPages={totalPages}
-								isPlaceholderData={isPlaceholderData}
-								isLoading={isPending}
-							/>
+							<div className="flex flex-col gap-5">
+								<div className="relative flex items-center gap-2 self-end">
+									<SearchNormal1 className="absolute left-4 top-1/2 size-5 -translate-y-1/2 text-[#5F6B7A]" />
+									<input
+										type="search"
+										value={query}
+										onChange={(e) => setQuery(e.target.value)}
+										className="w-96 rounded-md border-0 bg-neutral-50 px-3 py-2 pl-12 outline-none ring-1 ring-[#E5E5E5] focus:ring-2 focus-visible:ring-primary"
+										placeholder="Search by purchasers's name"
+									/>
+								</div>
+
+								<DataTable
+									columns={columns}
+									data={data?.data.data || []}
+									totalPages={totalPages}
+									isPlaceholderData={isPlaceholderData}
+									isLoading={isPending}
+								/>
+							</div>
 						) : (
 							<PickupsTable />
 						)}

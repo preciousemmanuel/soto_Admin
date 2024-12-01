@@ -1,3 +1,4 @@
+import { ApproveProductModal } from "@/components/modals"
 import { Spinner } from "@/components/shared"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Button } from "@/components/ui/button"
@@ -6,6 +7,7 @@ import { usePageTitle } from "@/hooks"
 import { formatCurrency, getInitials } from "@/lib"
 import { GetProductQuery, GetSellerQuery } from "@/queries"
 import { useQuery } from "@tanstack/react-query"
+import { CloseCircle, ShieldTick } from "iconsax-react"
 import { Link, useNavigate, useParams } from "react-router-dom"
 
 const tabs = ["description", "additional information", "reviews"]
@@ -41,9 +43,13 @@ const Product = () => {
 					<Button variant="outline" className="w-32" onClick={() => navigate(-1)}>
 						Back
 					</Button>
-					{/* <div className="flex items-center gap-3">
-						<Button>Add Product</Button>
-					</div> */}
+
+					<ApproveProductModal
+						id={String(id)}
+						name={product?.data.product.product_name || ""}
+						isVerified={product?.data.product.is_verified || false}
+						trigger={<Button className="w-40">Approve Product</Button>}
+					/>
 				</div>
 			</header>
 
@@ -69,9 +75,22 @@ const Product = () => {
 
 						<div className="flex max-w-prose flex-col gap-4 py-4">
 							<div>
-								<h3 className="font-body text-4xl font-semibold capitalize">
-									{product?.data.product.product_name}
-								</h3>
+								<div className="flex items-center justify-between gap-2">
+									<h3 className="font-body text-4xl font-semibold capitalize">
+										{product?.data.product.product_name}
+									</h3>
+									{product?.data.product.is_verified ? (
+										<div className="flex w-fit items-center gap-1 bg-green-50 px-3 py-1 text-xs font-medium text-green-600">
+											<ShieldTick variant="Bold" className="size-4" />
+											<p>Product Verified</p>
+										</div>
+									) : (
+										<div className="flex w-fit items-center gap-1 bg-red-50 px-3 py-1 text-xs font-medium text-red-600">
+											<CloseCircle variant="Bold" className="size-4 text-red-600" />
+											<p>Product Not Verified</p>
+										</div>
+									)}
+								</div>
 								<p className="text-lg font-semibold text-primary">
 									{formatCurrency(product?.data.product.unit_price ?? 0)}
 								</p>
@@ -93,7 +112,7 @@ const Product = () => {
 									</span>
 								</p>
 								<p>
-									In Discontinued:{" "}
+									Is Discontinued:{" "}
 									<span
 										className={
 											statusClass[product?.data.product.is_discounted as unknown as keyof typeof statusClass]
@@ -110,8 +129,9 @@ const Product = () => {
 											className="flex items-center gap-3 text-primary">
 											<Avatar className="size-9">
 												<AvatarImage
-													src={vendor.data.user.business.business_logo}
-													alt={vendor?.data.user.business.business_name}
+													src={vendor.data.user?.business?.business_logo ?? ""}
+													alt=""
+													// alt={vendor?.data.user?.business.business_name ?? ""}
 													className="shadow-sm"
 												/>
 												<AvatarFallback>{getInitials(vendor?.data.user.FirstName)}</AvatarFallback>
@@ -119,9 +139,15 @@ const Product = () => {
 
 											<div>
 												<p className="font-medium capitalize leading-none">
-													{vendor?.data.user.business.business_name}
+													{vendor?.data.user.business
+														? vendor?.data.user.business.business_name
+														: `${vendor?.data.user.FirstName} ${vendor?.data.user.LastName}`}
 												</p>
-												<span className="text-xs text-gray-400">{vendor.data.user.business.email}</span>
+												<span className="text-xs text-gray-400">
+													{vendor?.data.user.business
+														? vendor?.data.user.business.email
+														: vendor?.data.user.Email}
+												</span>
 											</div>
 										</Link>
 									) : null}

@@ -27,4 +27,18 @@ const GetProductQuery = async (id: string) => {
 		.then((res) => res.data)
 }
 
-export { GetProductQuery, GetProductsQuery }
+type Payload = {
+	id: string
+	data: {
+		is_verified: "YES" | "NO"
+	}
+}
+const UpdateProductMutation = async ({ id, data }: Payload) => {
+	return axios
+		.put<HttpResponse<SingleProductProps>>(endpoints(id).products.update, data, {
+			headers: { "Content-Type": "multipart/form-data" },
+		})
+		.then((res) => res.data)
+}
+
+export { GetProductQuery, GetProductsQuery, UpdateProductMutation }

@@ -1,6 +1,7 @@
 import { Spinner } from "@/components/shared"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Button } from "@/components/ui/button"
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
 import {
 	Table,
 	TableBody,
@@ -10,7 +11,7 @@ import {
 	TableRow,
 } from "@/components/ui/table"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { statusClass } from "@/config"
+import { statusClass, transactionStatusClass } from "@/config"
 import { usePageTitle } from "@/hooks"
 import { formatCurrency, formatPrice, getInitials } from "@/lib"
 import { GetOrderQuery } from "@/queries"
@@ -18,9 +19,10 @@ import type { OrderProps } from "@/types"
 import { useQuery } from "@tanstack/react-query"
 import { flexRender, getCoreRowModel, useReactTable, type ColumnDef } from "@tanstack/react-table"
 import { format } from "date-fns"
-import { useNavigate, useParams, useSearchParams } from "react-router-dom"
+import { MoreHorizontal } from "lucide-react"
+import { Link, useNavigate, useParams, useSearchParams } from "react-router-dom"
 
-const tabs = ["order details", "product", "invoice"] as const
+const tabs = ["order details", "invoice"] as const
 type Tabs = (typeof tabs)[number]
 
 type OrderItem = OrderProps["items"][number]
@@ -39,9 +41,30 @@ const columns: ColumnDef<OrderItem>[] = [
 		),
 	},
 	{
+		header: "Seller",
+		accessorKey: "vendor.FirstName",
+		cell: ({ row }) => {
+			const full_name = `${row.original.vendor.FirstName} ${row.original.vendor.LastName}`
+
+			return (
+				<div className="flex items-center gap-2">
+					<Avatar className="size-9">
+						<AvatarImage src="" alt={row.getValue("product_name")} />
+						<AvatarFallback>{getInitials(full_name)}</AvatarFallback>
+					</Avatar>
+
+					<div>
+						<p className="capitalize">{full_name}</p>
+						<p className="text-xs">{row.original.vendor.Email}</p>
+					</div>
+				</div>
+			)
+		},
+	},
+	{
 		header: "Price",
 		accessorKey: "unit_price",
-		cell: ({ row }) => formatPrice(row.getValue("unit_price")),
+		cell: ({ row }) => formatCurrency(row.getValue("unit_price")),
 	},
 	{
 		header: () => <p className="text-center">Quantity</p>,
@@ -53,6 +76,31 @@ const columns: ColumnDef<OrderItem>[] = [
 		accessorKey: "total_price",
 		// @ts-expect-error nil
 		cell: ({ row }) => formatCurrency(row.getValue("unit_price") * row.getValue("quantity")),
+	},
+	{
+		header: "Actions",
+		id: "actions",
+		cell: ({ row }) => (
+			<Popover>
+				<PopoverTrigger>
+					<MoreHorizontal />
+				</PopoverTrigger>
+
+				<PopoverContent>
+					<Link
+						to={`/dashboard/sellers/${row.original.vendor._id}`}
+						className="flex rounded-md px-4 py-2 text-xs transition-all hover:bg-primary hover:text-white">
+						View seller
+					</Link>
+
+					<Link
+						to={`/dashboard/product/${row.original._id}`}
+						className="flex rounded-md px-4 py-2 text-xs transition-all hover:bg-primary hover:text-white">
+						View product
+					</Link>
+				</PopoverContent>
+			</Popover>
+		),
 	},
 ]
 
@@ -75,6 +123,20 @@ const Order = () => {
 		columns,
 		getCoreRowModel: getCoreRowModel(),
 	})
+
+	const calculateFee = () => {
+		let fee = 0
+
+		if (order?.data.shipment_charges && order.data.is_coupon_applied) {
+			fee = order.data.grand_total - (order.data.total_amount - order.data.general_coupon.amount)
+			return fee
+		}
+
+		if (order?.data.shipment_charges) {
+			fee = order.data.grand_total - order.data.total_amount
+			return fee
+		}
+	}
 
 	return (
 		<section className="flex flex-col gap-10">
@@ -119,7 +181,7 @@ const Order = () => {
 							<div className="grid w-full grid-cols-3 items-center justify-between gap-10 pt-12 text-sm">
 								<div className="flex flex-col gap-8">
 									<div className="flex flex-col">
-										<p className="font-semibold">Order from:</p>
+										<p className="font-semibold">Order by:</p>
 										<p className="capitalize">
 											{order?.data.user.FirstName} {order?.data.user.LastName}
 										</p>
@@ -162,10 +224,12 @@ const Order = () => {
 										</p>
 										<p>
 											Payment Status:{" "}
-											<span className={`${statusClass[order?.data.status as keyof typeof statusClass]}`}>
+											<span
+												className={`${transactionStatusClass[order?.data.status as keyof typeof transactionStatusClass]}`}>
 												{order?.data.payment_details.at(0)?.status}
 											</span>
 										</p>
+										<p>Tracking ID: {order?.data.tracking_id}</p>
 									</div>
 								</div>
 
@@ -189,55 +253,6 @@ const Order = () => {
 							</div>
 						</>
 					)}
-				</TabsContent>
-
-				{/* ORDER ITEMS TAB */}
-				<TabsContent className="flex flex-col gap-4 text-[#3A3C40]" value="product">
-					<h3 className="text-lg font-semibold">Order Products</h3>
-
-					<Table>
-						<TableHeader>
-							{table.getHeaderGroups().map((headerGroup) => (
-								<TableRow key={headerGroup.id}>
-									{headerGroup.headers.map((header) => {
-										return (
-											<TableHead key={header.id}>
-												{header.isPlaceholder
-													? null
-													: flexRender(header.column.columnDef.header, header.getContext())}
-											</TableHead>
-										)
-									})}
-								</TableRow>
-							))}
-						</TableHeader>
-
-						<TableBody>
-							{table.getRowModel().rows?.length ? (
-								table.getRowModel().rows.map((row) => (
-									<TableRow key={row.id} data-state={row.getIsSelected() && "selected"}>
-										{row.getVisibleCells().map((cell) => (
-											<TableCell key={cell.id}>
-												{flexRender(cell.column.columnDef.cell, cell.getContext())}
-											</TableCell>
-										))}
-									</TableRow>
-								))
-							) : (
-								<TableRow>
-									<TableCell colSpan={columns.length} className="h-24 text-center">
-										{isPending ? (
-											<div className="flex items-center justify-center">
-												<Spinner variant="primary" size="lg" />
-											</div>
-										) : (
-											<span>No latest order(s).</span>
-										)}
-									</TableCell>
-								</TableRow>
-							)}
-						</TableBody>
-					</Table>
 				</TabsContent>
 
 				{/* ORDER ITEM INVOICE */}
@@ -289,24 +304,39 @@ const Order = () => {
 							<TableRow>
 								<TableCell></TableCell>
 								<TableCell></TableCell>
+								<TableCell></TableCell>
+								{/* <TableCell></TableCell> */}
 								<TableCell className="text-center">Subtotal</TableCell>
 								<TableCell>{formatCurrency(Number(order?.data.total_amount))}</TableCell>
 							</TableRow>
 							<TableRow>
 								<TableCell></TableCell>
 								<TableCell></TableCell>
+								<TableCell></TableCell>
+								{/* <TableCell></TableCell> */}
 								<TableCell className="text-center">Discount</TableCell>
-								<TableCell>{formatCurrency(Number(0))}</TableCell>
+								<TableCell>
+									{order?.data.is_coupon_applied
+										? formatCurrency(Number(order.data.general_coupon.amount))
+										: formatCurrency(Number(0))}
+								</TableCell>
 							</TableRow>
 							<TableRow>
 								<TableCell></TableCell>
 								<TableCell></TableCell>
+								<TableCell></TableCell>
+								{/* <TableCell></TableCell> */}
 								<TableCell className="text-center">Fees</TableCell>
-								<TableCell>{formatCurrency(Number(0))}</TableCell>
+								<TableCell>
+									{/* @ts-expect-error nil */}
+									{order?.data.shipment_charges ? formatCurrency(calculateFee()) : formatCurrency(Number(0))}
+								</TableCell>
 							</TableRow>
 							<TableRow>
 								<TableCell></TableCell>
 								<TableCell></TableCell>
+								<TableCell></TableCell>
+								{/* <TableCell></TableCell> */}
 								<TableCell className="text-center font-body text-primary">Total</TableCell>
 								<TableCell className="font-body text-lg font-bold text-primary">
 									{formatCurrency(Number(order?.data.grand_total))}

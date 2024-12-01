@@ -3,6 +3,7 @@ import { MoreHorizontal } from "lucide-react"
 import { formatCurrency } from "@/lib"
 import { ProductProps, type PaginationResponse } from "@/types"
 import { Link, useSearchParams } from "react-router-dom"
+import { ApproveProductModal } from "../modals"
 import { Pagination } from "../ui/pagination"
 import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover"
 import { Separator } from "../ui/separator"
@@ -59,16 +60,17 @@ export const ProductItem = ({ products }: Props) => {
 												className="flex w-full rounded-md px-4 py-2 text-xs transition-all hover:bg-primary hover:text-white">
 												Add coupon
 											</Link>
+
+											<ApproveProductModal
+												id={product._id}
+												name={product.product_name}
+												isVerified={product.is_verified}
+											/>
 											{/* <button
-												type="button"
-												className="flex w-full rounded-md px-4 py-2 text-xs transition-all hover:bg-primary hover:text-white">
-												Mark as sold
-											</button> */}
-											<button
 												type="button"
 												className="flex w-full rounded-md px-4 py-2 text-xs text-red-600 transition-all hover:bg-red-600 hover:text-white">
 												Remove Product
-											</button>
+											</button> */}
 										</PopoverContent>
 									</Popover>
 								</div>
@@ -76,7 +78,7 @@ export const ProductItem = ({ products }: Props) => {
 								<div className="flex w-full flex-col gap-4">
 									<div className="flex w-full flex-col gap-2">
 										<p className="text-sm font-semibold">Summary</p>
-										<p className="text-xs first-letter:capitalize">{product.description}</p>
+										<p className="truncate text-xs first-letter:capitalize">{product.description}</p>
 									</div>
 									<div className="flex w-full flex-col rounded bg-[#f5f5fa] p-2">
 										<div className="flex w-full items-center justify-between">

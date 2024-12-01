@@ -9,9 +9,9 @@ import {
 	SelectValue,
 } from "@/components/ui/select"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { frequencyFilter, ORDER_TABS, PAGE_LIMIT, statusClass } from "@/config"
+import { frequencyFilter, PAGE_LIMIT, statusClass } from "@/config"
 import { usePageTitle } from "@/hooks"
-import { capitalize, formatPrice, getInitials, getTimeFromNow, getWeekRanges } from "@/lib"
+import { capitalize, formatPrice, getInitials, getTimeFromNow } from "@/lib"
 import { GetOrdersQuery } from "@/queries"
 import type { TimelineProps } from "@/types"
 import { OrderProps } from "@/types"
@@ -21,6 +21,7 @@ import { MoreHorizontal } from "lucide-react"
 import React from "react"
 import { Link, useSearchParams } from "react-router-dom"
 
+const tabs = ["booked", "pending", "cancelled", "delivered", "failed"] as const
 const columns: ColumnDef<OrderProps>[] = [
 	{
 		header: "Orders ID",
@@ -98,9 +99,8 @@ const Orders = () => {
 	usePageTitle("Orders")
 	const [timeLine, setTimeLine] = React.useState<TimelineProps>("ALL")
 	const [searchParams, setSearchParams] = useSearchParams()
-	const ranges = getWeekRanges(new Date("2024-06-01"))
 
-	const status = searchParams.get("status") || "pending"
+	const status = searchParams.get("status") || "booked"
 	const page = Number(searchParams.get("page") || 1)
 
 	const { data, isPending, isPlaceholderData } = useQuery({
@@ -136,13 +136,6 @@ const Orders = () => {
 							))}
 						</SelectContent>
 					</Select>
-
-					<Popover>
-						<PopoverTrigger className="text-neutral-500">
-							<MoreHorizontal />
-						</PopoverTrigger>
-						<PopoverContent></PopoverContent>
-					</Popover>
 				</div>
 			</header>
 
@@ -152,34 +145,21 @@ const Orders = () => {
 				</div>
 			) : (
 				<Tabs
-					defaultValue={status ?? "pending"}
-					value={status ?? "pending"}
+					defaultValue={status}
+					value={status}
 					onValueChange={(value) => {
 						searchParams.set("status", value)
 						setSearchParams(searchParams)
 					}}>
 					<TabsList>
-						{ORDER_TABS.map((tab) => (
+						{tabs.map((tab) => (
 							<TabsTrigger key={tab} value={tab}>
 								{tab}
 							</TabsTrigger>
 						))}
 					</TabsList>
 
-					<Select>
-						<SelectTrigger className="w-[166px] self-end border border-[#FFE8E3] shadow-card shadow-primary/[8%]">
-							<SelectValue placeholder="Select Range" />
-						</SelectTrigger>
-						<SelectContent>
-							{ranges.map((range, index) => (
-								<SelectItem key={index} value={range}>
-									{range}
-								</SelectItem>
-							))}
-						</SelectContent>
-					</Select>
-
-					{ORDER_TABS.map((tab) => (
+					{tabs.map((tab) => (
 						<TabsContent key={tab} value={tab}>
 							<DataTable
 								columns={columns}

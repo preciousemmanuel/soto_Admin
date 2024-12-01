@@ -4,6 +4,7 @@ import { WithdrawalTab } from "@/components/shared"
 import { ProfileTab } from "@/components/shared/profile-tab"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { PAGE_LIMIT } from "@/config"
+import { usePageTitle } from "@/hooks"
 import { GetRolesQuery } from "@/queries/settings"
 import { usePrefetchQuery } from "@tanstack/react-query"
 import { Message2, Notification } from "iconsax-react"
@@ -13,6 +14,7 @@ const tabs = ["profile", "withdrawal", "feedback"] as const
 type Tabs = (typeof tabs)[number]
 
 const Settings = () => {
+	usePageTitle("Settings")
 	const [searchParams, setSearchParams] = useSearchParams()
 	const status = searchParams.get("status")
 

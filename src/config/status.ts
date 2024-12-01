@@ -1,7 +1,7 @@
 import { StatusProps } from "@/types"
 
 export const statusClass: Record<StatusProps, string> = {
-	BOOKED: "text-neutral-600",
+	BOOKED: "text-blue-600",
 	CANCELLED: "text-red-600",
 	COMPLETED: "text-green-600",
 	CONFIRMED: "text-green-600",

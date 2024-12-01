@@ -40,6 +40,11 @@
 	scrollbar-width: none;
 }
 
+::selection {
+	background-color: var(--primary);
+	color: #fff;
+}
+
 html {
 	scroll-behavior: smooth;
 }
@@ -48,7 +53,7 @@ body {
 	background: #fff;
 	color: var(--foreground);
 	overflow-x: hidden;
-	user-select: none;
+	/* user-select: none; */
 	width: 100%;
 	transition: colors 0.75s cubic-bezier(0.215, 0.61, 0.355, 1);
 	-webkit-transition: colors 0.75s cubic-bezier(0.215, 0.61, 0.355, 1);

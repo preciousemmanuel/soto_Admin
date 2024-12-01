@@ -15,7 +15,7 @@ export const endpoints = (id?: string) => {
 	const admin = {
 		get_all: `${baseURL}/admin/staffs/fetch`,
 		get_one: `${baseURL}/admin`,
-		create: `${baseURL}/admin`,
+		create: `${baseURL}/admin/create-new-admin`,
 		delete: `${baseURL}/admin`,
 		update: `${baseURL}/admin`,
 	} as const
@@ -49,6 +49,7 @@ export const endpoints = (id?: string) => {
 	const products = {
 		get_all: `${baseURL}/admin/products-mgt`,
 		get_one: `${baseURL}/admin/view-a-product/${id}`,
+		update: `${baseURL}/admin/update-product/${id}`,
 	} as const
 
 	const coupons = {

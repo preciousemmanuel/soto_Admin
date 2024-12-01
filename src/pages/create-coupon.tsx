@@ -101,20 +101,14 @@ const CreateCoupon = () => {
 			<header className="flex items-center justify-between gap-2">
 				<h2 className="font-body text-3xl font-medium">Create Coupon & Promotion</h2>
 
-				<div className="flex items-center gap-3">
-					<Button variant="outline" onClick={() => navigate(-1)}>
-						Back
-					</Button>
-					<Button className="w-32" type="submit" form="create-coupon">
-						{isPending ? <Spinner /> : "Save"}
-					</Button>
-				</div>
+				<Button variant="outline" onClick={() => navigate(-1)}>
+					Back
+				</Button>
 			</header>
 
 			<form
 				onSubmit={handleSubmit}
-				id="create-coupon"
-				className="rounded-xl border-0.5 border-[#f8f3f3] bg-white p-6 shadow-card shadow-primary/[8%]">
+				className="flex flex-col rounded-xl border-0.5 border-[#f8f3f3] bg-white p-6 shadow-card shadow-primary/[8%]">
 				<div className="space-y-8 border-b border-b-[#E6E9F4] py-10">
 					<div>
 						<h3 className="font-body font-medium text-[#303030]">Coupon Information</h3>
@@ -251,6 +245,10 @@ const CreateCoupon = () => {
 						</div>
 					</div>
 				</div>
+
+				<Button className="ml-auto w-36" type="submit" form="create-coupon">
+					{isPending ? <Spinner /> : "Save"}
+				</Button>
 			</form>
 		</section>
 	)

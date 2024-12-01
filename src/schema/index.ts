@@ -53,4 +53,6 @@ export const addAdminSchema = Yup.object({
 	country: Yup.string().required("Country is required!"),
 })
 
+export const addPurchaserSchema = addAdminSchema.omit(["role", "country"])
+
 
