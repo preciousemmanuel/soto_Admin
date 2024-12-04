@@ -15,11 +15,10 @@ export const ProductItemsB = ({ products }: Props) => {
 
 	return (
 		<>
-			<div className="grid grid-cols-3 gap-6">
+			<ul className="grid grid-cols-3 gap-6">
 				{products?.data.length ? (
 					products.data.map((product) => (
-						<Link
-							to={`/dashboard/products/${product._id}`}
+						<li
 							className="w-full overflow-hidden rounded-lg border-0.5 border-[#f8f3f3] shadow-card shadow-primary/[8%]"
 							key={product.id}>
 							<div className="relative">
@@ -53,18 +52,25 @@ export const ProductItemsB = ({ products }: Props) => {
 							</div>
 
 							<div className="flex h-full flex-col gap-1 bg-[#F4F5F7] p-6">
-								<h4 className="font-semibold capitalize">{product.product_name}</h4>
+								<div className="flex items-center justify-between gap-1">
+									<h4 className="font-semibold capitalize">{product.product_name}</h4>
+									<Link
+										to={`/dashboard/products/${product._id}`}
+										className="rounded-full border border-primary px-3 py-1 text-xs text-primary transition-colors hover:bg-primary hover:text-white">
+										View details
+									</Link>
+								</div>
 								<p className="text-sm text-[#898989]">{product.description}</p>
 								<p className="font-semibold text-primary">{formatCurrency(product.unit_price)}</p>
 							</div>
-						</Link>
+						</li>
 					))
 				) : (
-					<p className="col-span-full text-center text-sm text-neutral-500">
+					<li className="col-span-full text-center text-sm text-neutral-500">
 						No {searchParams.get("status")} products
-					</p>
+					</li>
 				)}
-			</div>
+			</ul>
 
 			<Pagination totalPages={totalPages} />
 		</>

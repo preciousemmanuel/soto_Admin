@@ -1,12 +1,13 @@
-import { UpdateCouponModal } from "@/components/modals"
+import { QuantityDiscountModal, UpdateCouponModal } from "@/components/modals"
 import { DataTable } from "@/components/shared"
 import { Button } from "@/components/ui/button"
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
 import { PAGE_LIMIT } from "@/config"
 import { usePageTitle } from "@/hooks"
+import { GetCategoriesQuery } from "@/queries/categories"
 import { GetCouponsQuery } from "@/queries/coupon"
 import type { CouponProps } from "@/types"
-import { keepPreviousData, useQuery } from "@tanstack/react-query"
+import { keepPreviousData, usePrefetchQuery, useQuery } from "@tanstack/react-query"
 import { type ColumnDef } from "@tanstack/react-table"
 import { format } from "date-fns"
 import { Money, PercentageSquare, TruckFast } from "iconsax-react"
@@ -117,12 +118,22 @@ const Coupon = () => {
 
 	const totalPages = Number(data?.pagination.pageCount)
 
+	usePrefetchQuery({
+		queryKey: ["get-categories", 1],
+		queryFn: () =>
+			GetCategoriesQuery({
+				page: 1,
+				limit: 30,
+			}),
+	})
+
 	return (
 		<section className="flex flex-col gap-10">
 			<header className="flex items-center justify-between gap-2">
 				<h2 className="font-body text-3xl font-medium">Coupon & Promotion</h2>
 
 				<div className="flex items-center gap-6">
+					<QuantityDiscountModal />
 					<Button asChild>
 						<Link to="/dashboard/coupon-and-promo/create">
 							<Plus />

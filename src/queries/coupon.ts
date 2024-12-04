@@ -40,4 +40,24 @@ const UpdateCouponMutation = async (payload: CouponPayload) => {
 		.then((res) => res.data)
 }
 
-export { CreateCouponMutation, GetCouponQuery, GetCouponsQuery, UpdateCouponMutation }
+type Payload = {
+	quantity: number
+	discount: number
+	activation_date: string
+	expiry_date: string
+	product_category: string
+}
+const CreateDiscountCouponMutation = async (payload: Payload) => {
+	return axios
+		.post<HttpResponse<CouponProps>>(endpoints().coupons.create_discount, payload)
+		.then((res) => res.data)
+}
+
+export {
+	CreateCouponMutation,
+	CreateDiscountCouponMutation,
+	GetCouponQuery,
+	GetCouponsQuery,
+	UpdateCouponMutation,
+}
+

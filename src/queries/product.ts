@@ -30,7 +30,8 @@ const GetProductQuery = async (id: string) => {
 type Payload = {
 	id: string
 	data: {
-		is_verified: "YES" | "NO"
+		is_verified?: "YES" | "NO"
+		decline_product_note?: string
 	}
 }
 const UpdateProductMutation = async ({ id, data }: Payload) => {

@@ -1,4 +1,6 @@
+import { CancelOrderModal } from "@/components/modals"
 import { DataTable, Spinner } from "@/components/shared"
+import { CustomOrderTable } from "@/components/table/custom-order"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
 import {
@@ -21,7 +23,7 @@ import { MoreHorizontal } from "lucide-react"
 import React from "react"
 import { Link, useSearchParams } from "react-router-dom"
 
-const tabs = ["booked", "pending", "cancelled", "delivered", "failed"] as const
+const tabs = ["custom", "booked", "pending", "cancelled", "delivered", "failed"] as const
 const columns: ColumnDef<OrderProps>[] = [
 	{
 		header: "Orders ID",
@@ -32,8 +34,11 @@ const columns: ColumnDef<OrderProps>[] = [
 		header: "Buyer",
 		accessorKey: "user",
 		cell: ({ row }) => {
-			const full_name = `${row.original.user.FirstName} ${row.original.user.LastName}`
-			return (
+			const full_name = row.original.user
+				? `${row.original.user.FirstName} ${row.original.user.LastName}`
+				: ""
+
+			return full_name ? (
 				<div className="flex items-center gap-2">
 					<Avatar className="size-9">
 						<AvatarImage src="" alt={row.getValue("user")} />
@@ -41,6 +46,8 @@ const columns: ColumnDef<OrderProps>[] = [
 					</Avatar>
 					<p className="capitalize">{full_name}</p>
 				</div>
+			) : (
+				<p>N/A</p>
 			)
 		},
 	},
@@ -64,7 +71,7 @@ const columns: ColumnDef<OrderProps>[] = [
 		accessorKey: "status",
 		cell: ({ row }) => (
 			<span
-				className={`text-sm capitalize ${statusClass[row.getValue("status") as keyof typeof statusClass]}`}>
+				className={`text-sm font-medium capitalize ${statusClass[row.getValue("status") as keyof typeof statusClass]}`}>
 				{capitalize(row.getValue("status"))}
 			</span>
 		),
@@ -84,11 +91,20 @@ const columns: ColumnDef<OrderProps>[] = [
 						Review order
 					</Link>
 
-					<button
-						type="button"
-						className="flex w-full rounded-md px-4 py-2 text-xs text-red-600 transition-all hover:bg-red-600 hover:text-white">
-						Cancel order
-					</button>
+					<CancelOrderModal
+						id={row.original._id}
+						owner={
+							row.original.user ? `${row.original.user.FirstName} ${row.original.user.LastName}` : ""
+						}
+						trigger={
+							<button
+								disabled={row.original.status === "CANCELLED"}
+								type="button"
+								className="flex w-full rounded-md px-4 py-2 text-xs text-red-600 transition-all hover:bg-red-600 hover:text-white disabled:cursor-not-allowed disabled:opacity-50">
+								Cancel order
+							</button>
+						}
+					/>
 				</PopoverContent>
 			</Popover>
 		),
@@ -100,7 +116,7 @@ const Orders = () => {
 	const [timeLine, setTimeLine] = React.useState<TimelineProps>("ALL")
 	const [searchParams, setSearchParams] = useSearchParams()
 
-	const status = searchParams.get("status") || "booked"
+	const status = searchParams.get("status") ?? "custom"
 	const page = Number(searchParams.get("page") || 1)
 
 	const { data, isPending, isPlaceholderData } = useQuery({
@@ -161,12 +177,16 @@ const Orders = () => {
 
 					{tabs.map((tab) => (
 						<TabsContent key={tab} value={tab}>
-							<DataTable
-								columns={columns}
-								data={data?.data.data || []}
-								totalPages={totalPages}
-								isPlaceholderData={isPlaceholderData}
-							/>
+							{tab === "custom" ? (
+								<CustomOrderTable timeLine={timeLine} />
+							) : (
+								<DataTable
+									columns={columns}
+									data={data?.data.data || []}
+									totalPages={totalPages}
+									isPlaceholderData={isPlaceholderData}
+								/>
+							)}
 						</TabsContent>
 					))}
 				</Tabs>

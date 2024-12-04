@@ -44,6 +44,7 @@ export const endpoints = (id?: string) => {
 		cancel: `${baseURL}/admin/cancel-order/${id}`,
 		create_shipment: `${baseURL}/admin/create-shipment`,
 		track_shipment: `${baseURL}/admin/track-shipment`,
+		update_custom_order: `${baseURL}/admin/update-custom-order/${id}`,
 	} as const
 
 	const products = {
@@ -57,6 +58,7 @@ export const endpoints = (id?: string) => {
 		get_one: `${baseURL}/admin/`,
 		create: `${baseURL}/admin/create-coupon`,
 		update: `${baseURL}/admin/update-coupon/${id}`,
+		create_discount: `${baseURL}/admin/create-discount-coupon`,
 	} as const
 
 	const buyers = {
@@ -82,6 +84,10 @@ export const endpoints = (id?: string) => {
 		get_pickups: `${baseURL}/admin/purchasers/get-pickups`,
 	} as const
 
+	const categories = {
+		get_all: `${baseURL}/admin/get-categories`,
+	} as const
+
 	const feedback = {}
 
 	return {
@@ -98,5 +104,6 @@ export const endpoints = (id?: string) => {
 		settings,
 		purchasers,
 		profile,
+		categories,
 	}
 }

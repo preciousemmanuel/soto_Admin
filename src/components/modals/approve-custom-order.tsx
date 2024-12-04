@@ -1,6 +1,7 @@
-import { UpdateProductMutation } from "@/queries"
-import { useMutation, useQueryClient } from "@tanstack/react-query"
+import { GetOrderQuery, UpdateCustomOrderMutation } from "@/queries"
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import * as React from "react"
+import { useParams } from "react-router-dom"
 import { Spinner } from "../shared"
 import { Button } from "../ui/button"
 import {
@@ -12,24 +13,27 @@ import {
 	DialogTrigger,
 } from "../ui/dialog"
 
-type Props = {
-	id: string
-	name: string
-}
-
-export const ApproveProductModal = ({ id, name }: Props) => {
+export const ApproveCustomOrderModal = () => {
+	const { id } = useParams()
 	const [open, setOpen] = React.useState(false)
 	const queryClient = useQueryClient()
 
+	const { data: order } = useQuery({
+		queryFn: () => GetOrderQuery(String(id)),
+		queryKey: ["get-order", id],
+		enabled: !!id,
+	})
+
 	const { isPending, mutate } = useMutation({
 		mutationFn: () =>
-			UpdateProductMutation({
-				id,
+			UpdateCustomOrderMutation({
+				id: String(id),
 				data: {
-					is_verified: "YES",
+					approve_or_decline: "APPROVED",
+					decline_note: "",
 				},
 			}),
-		mutationKey: ["update-product"],
+		mutationKey: ["update-custom-order"],
 		onSuccess: () => {
 			queryClient.invalidateQueries()
 			setOpen(false)
@@ -42,6 +46,9 @@ export const ApproveProductModal = ({ id, name }: Props) => {
 	return (
 		<Dialog open={open} onOpenChange={setOpen}>
 			<DialogTrigger
+				disabled={
+					order?.data.approval_status === "APPROVED" || order?.data.approval_status === "DECLINED"
+				}
 				type="button"
 				className="flex rounded-md bg-green-600 px-4 py-2 text-xs text-white transition-all disabled:cursor-not-allowed disabled:opacity-50">
 				Approve
@@ -49,13 +56,13 @@ export const ApproveProductModal = ({ id, name }: Props) => {
 
 			<DialogContent className="max-w-md">
 				<DialogHeader>
-					<DialogTitle>Approve Product</DialogTitle>
+					<DialogTitle>Approve Order</DialogTitle>
 				</DialogHeader>
 
 				<div>
 					<p className="text-sm leading-relaxed text-[#666666]">
-						You are about to approve <strong className="uppercase">{name}</strong>. Are you really sure
-						about this? Please check the product details before approving. This action cannot be undone.
+						You are about to approve order <strong>#{String(id).substring(0, 6)}</strong> b. Are you
+						really sure about this? This action cannot be undone.
 					</p>
 
 					<div className="mt-10 flex flex-col gap-3">

@@ -1,4 +1,6 @@
+import { CancelOrderModal } from "@/components/modals"
 import { Spinner } from "@/components/shared"
+import { Invoice } from "@/components/table"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Button } from "@/components/ui/button"
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
@@ -22,7 +24,7 @@ import { format } from "date-fns"
 import { MoreHorizontal } from "lucide-react"
 import { Link, useNavigate, useParams, useSearchParams } from "react-router-dom"
 
-const tabs = ["order details", "invoice"] as const
+const tabs = ["order details", "products", "invoice"] as const
 type Tabs = (typeof tabs)[number]
 
 type OrderItem = OrderProps["items"][number]
@@ -62,6 +64,32 @@ const columns: ColumnDef<OrderItem>[] = [
 		},
 	},
 	{
+		header: "Assigned purchaser",
+		// accessorKey: "assigned_purchaser.",
+		cell: ({ row }) => {
+			const full_name = row.original.assigned_purchaser
+				? `${row.original.assigned_purchaser.FirstName} ${row.original.assigned_purchaser.LastName}`
+				: ""
+			// console.log("full name", full_name)
+
+			return full_name ? (
+				<div className="flex items-center gap-2">
+					<Avatar className="size-9">
+						<AvatarImage src={row.original.assigned_purchaser.ProfileImage} alt={full_name} />
+						<AvatarFallback>{getInitials(full_name)}</AvatarFallback>
+					</Avatar>
+
+					<div>
+						<p>{full_name}</p>
+						<p className="text-xs">{row.original.vendor.Email}</p>
+					</div>
+				</div>
+			) : (
+				<p>N/A</p>
+			)
+		},
+	},
+	{
 		header: "Price",
 		accessorKey: "unit_price",
 		cell: ({ row }) => formatCurrency(row.getValue("unit_price")),
@@ -94,9 +122,15 @@ const columns: ColumnDef<OrderItem>[] = [
 					</Link>
 
 					<Link
-						to={`/dashboard/product/${row.original._id}`}
+						to={`/dashboard/products/${row.original._id}`}
 						className="flex rounded-md px-4 py-2 text-xs transition-all hover:bg-primary hover:text-white">
 						View product
+					</Link>
+
+					<Link
+						to={`/dashboard/purchasers/${row.original?.assigned_purchaser ? row.original.assigned_purchaser._id : ""}`}
+						className="flex rounded-md px-4 py-2 text-xs transition-all hover:bg-primary hover:text-white">
+						View purchaser
 					</Link>
 				</PopoverContent>
 			</Popover>
@@ -106,10 +140,10 @@ const columns: ColumnDef<OrderItem>[] = [
 
 const Order = () => {
 	usePageTitle("Order")
-	const [searchParams, setSearchParams] = useSearchParams()
 	const { id } = useParams()
 	const navigate = useNavigate()
 
+	const [searchParams, setSearchParams] = useSearchParams()
 	const tab = searchParams.get("tab")
 
 	const { data: order, isPending } = useQuery({
@@ -123,20 +157,7 @@ const Order = () => {
 		columns,
 		getCoreRowModel: getCoreRowModel(),
 	})
-
-	const calculateFee = () => {
-		let fee = 0
-
-		if (order?.data.shipment_charges && order.data.is_coupon_applied) {
-			fee = order.data.grand_total - (order.data.total_amount - order.data.general_coupon.amount)
-			return fee
-		}
-
-		if (order?.data.shipment_charges) {
-			fee = order.data.grand_total - order.data.total_amount
-			return fee
-		}
-	}
+	const owner = `${order?.data.user.FirstName} ${order?.data.user.LastName}`
 
 	return (
 		<section className="flex flex-col gap-10">
@@ -147,7 +168,12 @@ const Order = () => {
 					<Button variant="outline" onClick={() => navigate(-1)}>
 						Back
 					</Button>
-					<Button>Cancel Order</Button>
+
+					<CancelOrderModal
+						id={id ?? ""}
+						owner={owner}
+						trigger={<Button disabled={order?.data.status === "CANCELLED"}>Cancel Order</Button>}
+					/>
 				</div>
 			</header>
 
@@ -206,7 +232,9 @@ const Order = () => {
 								<div className="flex flex-col gap-4">
 									<div className="flex flex-col">
 										<p className="font-semibold">Payment Method:</p>
-										<p className="capitalize">{order?.data.payment_details.at(0)?.payment_provider}</p>
+										<p className="capitalize">
+											{order?.data.payment_details ? order?.data.payment_details.at(0)?.payment_provider : ""}
+										</p>
 									</div>
 
 									<div className="flex w-full flex-col gap-2 font-medium">
@@ -226,7 +254,7 @@ const Order = () => {
 											Payment Status:{" "}
 											<span
 												className={`${transactionStatusClass[order?.data.status as keyof typeof transactionStatusClass]}`}>
-												{order?.data.payment_details.at(0)?.status}
+												{order?.data.payment_details ? order?.data.payment_details.at(0)?.status : ""}
 											</span>
 										</p>
 										<p>Tracking ID: {order?.data.tracking_id}</p>
@@ -255,9 +283,8 @@ const Order = () => {
 					)}
 				</TabsContent>
 
-				{/* ORDER ITEM INVOICE */}
-				<TabsContent className="flex flex-col gap-4 text-[#3A3C40]" value="invoice">
-					<h3 className="text-lg font-semibold">Invoice</h3>
+				<TabsContent className="flex flex-col gap-4 text-[#3A3C40]" value="products">
+					<h3 className="text-lg font-semibold">Order products</h3>
 
 					<Table>
 						<TableHeader>
@@ -300,50 +327,13 @@ const Order = () => {
 									</TableCell>
 								</TableRow>
 							)}
-
-							<TableRow>
-								<TableCell></TableCell>
-								<TableCell></TableCell>
-								<TableCell></TableCell>
-								{/* <TableCell></TableCell> */}
-								<TableCell className="text-center">Subtotal</TableCell>
-								<TableCell>{formatCurrency(Number(order?.data.total_amount))}</TableCell>
-							</TableRow>
-							<TableRow>
-								<TableCell></TableCell>
-								<TableCell></TableCell>
-								<TableCell></TableCell>
-								{/* <TableCell></TableCell> */}
-								<TableCell className="text-center">Discount</TableCell>
-								<TableCell>
-									{order?.data.is_coupon_applied
-										? formatCurrency(Number(order.data.general_coupon.amount))
-										: formatCurrency(Number(0))}
-								</TableCell>
-							</TableRow>
-							<TableRow>
-								<TableCell></TableCell>
-								<TableCell></TableCell>
-								<TableCell></TableCell>
-								{/* <TableCell></TableCell> */}
-								<TableCell className="text-center">Fees</TableCell>
-								<TableCell>
-									{/* @ts-expect-error nil */}
-									{order?.data.shipment_charges ? formatCurrency(calculateFee()) : formatCurrency(Number(0))}
-								</TableCell>
-							</TableRow>
-							<TableRow>
-								<TableCell></TableCell>
-								<TableCell></TableCell>
-								<TableCell></TableCell>
-								{/* <TableCell></TableCell> */}
-								<TableCell className="text-center font-body text-primary">Total</TableCell>
-								<TableCell className="font-body text-lg font-bold text-primary">
-									{formatCurrency(Number(order?.data.grand_total))}
-								</TableCell>
-							</TableRow>
 						</TableBody>
 					</Table>
+				</TabsContent>
+
+				{/* ORDER ITEM INVOICE */}
+				<TabsContent className="flex flex-col gap-4 text-[#3A3C40]" value="invoice">
+					<Invoice />
 				</TabsContent>
 			</Tabs>
 		</section>

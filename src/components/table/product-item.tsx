@@ -3,7 +3,6 @@ import { MoreHorizontal } from "lucide-react"
 import { formatCurrency } from "@/lib"
 import { ProductProps, type PaginationResponse } from "@/types"
 import { Link, useSearchParams } from "react-router-dom"
-import { ApproveProductModal } from "../modals"
 import { Pagination } from "../ui/pagination"
 import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover"
 import { Separator } from "../ui/separator"
@@ -61,11 +60,11 @@ export const ProductItem = ({ products }: Props) => {
 												Add coupon
 											</Link>
 
-											<ApproveProductModal
+											{/* <ApproveProductModal
 												id={product._id}
 												name={product.product_name}
 												isVerified={product.is_verified}
-											/>
+											/> */}
 											{/* <button
 												type="button"
 												className="flex w-full rounded-md px-4 py-2 text-xs text-red-600 transition-all hover:bg-red-600 hover:text-white">

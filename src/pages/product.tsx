@@ -1,4 +1,4 @@
-import { ApproveProductModal } from "@/components/modals"
+import { ApproveProductModal, DeclineProductModal } from "@/components/modals"
 import { Spinner } from "@/components/shared"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Button } from "@/components/ui/button"
@@ -7,7 +7,7 @@ import { usePageTitle } from "@/hooks"
 import { formatCurrency, getInitials } from "@/lib"
 import { GetProductQuery, GetSellerQuery } from "@/queries"
 import { useQuery } from "@tanstack/react-query"
-import { CloseCircle, ShieldTick } from "iconsax-react"
+import { CloseCircle, ShieldTick, Timer } from "iconsax-react"
 import { Link, useNavigate, useParams } from "react-router-dom"
 
 const tabs = ["description", "additional information", "reviews"]
@@ -43,13 +43,6 @@ const Product = () => {
 					<Button variant="outline" className="w-32" onClick={() => navigate(-1)}>
 						Back
 					</Button>
-
-					<ApproveProductModal
-						id={String(id)}
-						name={product?.data.product.product_name || ""}
-						isVerified={product?.data.product.is_verified || false}
-						trigger={<Button className="w-40">Approve Product</Button>}
-					/>
 				</div>
 			</header>
 
@@ -79,15 +72,20 @@ const Product = () => {
 									<h3 className="font-body text-4xl font-semibold capitalize">
 										{product?.data.product.product_name}
 									</h3>
-									{product?.data.product.is_verified ? (
-										<div className="flex w-fit items-center gap-1 bg-green-50 px-3 py-1 text-xs font-medium text-green-600">
-											<ShieldTick variant="Bold" className="size-4" />
-											<p>Product Verified</p>
-										</div>
-									) : (
+									{product?.data.product.decline_product_note ? (
 										<div className="flex w-fit items-center gap-1 bg-red-50 px-3 py-1 text-xs font-medium text-red-600">
 											<CloseCircle variant="Bold" className="size-4 text-red-600" />
-											<p>Product Not Verified</p>
+											<p>Declined</p>
+										</div>
+									) : product?.data.product.is_verified ? (
+										<div className="flex w-fit items-center gap-1 bg-green-50 px-3 py-1 text-xs font-medium text-green-600">
+											<ShieldTick variant="Bold" className="size-4" />
+											<p>Verified</p>
+										</div>
+									) : (
+										<div className="flex w-fit items-center gap-1 bg-yellow-50 px-3 py-1 text-xs font-medium text-yellow-600">
+											<Timer variant="Bold" className="size-4" />
+											<p>Pending</p>
 										</div>
 									)}
 								</div>
@@ -152,6 +150,13 @@ const Product = () => {
 										</Link>
 									) : null}
 								</div>
+
+								<div className="flex items-center gap-3 pt-4">
+									<ApproveProductModal id={String(id)} name={String(product?.data.product.product_name)} />
+
+									<DeclineProductModal />
+								</div>
+
 								{/* <p>
 								Ven: <span className="text-primary">Izu Computers & Accessories</span>
 							</p> */}

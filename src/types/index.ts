@@ -283,6 +283,17 @@ export type ProductProps = Node & {
 	}
 	weight: number
 	width: number
+	assigned_purchaser: {
+		_id: string
+		FirstName: string
+		LastName: string
+		Email: string
+		ProfileImage: string
+		PhoneNumber: string
+		status: string
+		createdAt: string
+		updatedAt: string
+	}
 }
 
 export type SingleProductProps = {
@@ -313,6 +324,7 @@ export type SingleProductProps = {
 		createdAt: string
 		updatedAt: string
 		__v: number
+		decline_product_note: string
 	}
 	reviews: Array<{
 		_id: string
@@ -347,6 +359,19 @@ export type OrderProps = Node & {
 	is_coupon_applied: boolean
 	shipment_charges: boolean
 	applied_coupon: string
+	min_price: number
+	product_name: string
+	product_brand: string
+	email: string
+	phone_number: string
+	note: string
+	size: string
+	color: string
+	type: string
+	decline__note: string
+	max_price: number
+	approval_status: string
+	quantity: number
 	general_coupon: {
 		_id: string
 		name: string
@@ -651,3 +676,12 @@ export type ProfileProps = {
 export type RolesProps = PaginationResponse<ProfileProps["Role"]>
 
 export type AdminProps = PaginationResponse<ProfileProps>
+
+export type CategoriesProps = PaginationResponse<{
+	_id: string
+	name: string
+	__v: number
+	createdAt: string
+	updatedAt: string
+	image: string
+}>

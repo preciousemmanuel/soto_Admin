@@ -8,6 +8,7 @@ import {
 	Coupon,
 	CreateCoupon,
 	CreateProduct,
+	CustomOrder,
 	Feedback,
 	ForgotPassword,
 	Order,
@@ -80,6 +81,10 @@ function App() {
 								{
 									path: ":id",
 									element: <Order />,
+								},
+								{
+									path: "custom/:id",
+									element: <CustomOrder />,
 								},
 							],
 						},
