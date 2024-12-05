@@ -5,15 +5,15 @@ import { Button } from "../ui/button"
 import { Switch } from "../ui/switch"
 
 export const WithdrawalTab = () => {
+	const { data } = useQuery({
+		queryFn: GetSettingsQuery,
+		queryKey: ["get-settings"],
+	})
+
 	const [field, setField] = React.useState({
 		manual: false,
 		scheduled: false,
 		frequency: undefined,
-	})
-
-	const { data } = useQuery({
-		queryFn: GetSettingsQuery,
-		queryKey: ["get-settings"],
 	})
 
 	return (

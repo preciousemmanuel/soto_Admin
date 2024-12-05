@@ -8,7 +8,7 @@ import { formatCurrency, getInitials } from "@/lib"
 import { GetProductQuery, GetSellerQuery } from "@/queries"
 import { useQuery } from "@tanstack/react-query"
 import { CloseCircle, ShieldTick, Timer } from "iconsax-react"
-import { Link, useNavigate, useParams } from "react-router-dom"
+import { useNavigate, useParams } from "react-router-dom"
 
 const tabs = ["description", "additional information", "reviews"]
 const statusClass = {
@@ -122,9 +122,7 @@ const Product = () => {
 								<div className="mt-4 flex flex-col gap-3">
 									<p>Created by:</p>
 									{vendor?.data.user ? (
-										<Link
-											to={`/dashboard/sellers/${vendor.data.user._id}`}
-											className="flex items-center gap-3 text-primary">
+										<div className="flex items-center gap-3 text-primary">
 											<Avatar className="size-9">
 												<AvatarImage
 													src={vendor.data.user?.business?.business_logo ?? ""}
@@ -147,7 +145,7 @@ const Product = () => {
 														: vendor?.data.user.Email}
 												</span>
 											</div>
-										</Link>
+										</div>
 									) : null}
 								</div>
 
