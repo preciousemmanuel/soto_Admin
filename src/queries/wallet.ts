@@ -13,12 +13,15 @@ const GetWalletOverviewQuery = async (params: PaginationProps & { search?: strin
 		.get<HttpResponse<WalletOverviewProps>>(endpoints().wallet.get_all, {
 			params: {
 				...params,
+				timeLine: params?.timeLine === "ALL" ? "" : params?.timeLine,
 			},
 		})
 		.then((res) => res.data)
 }
 
-const GetWithdrawalRequestsQuery = async (params: PaginationProps & { search?: string }) => {
+const GetWithdrawalRequestsQuery = async (
+	params: PaginationProps & { search?: string; status?: string }
+) => {
 	return axios
 		.get<HttpResponse<WithdrawalRequestsProps>>(endpoints().wallet.get_withdrawal_requests, {
 			params: {
@@ -59,3 +62,4 @@ export {
 	GetWithdrawalRequestsQuery,
 	UpdateWithdrawalRequestMutation,
 }
+

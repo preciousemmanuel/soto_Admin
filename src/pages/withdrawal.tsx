@@ -1,5 +1,6 @@
 import { DataTable } from "@/components/shared"
 import { Button } from "@/components/ui/button"
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { PAGE_LIMIT, transactionStatusClass } from "@/config"
 import { usePageTitle } from "@/hooks"
 import { GetWithdrawalRequestsQuery } from "@/queries"
@@ -9,6 +10,7 @@ import type { ColumnDef } from "@tanstack/react-table"
 import { format } from "date-fns"
 import { useNavigate, useSearchParams } from "react-router-dom"
 
+const tabs = ["pending", "successful", "failed", "reversal"]
 type Requests = WithdrawalRequestsProps["data"][number]
 const columns: ColumnDef<Requests>[] = [
 	{
@@ -70,15 +72,17 @@ const columns: ColumnDef<Requests>[] = [
 	},
 ]
 
-const Withdrawal = () => {
+const WithdrawalRequests = () => {
 	usePageTitle("Withdrawal Requests")
 	const navigate = useNavigate()
-	const [searchParams] = useSearchParams()
+	const [searchParams, setSearchParams] = useSearchParams()
+	const status = searchParams.get("status") || "pending"
 	const page = Number(searchParams.get("page") || 1)
 
 	const { data, isPending, isPlaceholderData } = useQuery({
-		queryFn: () => GetWithdrawalRequestsQuery({ page, limit: PAGE_LIMIT }),
-		queryKey: ["get-withdrawal-requests", page],
+		queryFn: () =>
+			GetWithdrawalRequestsQuery({ page, limit: PAGE_LIMIT, status: status.toUpperCase() }),
+		queryKey: ["get-withdrawal-requests", page, status],
 		placeholderData: keepPreviousData,
 	})
 	const totalPages = Number(data?.data.pagination.pageCount)
@@ -95,15 +99,35 @@ const Withdrawal = () => {
 				</div>
 			</header>
 
-			<DataTable
-				columns={columns}
-				data={data?.data.data || []}
-				totalPages={totalPages}
-				isLoading={isPending}
-				isPlaceholderData={isPlaceholderData}
-			/>
+			<Tabs
+				defaultValue={status}
+				value={status}
+				onValueChange={(value) => {
+					searchParams.set("status", value)
+					setSearchParams(searchParams)
+				}}>
+				<TabsList>
+					{tabs.map((tab) => (
+						<TabsTrigger key={tab} value={tab}>
+							{tab}
+						</TabsTrigger>
+					))}
+				</TabsList>
+
+				{tabs.map((tab) => (
+					<TabsContent key={tab} value={tab}>
+						<DataTable
+							columns={columns}
+							data={data?.data.data || []}
+							totalPages={totalPages}
+							isLoading={isPending}
+							isPlaceholderData={isPlaceholderData}
+						/>
+					</TabsContent>
+				))}
+			</Tabs>
 		</section>
 	)
 }
 
-export default Withdrawal
+export default WithdrawalRequests

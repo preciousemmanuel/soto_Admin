@@ -1,6 +1,9 @@
+import { CancelOrderModal } from "@/components/modals"
 import { Spinner } from "@/components/shared"
+import { Invoice } from "@/components/table"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Button } from "@/components/ui/button"
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
 import {
 	Table,
 	TableBody,
@@ -10,7 +13,7 @@ import {
 	TableRow,
 } from "@/components/ui/table"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { statusClass } from "@/config"
+import { statusClass, transactionStatusClass } from "@/config"
 import { usePageTitle } from "@/hooks"
 import { formatCurrency, formatPrice, getInitials } from "@/lib"
 import { GetOrderQuery } from "@/queries"
@@ -18,9 +21,10 @@ import type { OrderProps } from "@/types"
 import { useQuery } from "@tanstack/react-query"
 import { flexRender, getCoreRowModel, useReactTable, type ColumnDef } from "@tanstack/react-table"
 import { format } from "date-fns"
-import { useNavigate, useParams, useSearchParams } from "react-router-dom"
+import { MoreHorizontal } from "lucide-react"
+import { Link, useNavigate, useParams, useSearchParams } from "react-router-dom"
 
-const tabs = ["order details", "product", "invoice"] as const
+const tabs = ["order details", "products", "invoice"] as const
 type Tabs = (typeof tabs)[number]
 
 type OrderItem = OrderProps["items"][number]
@@ -39,9 +43,56 @@ const columns: ColumnDef<OrderItem>[] = [
 		),
 	},
 	{
+		header: "Seller",
+		accessorKey: "vendor.FirstName",
+		cell: ({ row }) => {
+			const full_name = `${row.original.vendor.FirstName} ${row.original.vendor.LastName}`
+
+			return (
+				<div className="flex items-center gap-2">
+					<Avatar className="size-9">
+						<AvatarImage src="" alt={row.getValue("product_name")} />
+						<AvatarFallback>{getInitials(full_name)}</AvatarFallback>
+					</Avatar>
+
+					<div>
+						<p className="capitalize">{full_name}</p>
+						<p className="text-xs">{row.original.vendor.Email}</p>
+					</div>
+				</div>
+			)
+		},
+	},
+	{
+		header: "Assigned purchaser",
+		// accessorKey: "assigned_purchaser.",
+		cell: ({ row }) => {
+			const full_name = row.original.assigned_purchaser
+				? `${row.original.assigned_purchaser.FirstName} ${row.original.assigned_purchaser.LastName}`
+				: ""
+			// console.log("full name", full_name)
+
+			return full_name ? (
+				<div className="flex items-center gap-2">
+					<Avatar className="size-9">
+						<AvatarImage src={row.original.assigned_purchaser.ProfileImage} alt={full_name} />
+						<AvatarFallback>{getInitials(full_name)}</AvatarFallback>
+					</Avatar>
+
+					<div>
+						<p>{full_name}</p>
+						<p className="text-xs">{row.original.vendor.Email}</p>
+					</div>
+				</div>
+			) : (
+				<p>N/A</p>
+			)
+		},
+	},
+	{
 		header: "Price",
 		accessorKey: "unit_price",
-		cell: ({ row }) => formatPrice(row.getValue("unit_price")),
+		cell: ({ row }) => formatCurrency(row.getValue("unit_price")),
 	},
 	{
 		header: () => <p className="text-center">Quantity</p>,
@@ -54,14 +105,45 @@ const columns: ColumnDef<OrderItem>[] = [
 		// @ts-expect-error nil
 		cell: ({ row }) => formatCurrency(row.getValue("unit_price") * row.getValue("quantity")),
 	},
+	{
+		header: "Actions",
+		id: "actions",
+		cell: ({ row }) => (
+			<Popover>
+				<PopoverTrigger>
+					<MoreHorizontal />
+				</PopoverTrigger>
+
+				<PopoverContent>
+					<Link
+						to={`/dashboard/sellers/${row.original.vendor._id}`}
+						className="flex rounded-md px-4 py-2 text-xs transition-all hover:bg-primary hover:text-white">
+						View seller
+					</Link>
+
+					<Link
+						to={`/dashboard/products/${row.original._id}`}
+						className="flex rounded-md px-4 py-2 text-xs transition-all hover:bg-primary hover:text-white">
+						View product
+					</Link>
+
+					<Link
+						to={`/dashboard/purchasers/${row.original?.assigned_purchaser ? row.original.assigned_purchaser._id : ""}`}
+						className="flex rounded-md px-4 py-2 text-xs transition-all hover:bg-primary hover:text-white">
+						View purchaser
+					</Link>
+				</PopoverContent>
+			</Popover>
+		),
+	},
 ]
 
 const Order = () => {
 	usePageTitle("Order")
-	const [searchParams, setSearchParams] = useSearchParams()
 	const { id } = useParams()
 	const navigate = useNavigate()
 
+	const [searchParams, setSearchParams] = useSearchParams()
 	const tab = searchParams.get("tab")
 
 	const { data: order, isPending } = useQuery({
@@ -75,6 +157,7 @@ const Order = () => {
 		columns,
 		getCoreRowModel: getCoreRowModel(),
 	})
+	const owner = `${order?.data.user.FirstName} ${order?.data.user.LastName}`
 
 	return (
 		<section className="flex flex-col gap-10">
@@ -85,7 +168,12 @@ const Order = () => {
 					<Button variant="outline" onClick={() => navigate(-1)}>
 						Back
 					</Button>
-					<Button>Cancel Order</Button>
+
+					<CancelOrderModal
+						id={id ?? ""}
+						owner={owner}
+						trigger={<Button disabled={order?.data.status === "CANCELLED"}>Cancel Order</Button>}
+					/>
 				</div>
 			</header>
 
@@ -119,7 +207,7 @@ const Order = () => {
 							<div className="grid w-full grid-cols-3 items-center justify-between gap-10 pt-12 text-sm">
 								<div className="flex flex-col gap-8">
 									<div className="flex flex-col">
-										<p className="font-semibold">Order from:</p>
+										<p className="font-semibold">Order by:</p>
 										<p className="capitalize">
 											{order?.data.user.FirstName} {order?.data.user.LastName}
 										</p>
@@ -144,7 +232,9 @@ const Order = () => {
 								<div className="flex flex-col gap-4">
 									<div className="flex flex-col">
 										<p className="font-semibold">Payment Method:</p>
-										<p className="capitalize">{order?.data.payment_details.at(0)?.payment_provider}</p>
+										<p className="capitalize">
+											{order?.data.payment_details ? order?.data.payment_details.at(0)?.payment_provider : ""}
+										</p>
 									</div>
 
 									<div className="flex w-full flex-col gap-2 font-medium">
@@ -162,10 +252,12 @@ const Order = () => {
 										</p>
 										<p>
 											Payment Status:{" "}
-											<span className={`${statusClass[order?.data.status as keyof typeof statusClass]}`}>
-												{order?.data.payment_details.at(0)?.status}
+											<span
+												className={`${transactionStatusClass[order?.data.status as keyof typeof transactionStatusClass]}`}>
+												{order?.data.payment_details ? order?.data.payment_details.at(0)?.status : ""}
 											</span>
 										</p>
+										<p>Tracking ID: {order?.data.tracking_id}</p>
 									</div>
 								</div>
 
@@ -191,9 +283,8 @@ const Order = () => {
 					)}
 				</TabsContent>
 
-				{/* ORDER ITEMS TAB */}
-				<TabsContent className="flex flex-col gap-4 text-[#3A3C40]" value="product">
-					<h3 className="text-lg font-semibold">Order Products</h3>
+				<TabsContent className="flex flex-col gap-4 text-[#3A3C40]" value="products">
+					<h3 className="text-lg font-semibold">Order products</h3>
 
 					<Table>
 						<TableHeader>
@@ -242,78 +333,7 @@ const Order = () => {
 
 				{/* ORDER ITEM INVOICE */}
 				<TabsContent className="flex flex-col gap-4 text-[#3A3C40]" value="invoice">
-					<h3 className="text-lg font-semibold">Invoice</h3>
-
-					<Table>
-						<TableHeader>
-							{table.getHeaderGroups().map((headerGroup) => (
-								<TableRow key={headerGroup.id}>
-									{headerGroup.headers.map((header) => {
-										return (
-											<TableHead key={header.id}>
-												{header.isPlaceholder
-													? null
-													: flexRender(header.column.columnDef.header, header.getContext())}
-											</TableHead>
-										)
-									})}
-								</TableRow>
-							))}
-						</TableHeader>
-
-						<TableBody>
-							{table.getRowModel().rows?.length ? (
-								table.getRowModel().rows.map((row) => (
-									<TableRow key={row.id} data-state={row.getIsSelected() && "selected"}>
-										{row.getVisibleCells().map((cell) => (
-											<TableCell key={cell.id}>
-												{flexRender(cell.column.columnDef.cell, cell.getContext())}
-											</TableCell>
-										))}
-									</TableRow>
-								))
-							) : (
-								<TableRow>
-									<TableCell colSpan={columns.length} className="h-24 text-center">
-										{isPending ? (
-											<div className="flex items-center justify-center">
-												<Spinner variant="primary" size="lg" />
-											</div>
-										) : (
-											<span>No latest order(s).</span>
-										)}
-									</TableCell>
-								</TableRow>
-							)}
-
-							<TableRow>
-								<TableCell></TableCell>
-								<TableCell></TableCell>
-								<TableCell className="text-center">Subtotal</TableCell>
-								<TableCell>{formatCurrency(Number(order?.data.total_amount))}</TableCell>
-							</TableRow>
-							<TableRow>
-								<TableCell></TableCell>
-								<TableCell></TableCell>
-								<TableCell className="text-center">Discount</TableCell>
-								<TableCell>{formatCurrency(Number(0))}</TableCell>
-							</TableRow>
-							<TableRow>
-								<TableCell></TableCell>
-								<TableCell></TableCell>
-								<TableCell className="text-center">Fees</TableCell>
-								<TableCell>{formatCurrency(Number(0))}</TableCell>
-							</TableRow>
-							<TableRow>
-								<TableCell></TableCell>
-								<TableCell></TableCell>
-								<TableCell className="text-center font-body text-primary">Total</TableCell>
-								<TableCell className="font-body text-lg font-bold text-primary">
-									{formatCurrency(Number(order?.data.grand_total))}
-								</TableCell>
-							</TableRow>
-						</TableBody>
-					</Table>
+					<Invoice />
 				</TabsContent>
 			</Tabs>
 		</section>

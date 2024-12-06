@@ -1,8 +1,8 @@
 import { PAGE_LIMIT } from "@/config"
 import { getInitials } from "@/lib"
 import { GetAdminsQuery } from "@/queries/admin"
-import { GetProfileQuery } from "@/queries/profile"
-import { useQuery } from "@tanstack/react-query"
+import { GetProfileQuery, UpdateProfileMutation } from "@/queries/profile"
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import { useFormik } from "formik"
 import { Edit } from "iconsax-react"
 import * as React from "react"
@@ -11,8 +11,17 @@ import { Button } from "../ui/button"
 import { Input } from "../ui/input"
 import { Spinner } from "./spinner"
 
+type Payload = {
+	first_name: string
+	last_name: string
+	phone_number: string
+	password: string
+}
+
 export const ProfileTab = () => {
 	const [edit, setEdit] = React.useState(false)
+	const queryClient = useQueryClient()
+
 	const { data, isPending } = useQuery({
 		queryFn: GetProfileQuery,
 		queryKey: ["get-profile"],
@@ -22,24 +31,38 @@ export const ProfileTab = () => {
 		queryFn: () => GetAdminsQuery({ page: 1, limit: PAGE_LIMIT }),
 		queryKey: ["get-admins"],
 	})
+	const full_name = `${data?.data.FirstName} ${data?.data.LastName}`
+
+	const { isPending: mutationLoading, mutate } = useMutation({
+		mutationFn: (values: Payload) => UpdateProfileMutation(values),
+		mutationKey: ["update-profile"],
+		onSuccess: () => {
+			queryClient.invalidateQueries({
+				queryKey: ["get-profile"],
+			})
+		},
+		onError: (error) => {
+			console.error(error)
+		},
+	})
 
 	const { handleSubmit, errors, handleChange } = useFormik({
 		initialValues: {
 			first_name: data?.data.FirstName || "",
 			last_name: data?.data.LastName || "",
 			email: data?.data.Email || "",
-			phone: data?.data.PhoneNumber || "",
+			phone_number: data?.data.PhoneNumber || "",
 			password: "",
 			confirm_password: "",
 		},
 		// validationSchema: updateCouponSchema,
 		enableReinitialize: true,
 		onSubmit: (values) => {
-			console.log(values)
+			// eslint-disable-next-line @typescript-eslint/no-unused-vars
+			const { confirm_password, ...rest } = values
+			mutate(rest)
 		},
 	})
-
-	const full_name = `${data?.data.FirstName} ${data?.data.LastName}`
 
 	return (
 		<>
@@ -106,11 +129,11 @@ export const ProfileTab = () => {
 									/>
 									<Input
 										type="text"
-										name="phone"
+										name="phone_number"
 										label="Phone number"
 										onChange={handleChange}
 										defaultValue={data?.data.PhoneNumber || ""}
-										error={errors.phone}
+										error={errors.phone_number}
 										disabled={!edit}
 									/>
 								</div>
@@ -136,7 +159,11 @@ export const ProfileTab = () => {
 									/>
 								</div>
 
-								{edit && <Button type="submit">Save Changes</Button>}
+								{edit && (
+									<Button type="submit" disabled={mutationLoading}>
+										{mutationLoading ? <Spinner /> : "Save Changes"}
+									</Button>
+								)}
 							</div>
 						</form>
 
@@ -149,17 +176,17 @@ export const ProfileTab = () => {
 							<ul className="flex flex-col gap-4">
 								{admins?.data.data.length ? (
 									admins.data.data.map((admin) => {
-										const fullname = `${admin.FirstName} ${admin.LastName}`
+										const adminFullname = `${admin.FirstName} ${admin.LastName}`
 
 										return (
 											<li className="flex items-center gap-6 text-xs" key={admin._id}>
 												<Avatar className="size-10">
-													<AvatarImage src={admin.ProfileImage} alt={fullname} />
-													<AvatarFallback>{getInitials(fullname)}</AvatarFallback>
+													<AvatarImage src={admin.ProfileImage} alt={adminFullname} />
+													<AvatarFallback>{getInitials(adminFullname)}</AvatarFallback>
 												</Avatar>
 
 												<div className="flex-1 capitalize">
-													<p className="font-medium">{full_name}</p>
+													<p className="font-medium">{adminFullname}</p>
 													<p className="text-[#979797]">{admin.Role.name}</p>
 												</div>
 

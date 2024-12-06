@@ -276,10 +276,24 @@ export type ProductProps = Node & {
 	unit_price: number
 	vendor: {
 		Email: string
+		FirstName: string
+		LastName: string
+		images: Array<string>
 		_id: string
 	}
 	weight: number
 	width: number
+	assigned_purchaser: {
+		_id: string
+		FirstName: string
+		LastName: string
+		Email: string
+		ProfileImage: string
+		PhoneNumber: string
+		status: string
+		createdAt: string
+		updatedAt: string
+	}
 }
 
 export type SingleProductProps = {
@@ -310,6 +324,7 @@ export type SingleProductProps = {
 		createdAt: string
 		updatedAt: string
 		__v: number
+		decline_product_note: string
 	}
 	reviews: Array<{
 		_id: string
@@ -332,15 +347,53 @@ export type SingleProductProps = {
 export type OrderProps = Node & {
 	__typename?: "Order"
 	_id: string
-	delivery_amount: number
-	grand_total: number
 	items: ProductProps[]
-	order_itinerary: string
-	payment_type: "INSTANT"
-	shipping_address: string
 	status: StatusProps
 	total_amount: number
+	delivery_amount: number
+	shipping_address: string
+	order_itinerary: string
 	tracking_id: string
+	grand_total: number
+	payment_type: string
+	is_coupon_applied: boolean
+	shipment_charges: boolean
+	applied_coupon: string
+	min_price: number
+	product_name: string
+	product_brand: string
+	email: string
+	phone_number: string
+	note: string
+	size: string
+	color: string
+	type: string
+	decline__note: string
+	max_price: number
+	approval_status: string
+	quantity: number
+	general_coupon: {
+		_id: string
+		name: string
+		audience: string
+		code: string
+		activation_date: string
+		expiry_date: string
+		remove_expiry_date: boolean
+		amount_type: string
+		coupon_type: string
+		condition: string
+		is_condition: boolean
+		usage_limit: number
+		remove_usage_limit: boolean
+		total_subscribers: number
+		active_status: boolean
+		createdAt: string
+		updatedAt: string
+		__v: number
+		amount: number
+		total_usage: number
+	}
 	user: {
 		_id: string
 		Email: string
@@ -623,3 +676,12 @@ export type ProfileProps = {
 export type RolesProps = PaginationResponse<ProfileProps["Role"]>
 
 export type AdminProps = PaginationResponse<ProfileProps>
+
+export type CategoriesProps = PaginationResponse<{
+	_id: string
+	name: string
+	__v: number
+	createdAt: string
+	updatedAt: string
+	image: string
+}>

@@ -38,6 +38,26 @@ export const updateCouponSchema = Yup.object({
 		.integer("Usage limit must be a whole number!"),
 })
 
+export const createDiscountCouponSchema = Yup.object({
+	quantity: Yup.number()
+		.required("Quantity is required!")
+		.typeError("Quantity must be a number!")
+		.min(1, "Quantity must be greater than 0!"),
+	discount: Yup.number()
+		.required("Discount is required!")
+		.typeError("Discount must be a number!")
+		.min(1, "Discount must be greater than 0!")
+		.max(100, "Discount must be less than 100!"),
+	activation_date: Yup.date()
+		.required("Activation date is required!")
+		.min(new Date(), "Activation date must be in the future!"),
+	expiry_date: Yup.date()
+		.required("Expiry date is required!")
+		.min(new Date(), "Activation date must be in the future!")
+		.min(Yup.ref("activation_date"), "Expiry date must be after activation date!"),
+	product_category: Yup.string().required("Product category is required!"),
+})
+
 export const addAdminSchema = Yup.object({
 	first_name: Yup.string().required("First name is required!"),
 	last_name: Yup.string().required("Last name is required!"),
@@ -53,4 +73,9 @@ export const addAdminSchema = Yup.object({
 	country: Yup.string().required("Country is required!"),
 })
 
+export const addPurchaserSchema = addAdminSchema.omit(["role", "country"])
+
+export const declineProductSchema = Yup.object({
+	decline_product_note: Yup.string().required("Reason is required!"),
+})
 

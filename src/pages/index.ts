@@ -9,6 +9,7 @@ const Transfer = React.lazy(() => import("./transfer"))
 const Coupon = React.lazy(() => import("./coupon"))
 const CreateCoupon = React.lazy(() => import("./create-coupon"))
 const Order = React.lazy(() => import("./order"))
+const CustomOrder = React.lazy(() => import("./custom-order"))
 const Orders = React.lazy(() => import("./orders"))
 const Product = React.lazy(() => import("./product"))
 const Products = React.lazy(() => import("./products"))
@@ -28,6 +29,7 @@ export {
 	Coupon,
 	CreateCoupon,
 	CreateProduct,
+	CustomOrder,
 	Feedback,
 	ForgotPassword,
 	Order,

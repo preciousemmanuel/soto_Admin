@@ -4,18 +4,11 @@ import { ApproveUserModal, RemoveUserModal } from "@/components/modals"
 import { DataCard, DataTable, Spinner } from "@/components/shared"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
-import {
-	Select,
-	SelectContent,
-	SelectItem,
-	SelectTrigger,
-	SelectValue,
-} from "@/components/ui/select"
 import { PAGE_LIMIT } from "@/config"
 import { useDebounce, usePageTitle } from "@/hooks"
-import { formattedStats, getInitials, getWeekRanges } from "@/lib"
+import { formattedStats, getInitials } from "@/lib"
 import { GetOverviewQuery, GetSellersQuery } from "@/queries"
-import type { SellersProps, TimelineProps } from "@/types"
+import type { SellersProps } from "@/types"
 import { keepPreviousData, useQuery } from "@tanstack/react-query"
 import { type ColumnDef } from "@tanstack/react-table"
 import { format } from "date-fns"
@@ -121,11 +114,11 @@ const columns: ColumnDef<Sellers>[] = [
 const page = 1
 const Sellers = () => {
 	usePageTitle("Sellers")
-	const [timeLine, setTimeLine] = React.useState<TimelineProps>("")
+	// const [timeLine, setTimeLine] = React.useState<TimelineProps>("")
 	const [query, setQuery] = React.useState("")
 	const seller_name = useDebounce(query, 500)
 
-	const ranges = getWeekRanges(new Date("2024-06-01"))
+	// const ranges = getWeekRanges(new Date("2024-06-01"))
 	// const [start_date, end_date] = timeLine.split(" - ")
 
 	// console.log("timeLine", start_date, end_date)
@@ -137,8 +130,8 @@ const Sellers = () => {
 	})
 
 	const { data: overview } = useQuery({
-		queryFn: () => GetOverviewQuery({ timeLine }),
-		queryKey: ["get-overview", timeLine],
+		queryFn: () => GetOverviewQuery({ timeLine: "" }),
+		queryKey: ["get-overview", ""],
 	})
 
 	const totalPages = Number(data?.data.sellers_data.pagination.pageCount)
@@ -160,7 +153,7 @@ const Sellers = () => {
 						/>
 					</div>
 
-					<Select value={timeLine} onValueChange={setTimeLine}>
+					{/* <Select value={timeLine} onValueChange={setTimeLine}>
 						<SelectTrigger className="w-[166px] border-0">
 							<SelectValue placeholder="Select Range" />
 						</SelectTrigger>
@@ -178,7 +171,7 @@ const Sellers = () => {
 							<MoreHorizontal />
 						</PopoverTrigger>
 						<PopoverContent></PopoverContent>
-					</Popover>
+					</Popover> */}
 				</div>
 			</header>
 

@@ -1,3 +1,4 @@
+import { ApproveProductModal, DeclineProductModal } from "@/components/modals"
 import { Spinner } from "@/components/shared"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Button } from "@/components/ui/button"
@@ -6,7 +7,8 @@ import { usePageTitle } from "@/hooks"
 import { formatCurrency, getInitials } from "@/lib"
 import { GetProductQuery, GetSellerQuery } from "@/queries"
 import { useQuery } from "@tanstack/react-query"
-import { Link, useNavigate, useParams } from "react-router-dom"
+import { CloseCircle, ShieldTick, Timer } from "iconsax-react"
+import { useNavigate, useParams } from "react-router-dom"
 
 const tabs = ["description", "additional information", "reviews"]
 const statusClass = {
@@ -41,9 +43,6 @@ const Product = () => {
 					<Button variant="outline" className="w-32" onClick={() => navigate(-1)}>
 						Back
 					</Button>
-					{/* <div className="flex items-center gap-3">
-						<Button>Add Product</Button>
-					</div> */}
 				</div>
 			</header>
 
@@ -69,9 +68,27 @@ const Product = () => {
 
 						<div className="flex max-w-prose flex-col gap-4 py-4">
 							<div>
-								<h3 className="font-body text-4xl font-semibold capitalize">
-									{product?.data.product.product_name}
-								</h3>
+								<div className="flex items-center justify-between gap-2">
+									<h3 className="font-body text-4xl font-semibold capitalize">
+										{product?.data.product.product_name}
+									</h3>
+									{product?.data.product.decline_product_note ? (
+										<div className="flex w-fit items-center gap-1 bg-red-50 px-3 py-1 text-xs font-medium text-red-600">
+											<CloseCircle variant="Bold" className="size-4 text-red-600" />
+											<p>Declined</p>
+										</div>
+									) : product?.data.product.is_verified ? (
+										<div className="flex w-fit items-center gap-1 bg-green-50 px-3 py-1 text-xs font-medium text-green-600">
+											<ShieldTick variant="Bold" className="size-4" />
+											<p>Verified</p>
+										</div>
+									) : (
+										<div className="flex w-fit items-center gap-1 bg-yellow-50 px-3 py-1 text-xs font-medium text-yellow-600">
+											<Timer variant="Bold" className="size-4" />
+											<p>Pending</p>
+										</div>
+									)}
+								</div>
 								<p className="text-lg font-semibold text-primary">
 									{formatCurrency(product?.data.product.unit_price ?? 0)}
 								</p>
@@ -93,7 +110,7 @@ const Product = () => {
 									</span>
 								</p>
 								<p>
-									In Discontinued:{" "}
+									Is Discontinued:{" "}
 									<span
 										className={
 											statusClass[product?.data.product.is_discounted as unknown as keyof typeof statusClass]
@@ -105,13 +122,12 @@ const Product = () => {
 								<div className="mt-4 flex flex-col gap-3">
 									<p>Created by:</p>
 									{vendor?.data.user ? (
-										<Link
-											to={`/dashboard/sellers/${vendor.data.user._id}`}
-											className="flex items-center gap-3 text-primary">
+										<div className="flex items-center gap-3 text-primary">
 											<Avatar className="size-9">
 												<AvatarImage
-													src={vendor.data.user.business.business_logo}
-													alt={vendor?.data.user.business.business_name}
+													src={vendor.data.user?.business?.business_logo ?? ""}
+													alt=""
+													// alt={vendor?.data.user?.business.business_name ?? ""}
 													className="shadow-sm"
 												/>
 												<AvatarFallback>{getInitials(vendor?.data.user.FirstName)}</AvatarFallback>
@@ -119,13 +135,26 @@ const Product = () => {
 
 											<div>
 												<p className="font-medium capitalize leading-none">
-													{vendor?.data.user.business.business_name}
+													{vendor?.data.user.business
+														? vendor?.data.user.business.business_name
+														: `${vendor?.data.user.FirstName} ${vendor?.data.user.LastName}`}
 												</p>
-												<span className="text-xs text-gray-400">{vendor.data.user.business.email}</span>
+												<span className="text-xs text-gray-400">
+													{vendor?.data.user.business
+														? vendor?.data.user.business.email
+														: vendor?.data.user.Email}
+												</span>
 											</div>
-										</Link>
+										</div>
 									) : null}
 								</div>
+
+								<div className="flex items-center gap-3 pt-4">
+									<ApproveProductModal id={String(id)} name={String(product?.data.product.product_name)} />
+
+									<DeclineProductModal />
+								</div>
+
 								{/* <p>
 								Ven: <span className="text-primary">Izu Computers & Accessories</span>
 							</p> */}
