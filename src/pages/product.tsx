@@ -72,7 +72,7 @@ const Product = () => {
 									<h3 className="font-body text-4xl font-semibold capitalize">
 										{product?.data.product.product_name}
 									</h3>
-									{product?.data.product.decline_product_note ? (
+									{product?.data.product.decline_product_note && !product?.data.product.is_verified ? (
 										<div className="flex w-fit items-center gap-1 bg-red-50 px-3 py-1 text-xs font-medium text-red-600">
 											<CloseCircle variant="Bold" className="size-4 text-red-600" />
 											<p>Declined</p>
@@ -80,7 +80,7 @@ const Product = () => {
 									) : product?.data.product.is_verified ? (
 										<div className="flex w-fit items-center gap-1 bg-green-50 px-3 py-1 text-xs font-medium text-green-600">
 											<ShieldTick variant="Bold" className="size-4" />
-											<p>Verified</p>
+											<p>Approved</p>
 										</div>
 									) : (
 										<div className="flex w-fit items-center gap-1 bg-yellow-50 px-3 py-1 text-xs font-medium text-yellow-600">
@@ -150,9 +150,16 @@ const Product = () => {
 								</div>
 
 								<div className="flex items-center gap-3 pt-4">
-									<ApproveProductModal id={String(id)} name={String(product?.data.product.product_name)} />
+									<ApproveProductModal
+										id={String(id)}
+										name={String(product?.data.product.product_name)}
+										isVerified={product?.data.product.is_verified ?? false}
+									/>
 
-									<DeclineProductModal />
+									<DeclineProductModal
+										isVerified={product?.data.product.is_verified ?? false}
+										isDeclined={Boolean(product?.data.product.decline_product_note)}
+									/>
 								</div>
 
 								{/* <p>

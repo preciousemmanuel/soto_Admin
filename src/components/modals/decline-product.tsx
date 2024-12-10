@@ -20,7 +20,12 @@ const initialValues = {
 	decline_product_note: "",
 }
 
-export const DeclineProductModal = () => {
+type Props = {
+	isDeclined: boolean
+	isVerified: boolean
+}
+
+export const DeclineProductModal = ({ isDeclined, isVerified }: Props) => {
 	const { id } = useParams()
 	const [open, setOpen] = React.useState(false)
 	const queryClient = useQueryClient()
@@ -54,6 +59,7 @@ export const DeclineProductModal = () => {
 		<Dialog open={open} onOpenChange={setOpen}>
 			<DialogTrigger
 				type="button"
+				disabled={isDeclined || isVerified}
 				className="flex rounded-md bg-red-600 px-4 py-2 text-xs text-white transition-all disabled:cursor-not-allowed disabled:opacity-50">
 				Decline
 			</DialogTrigger>

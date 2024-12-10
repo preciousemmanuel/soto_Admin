@@ -1,3 +1,4 @@
+import { RemoveUserModal } from "@/components/modals"
 import { Spinner } from "@/components/shared"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Button } from "@/components/ui/button"
@@ -91,7 +92,17 @@ const Seller = () => {
 					<Button variant="outline" onClick={() => navigate(-1)}>
 						Back
 					</Button>
-					<Button className="w-32">Block Seller</Button>
+
+					<RemoveUserModal
+						id={data?.data.user._id ?? ""}
+						name={`${data?.data.user.FirstName} ${data?.data.user.LastName}`}
+						isBlocked={Boolean(data?.data.user.isBlocked)}
+						trigger={
+							<Button className="w-32" disabled={data?.data.user.isBlocked}>
+								Block Seller
+							</Button>
+						}
+					/>
 				</div>
 			</header>
 

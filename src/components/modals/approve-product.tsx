@@ -15,9 +15,10 @@ import {
 type Props = {
 	id: string
 	name: string
+	isVerified: boolean
 }
 
-export const ApproveProductModal = ({ id, name }: Props) => {
+export const ApproveProductModal = ({ id, name, isVerified }: Props) => {
 	const [open, setOpen] = React.useState(false)
 	const queryClient = useQueryClient()
 
@@ -42,6 +43,7 @@ export const ApproveProductModal = ({ id, name }: Props) => {
 	return (
 		<Dialog open={open} onOpenChange={setOpen}>
 			<DialogTrigger
+				disabled={isVerified}
 				type="button"
 				className="flex rounded-md bg-green-600 px-4 py-2 text-xs text-white transition-all disabled:cursor-not-allowed disabled:opacity-50">
 				Approve

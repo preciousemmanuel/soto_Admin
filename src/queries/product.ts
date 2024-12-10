@@ -9,7 +9,12 @@ import {
 } from "@/types"
 
 const GetProductsQuery = async (
-	params: PaginationProps & { product_name?: string; select_type?: string; status?: string }
+	params: PaginationProps & {
+		product_name?: string
+		select_type?: string
+		status?: string
+		category?: string
+	}
 ) => {
 	return axios
 		.get<HttpResponse<PaginationResponse<ProductProps>>>(endpoints().products.get_all, {

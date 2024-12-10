@@ -1,6 +1,12 @@
 import { endpoints } from "@/config"
 import { axios } from "@/lib"
-import type { HttpResponse, PaginationProps, PickupsProps, PurchasersProps } from "@/types"
+import type {
+	AdminProps,
+	HttpResponse,
+	PaginationProps,
+	PickupsProps,
+	PurchasersProps,
+} from "@/types"
 
 const GetPurchasersQuery = async (params: PaginationProps & { search?: string }) => {
 	return axios
@@ -33,4 +39,29 @@ const GetPurchaserQuery = async (id: string) => {
 		.then((res) => res.data)
 }
 
-export { GetPickupsQuery, GetPurchaserQuery, GetPurchasersQuery }
+export type CreatePurchaserPayload = {
+	first_name: string
+	last_name: string
+	email: string
+	phone_number: string
+	address: string
+	city: string
+	state: string
+	country: string
+	id_type: string
+	id_number: string
+	password: string
+	passport: string | undefined
+}
+const CreatePurchaseMutation = async (payload: CreatePurchaserPayload) => {
+	return axios
+		.post<HttpResponse<AdminProps>>(endpoints().purchasers.create, payload, {
+			headers: {
+				"Content-Type": "multipart/form-data",
+			},
+		})
+		.then((res) => res.data)
+}
+
+export { CreatePurchaseMutation, GetPickupsQuery, GetPurchaserQuery, GetPurchasersQuery }
+

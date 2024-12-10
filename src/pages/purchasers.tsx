@@ -25,6 +25,11 @@ const tabs = ["purchasers", "pending", "picked up", "delivered", "cancelled"] as
 type PurchaserDetails = PurchasersProps["data"][number]
 const columns: ColumnDef<PurchaserDetails>[] = [
 	{
+		header: "ID",
+		accessorKey: "_id",
+		cell: ({ row }) => row.original?.UniqueId ?? row.original._id,
+	},
+	{
 		header: "Purchaser",
 		accessorKey: "FirstName",
 		cell: ({ row }) => (
@@ -104,6 +109,9 @@ const Purchasers = () => {
 			<header className="flex items-center justify-between gap-2">
 				<h2 className="font-body text-3xl font-medium">Purchaser Management</h2>
 
+				{/* <Button className="w-36" asChild>
+					<Link to="/dashboard/purchasers/new">Add Purchaser</Link>
+				</Button> */}
 				<AddPurchaserModal />
 			</header>
 

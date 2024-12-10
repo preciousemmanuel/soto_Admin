@@ -1,11 +1,9 @@
-import { PAGE_LIMIT, STATES } from "@/config"
-import { CreateAdminMutation } from "@/queries/admin"
-import { GetRolesQuery } from "@/queries/settings"
-import { addAdminSchema, addPurchaserSchema } from "@/schema"
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
+import { STATES } from "@/config"
+import { CreatePurchaseMutation, type CreatePurchaserPayload } from "@/queries/purchaser"
+import { addPurchaserSchema, idTypes } from "@/schema"
+import { useMutation, useQueryClient } from "@tanstack/react-query"
 import { useFormik } from "formik"
 import * as React from "react"
-import * as Yup from "yup"
 import { Spinner } from "../shared"
 import { Button } from "../ui/button"
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "../ui/dialog"
@@ -19,58 +17,52 @@ const initialValues = {
 	phone_number: "",
 	address: "",
 	city: "",
-	postal_code: "",
 	state: "",
+	id_type: "",
+	id_number: "",
+	password: "",
+	passport: undefined,
 }
-
-type Payload = Yup.InferType<typeof addAdminSchema>
 
 export const AddPurchaserModal = () => {
 	const [open, setOpen] = React.useState(false)
 	const queryClient = useQueryClient()
 
-	const { data: roles } = useQuery({
-		queryFn: () => GetRolesQuery({ page: 1, limit: PAGE_LIMIT }),
-		queryKey: ["get-roles", 1],
-	})
-
 	const { isPending, mutate } = useMutation({
-		mutationFn: (values: Payload) => CreateAdminMutation(values),
+		mutationFn: (values: CreatePurchaserPayload) => CreatePurchaseMutation(values),
 		mutationKey: ["add-purchaser"],
 		onSuccess: () => {
 			queryClient.invalidateQueries()
 			setOpen(false)
-		},
-		onError: (error) => {
-			console.error(error)
+			// URL.revokeObjectURL(values?.passport as string)
 		},
 	})
 
-	const { handleSubmit, errors, handleChange } = useFormik({
+	const { handleSubmit, errors, handleChange, setFieldValue } = useFormik({
 		initialValues,
 		validationSchema: addPurchaserSchema,
 		enableReinitialize: true,
 		onSubmit: (values) => {
+			console.log("values", values)
 			mutate({
 				...values,
-				role: String(roles?.data.data.find((role) => role.name.toLowerCase() === "purchaser")?._id),
 				country: "Nigeria",
+				id_type: values.id_type.replace(" ", "_").toUpperCase(),
 			})
 		},
 	})
-
 	return (
 		<Dialog open={open} onOpenChange={setOpen}>
 			<DialogTrigger asChild>
 				<Button>Add Purchaser</Button>
 			</DialogTrigger>
 
-			<DialogContent className="max-w-2xl">
+			<DialogContent className="max-h-[90%] overflow-y-auto">
 				<DialogHeader className="flex flex-col gap-1">
 					<DialogTitle>Add Purchaser</DialogTitle>
 				</DialogHeader>
 
-				<form onSubmit={handleSubmit} className="grid grid-cols-2 gap-8 py-4">
+				<form onSubmit={handleSubmit} className="grid grid-cols-2 gap-x-4 gap-y-8 py-4">
 					<Input
 						type="text"
 						name="first_name"
@@ -92,6 +84,7 @@ export const AddPurchaserModal = () => {
 						label="Phone number"
 						onChange={handleChange}
 						error={errors.phone_number}
+						maxLength={11}
 					/>
 
 					<Input
@@ -101,13 +94,7 @@ export const AddPurchaserModal = () => {
 						onChange={handleChange}
 						error={errors.address}
 					/>
-					<Input
-						type="text"
-						name="postal_code"
-						label="Postal Code"
-						onChange={handleChange}
-						error={errors.postal_code}
-					/>
+
 					<Input type="text" name="city" label="City" onChange={handleChange} error={errors.city} />
 
 					<label className="flex w-full flex-col gap-2.5">
@@ -132,6 +119,61 @@ export const AddPurchaserModal = () => {
 
 						{errors.state && <p className="text-xs text-red-600">{errors.state}</p>}
 					</label>
+
+					<label className="flex w-full flex-col gap-2.5">
+						<p className="text-sm font-medium leading-none text-[#5d5c5c] peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
+							ID Type
+						</p>
+						<Select
+							name="id_type"
+							onValueChange={(value) => handleChange({ target: { name: "id_type", value } })}>
+							<SelectTrigger className="flex w-full rounded border-0 bg-neutral-50 px-4 py-[22px] text-base font-normal outline-none ring-1 ring-[#E5E5E5] focus:ring-2 focus:ring-primary focus:ring-offset-1 disabled:cursor-not-allowed disabled:opacity-50 data-[placeholder]:font-normal data-[placeholder]:text-neutral-500">
+								<SelectValue placeholder="Select a value" />
+							</SelectTrigger>
+
+							<SelectContent>
+								{idTypes.map((type) => (
+									<SelectItem key={type} value={type} className="capitalize">
+										{type}
+									</SelectItem>
+								))}
+							</SelectContent>
+						</Select>
+
+						{errors.id_type && <p className="text-xs text-red-600">{errors.id_type}</p>}
+					</label>
+
+					<Input
+						type="text"
+						name="id_number"
+						label="ID Number"
+						onChange={handleChange}
+						error={errors.id_number}
+						placeholder=""
+					/>
+
+					<Input
+						type="password"
+						name="password"
+						label="Password"
+						onChange={handleChange}
+						error={errors.password}
+					/>
+
+					<div className="col-span-full flex flex-col gap-4">
+						<Input
+							type="file"
+							name="passport"
+							label="Passport"
+							onChange={(e) => setFieldValue("passport", e.target.files?.[0])}
+							error={errors.password}
+							accept="image/jpeg, image/jpg, image/png"
+						/>
+
+						{/* {values.passport ? (
+							<img src={URL.createObjectURL(values?.passport)} className="h-60 w-full object-contain" />
+						) : null} */}
+					</div>
 
 					<Button type="submit" disabled={isPending} className="col-span-full">
 						{isPending ? <Spinner /> : "Add Purchaser"}

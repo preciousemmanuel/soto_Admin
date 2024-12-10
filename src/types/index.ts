@@ -586,6 +586,9 @@ export type PurchasersProps = PaginationResponse<{
 	coordinate: Array<number>
 	createdAt: string
 	updatedAt: string
+	UniqueId: string
+	id_type: string
+	id_number: string
 	__v: number
 	Token: string
 	address_id: string

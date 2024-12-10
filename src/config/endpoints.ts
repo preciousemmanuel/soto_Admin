@@ -82,6 +82,7 @@ export const endpoints = (id?: string) => {
 		get_all: `${baseURL}/admin/purchasers/get-all`,
 		get_one: `${baseURL}/admin/purchasers/view-one/${id}`,
 		get_pickups: `${baseURL}/admin/purchasers/get-pickups`,
+		create: `${baseURL}/admin/purchasers/create-new`,
 	} as const
 
 	const categories = {
