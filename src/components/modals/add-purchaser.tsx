@@ -1,7 +1,7 @@
-import { STATES } from "@/config"
 import { CreatePurchaseMutation, type CreatePurchaserPayload } from "@/queries/purchaser"
+import { GetCitiesQuery, GetStatesQuery } from "@/queries/shared"
 import { addPurchaserSchema, idTypes } from "@/schema"
-import { useMutation, useQueryClient } from "@tanstack/react-query"
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import { useFormik } from "formik"
 import * as React from "react"
 import { Spinner } from "../shared"
@@ -28,6 +28,13 @@ export const AddPurchaserModal = () => {
 	const [open, setOpen] = React.useState(false)
 	const queryClient = useQueryClient()
 
+	const { data: states } = useQuery({
+		queryKey: ["get-states"],
+		queryFn: GetStatesQuery,
+		staleTime: Infinity,
+		gcTime: Infinity,
+	})
+
 	const { isPending, mutate } = useMutation({
 		mutationFn: (values: CreatePurchaserPayload) => CreatePurchaseMutation(values),
 		mutationKey: ["add-purchaser"],
@@ -38,7 +45,7 @@ export const AddPurchaserModal = () => {
 		},
 	})
 
-	const { handleSubmit, errors, handleChange, setFieldValue } = useFormik({
+	const { handleSubmit, errors, handleChange, setFieldValue, values } = useFormik({
 		initialValues,
 		validationSchema: addPurchaserSchema,
 		enableReinitialize: true,
@@ -51,6 +58,17 @@ export const AddPurchaserModal = () => {
 			})
 		},
 	})
+
+	const selectedState = states?.data.find((state) => state.name === values.state)
+
+	const { data: cities, isPending: citiesLoading } = useQuery({
+		queryKey: ["get-cities", selectedState?.isoCode],
+		queryFn: () => GetCitiesQuery({ state_code: selectedState?.isoCode }),
+		staleTime: Infinity,
+		gcTime: Infinity,
+		enabled: !!selectedState,
+	})
+
 	return (
 		<Dialog open={open} onOpenChange={setOpen}>
 			<DialogTrigger asChild>
@@ -95,8 +113,6 @@ export const AddPurchaserModal = () => {
 						error={errors.address}
 					/>
 
-					<Input type="text" name="city" label="City" onChange={handleChange} error={errors.city} />
-
 					<label className="flex w-full flex-col gap-2.5">
 						<p className="text-sm font-medium leading-none text-[#5d5c5c] peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
 							State
@@ -109,15 +125,39 @@ export const AddPurchaserModal = () => {
 							</SelectTrigger>
 
 							<SelectContent>
-								{STATES.map((state) => (
-									<SelectItem key={state} value={state} className="capitalize">
-										{state}
+								{states?.data.map((state) => (
+									<SelectItem key={state._id} value={state.name} className="capitalize">
+										{state.name}
 									</SelectItem>
 								))}
 							</SelectContent>
 						</Select>
 
 						{errors.state && <p className="text-xs text-red-600">{errors.state}</p>}
+					</label>
+
+					<label className="flex w-full flex-col gap-2.5">
+						<p className="text-sm font-medium leading-none text-[#5d5c5c] peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
+							City
+						</p>
+						<Select
+							name="city"
+							disabled={citiesLoading}
+							onValueChange={(value) => handleChange({ target: { name: "city", value } })}>
+							<SelectTrigger className="flex w-full rounded border-0 bg-neutral-50 px-4 py-[22px] text-base font-normal outline-none ring-1 ring-[#E5E5E5] focus:ring-2 focus:ring-primary focus:ring-offset-1 disabled:cursor-not-allowed disabled:opacity-50 data-[placeholder]:font-normal data-[placeholder]:text-neutral-500">
+								<SelectValue placeholder={citiesLoading ? "Loading..." : "Select a value"} />
+							</SelectTrigger>
+
+							<SelectContent>
+								{cities?.data.map((city) => (
+									<SelectItem key={city._id} value={city.name} className="capitalize">
+										{city.name}
+									</SelectItem>
+								))}
+							</SelectContent>
+						</Select>
+
+						{errors.city && <p className="text-xs text-red-600">{errors.city}</p>}
 					</label>
 
 					<label className="flex w-full flex-col gap-2.5">

@@ -15,8 +15,8 @@ import { frequencyFilter, PAGE_LIMIT } from "@/config"
 import { useDebounce, usePageTitle } from "@/hooks"
 import { getInitials, replaceSpaceWithUnderscore } from "@/lib"
 import { GetProductsQuery } from "@/queries"
-import { GetCategoriesQuery } from "@/queries/categories"
 import { GetSettingsQuery } from "@/queries/settings"
+import { GetCategoriesQuery } from "@/queries/shared"
 import type { TimelineProps } from "@/types"
 import { usePrefetchQuery, useQuery } from "@tanstack/react-query"
 import { SearchNormal1 } from "iconsax-react"
@@ -40,6 +40,8 @@ const Products = () => {
 
 	const product_name = useDebounce(query, 500)
 
+	console.log("category", category)
+
 	const { data: categories } = useQuery({
 		queryKey: ["get-categories", 1],
 		queryFn: () =>
@@ -56,9 +58,9 @@ const Products = () => {
 				limit: PAGE_LIMIT,
 				select_type: status.toUpperCase(),
 				product_name,
-				category,
+				...(category && category !== "all" && { category }),
 			}),
-		queryKey: ["get-products", timeLine, page, status, product_name],
+		queryKey: ["get-products", timeLine, page, status, product_name, category],
 	})
 
 	// fetch
@@ -74,10 +76,21 @@ const Products = () => {
 
 				<div className="flex items-center gap-3">
 					<Select value={category} onValueChange={setCategory}>
-						<SelectTrigger className="w-[166px]">
+						<SelectTrigger className="w-52 capitalize">
 							<SelectValue placeholder="Select Category" />
 						</SelectTrigger>
 						<SelectContent>
+							<SelectItem value="all" className="capitalize">
+								<div className="flex flex-row items-center gap-2">
+									<Avatar className="size-6">
+										<AvatarImage src="" alt="" />
+										<AvatarFallback>{getInitials("ALL")}</AvatarFallback>
+									</Avatar>
+
+									<span>All Categories</span>
+								</div>
+							</SelectItem>
+
 							{categories?.data.data.map((category) => (
 								<SelectItem key={category._id} value={category._id} className="capitalize">
 									<div className="flex flex-row items-center gap-2">

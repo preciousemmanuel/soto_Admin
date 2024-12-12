@@ -107,6 +107,7 @@ export const LatestOrdersTable = ({ timeLine }: Props) => {
 				data={data?.data.data || []}
 				totalPages={totalPages}
 				isLoading={isPending}
+				paginate={false}
 			/>
 		</div>
 	)

@@ -1,5 +1,6 @@
-import { ChartBar, ChartLine } from "@/components/charts"
-import { DataCard, Spinner } from "@/components/shared"
+import { ChartBar } from "@/components/charts"
+import { ChartArea } from "@/components/charts/area"
+import { DataCard, Notifications, Spinner } from "@/components/shared"
 import { LatestOrdersTable } from "@/components/table"
 import { BestSellingProducts } from "@/components/table/best-selling-products"
 import {
@@ -32,6 +33,8 @@ const Dashboard = () => {
 				<h2 className="font-body text-3xl font-medium">Dashboard</h2>
 
 				<div className="flex items-center gap-6">
+					<Notifications />
+
 					<Select value={timeLine} onValueChange={setTimeLine}>
 						<SelectTrigger className="w-[166px] border-0">
 							<SelectValue placeholder="Select Range" />
@@ -120,7 +123,11 @@ const Dashboard = () => {
 							<p className="text-sm font-medium text-neutral-400">
 								{getRange(overview?.data.advanced_report)} order metric count
 							</p>
-							<ChartLine data={[]} />
+
+							{overview?.data.advanced_report ? (
+								<ChartArea data={overview?.data.advanced_report || []} />
+							) : null}
+							{/* <ChartLine data={[]} /> */}
 						</div>
 
 						<BestSellingProducts timeLine={timeLine} />

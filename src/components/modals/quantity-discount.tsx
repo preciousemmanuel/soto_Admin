@@ -1,5 +1,5 @@
-import { GetCategoriesQuery } from "@/queries/categories"
 import { CreateDiscountCouponMutation } from "@/queries/coupon"
+import { GetCategoriesQuery } from "@/queries/shared"
 import { createDiscountCouponSchema } from "@/schema"
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import { format } from "date-fns"

@@ -97,9 +97,16 @@ const Product = () => {
 							<p className="text-sm leading-relaxed">{product?.data.product.description}</p>
 
 							<div className="flex flex-col gap-2 text-sm text-[#9F9F9F]">
-								<p>Category: {product?.data.product.category.name}</p>
+								<p>
+									Category: <span className="capitalize">{product?.data.product.category.name}</span>
+								</p>
 								<p>Total Quantity: {product?.data.product.product_quantity}</p>
 								<p>Quantity Sold: {product?.data.product.total_quantity_sold}</p>
+								<p>
+									Quantity In Stock:{" "}
+									{Number(product?.data.product.product_quantity) -
+										Number(product?.data.product.total_quantity_sold)}
+								</p>
 								<p>
 									In Stock:{" "}
 									<span

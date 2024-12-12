@@ -8,8 +8,9 @@ import { PAGE_LIMIT } from "@/config"
 import { useDebounce, usePageTitle } from "@/hooks"
 import { getInitials, replaceSpaceWithUnderscore } from "@/lib"
 import { GetPurchasersQuery } from "@/queries/purchaser"
+import { GetStatesQuery } from "@/queries/shared"
 import type { PurchasersProps } from "@/types"
-import { keepPreviousData, useQuery } from "@tanstack/react-query"
+import { keepPreviousData, usePrefetchQuery, useQuery } from "@tanstack/react-query"
 import type { ColumnDef } from "@tanstack/react-table"
 import { format } from "date-fns"
 import { SearchNormal1 } from "iconsax-react"
@@ -103,6 +104,11 @@ const Purchasers = () => {
 		placeholderData: keepPreviousData,
 	})
 	const totalPages = Number(data?.data.pagination.pageCount)
+
+	usePrefetchQuery({
+		queryKey: ["get-states"],
+		queryFn: GetStatesQuery,
+	})
 
 	return (
 		<section className="flex flex-col gap-10">

@@ -3,7 +3,12 @@ import { axios } from "@/lib"
 import { HttpResponse, PaginationProps, type SellerProps, type SellersProps } from "@/types"
 
 const GetSellersQuery = async (
-	params: PaginationProps & { search?: string; end_date?: string; start_date?: string }
+	params: PaginationProps & {
+		search?: string
+		end_date?: string
+		start_date?: string
+		seller_status?: string
+	}
 ) => {
 	return axios
 		.get<HttpResponse<SellersProps>>(endpoints().sellers.get_all, {

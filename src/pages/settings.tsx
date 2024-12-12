@@ -1,13 +1,13 @@
 import { AddAdminModal } from "@/components/modals"
 import { LogoutModal } from "@/components/modals/logout"
-import { WithdrawalTab } from "@/components/shared"
+import { Notifications, WithdrawalTab } from "@/components/shared"
 import { ProfileTab } from "@/components/shared/profile-tab"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { PAGE_LIMIT } from "@/config"
 import { usePageTitle } from "@/hooks"
 import { GetRolesQuery } from "@/queries/settings"
 import { usePrefetchQuery } from "@tanstack/react-query"
-import { Message2, Notification } from "iconsax-react"
+import { Message2 } from "iconsax-react"
 import { useSearchParams } from "react-router-dom"
 
 const tabs = ["profile", "withdrawal", "feedback"] as const
@@ -32,9 +32,8 @@ const Settings = () => {
 					<button className="relative grid size-10 place-items-center">
 						<Message2 />
 					</button>
-					<button className="relative grid size-10 place-items-center">
-						<Notification />
-					</button>
+
+					<Notifications />
 
 					<AddAdminModal />
 

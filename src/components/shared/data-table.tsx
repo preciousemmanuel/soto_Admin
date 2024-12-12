@@ -24,6 +24,7 @@ interface Props<TData, TValue> {
 	totalPages?: number
 	isLoading?: boolean
 	isPlaceholderData?: boolean
+	paginate?: boolean
 }
 
 export function DataTable<TData, TValue>({
@@ -32,6 +33,7 @@ export function DataTable<TData, TValue>({
 	totalPages,
 	isLoading,
 	isPlaceholderData,
+	paginate = true,
 }: Props<TData, TValue>) {
 	// const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([])
 	// const [sorting, setSorting] = React.useState<SortingState>([])
@@ -98,7 +100,7 @@ export function DataTable<TData, TValue>({
 				</TableBody>
 			</Table>
 
-			{data && totalPages ? <Pagination totalPages={totalPages} /> : null}
+			{data && totalPages && paginate ? <Pagination totalPages={totalPages} /> : null}
 		</div>
 	)
 }

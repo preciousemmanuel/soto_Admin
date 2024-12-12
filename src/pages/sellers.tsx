@@ -4,6 +4,7 @@ import { ApproveUserModal, RemoveUserModal } from "@/components/modals"
 import { DataCard, DataTable, Spinner } from "@/components/shared"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { PAGE_LIMIT } from "@/config"
 import { useDebounce, usePageTitle } from "@/hooks"
 import { formattedStats, getInitials } from "@/lib"
@@ -15,7 +16,9 @@ import { format } from "date-fns"
 import { SearchNormal1 } from "iconsax-react"
 import { MoreHorizontal } from "lucide-react"
 import * as React from "react"
-import { Link } from "react-router-dom"
+import { Link, useSearchParams } from "react-router-dom"
+
+const tabs = ["approved", "pending", "blocked", "declined"]
 
 type Sellers = SellersProps["sellers_data"]["data"][number]
 const statusClass = {
@@ -26,22 +29,24 @@ const statusClass = {
 const columns: ColumnDef<Sellers>[] = [
 	{
 		header: "Seller",
-		accessorKey: "first_name",
-		cell: ({ row }) => (
-			<div className="flex items-center gap-2.5">
-				<Avatar className="size-9">
-					<AvatarImage src="" alt={row.getValue("first_name")} />
-					<AvatarFallback>{getInitials(row.getValue("first_name"))}</AvatarFallback>
-				</Avatar>
+		accessorKey: "FirstName",
+		cell: ({ row }) => {
+			const full_name = `${row.original.FirstName} ${row.original.LastName}`
 
-				<div>
-					<p className="font-medium capitalize leading-none">
-						{row.original.first_name} {row.original.last_name}
-					</p>
-					<span className="text-xs text-gray-400">{row.original.email}</span>
+			return (
+				<div className="flex items-center gap-2.5">
+					<Avatar className="size-9">
+						<AvatarImage src="" alt={row.getValue("FirstName")} />
+						<AvatarFallback>{getInitials(full_name)}</AvatarFallback>
+					</Avatar>
+
+					<div>
+						<p className="font-medium capitalize leading-none">{full_name}</p>
+						<span className="text-xs text-gray-400">{row.original.Email}</span>
+					</div>
 				</div>
-			</div>
-		),
+			)
+		},
 	},
 	{
 		header: () => <p>QTY</p>,
@@ -56,11 +61,18 @@ const columns: ColumnDef<Sellers>[] = [
 		cell: ({ row }) => <span className="capitalize">{row.getValue("category")}</span>,
 	},
 	{
-		header: "Status",
-		accessorKey: "is_active",
+		header: "Seller Status",
+		accessorKey: "isVerified",
 		cell: ({ row }) => (
-			<p className={statusClass[row.getValue("is_active") as keyof typeof statusClass]}>
-				{row.getValue("is_active") ? "Active" : "Inactive"}
+			<p>{row.original.IsVerified ? "Verified" : row.original.IsBlocked ? "Blocked" : "Pending"}</p>
+		),
+	},
+	{
+		header: "Active Status",
+		accessorKey: "IsActive",
+		cell: ({ row }) => (
+			<p className={statusClass[row.getValue("IsActive") as keyof typeof statusClass]}>
+				{row.getValue("IsActive") ? "Active" : "Inactive"}
 			</p>
 		),
 	},
@@ -68,16 +80,6 @@ const columns: ColumnDef<Sellers>[] = [
 		header: "Joined Date",
 		accessorKey: "createdAt",
 		cell: ({ row }) => format(new Date(row.getValue("createdAt")), "MMM d, yyyy"),
-	},
-	{
-		header: "Is Verified?",
-		accessorKey: "is_verified",
-		cell: ({ row }) => (row.getValue("is_verified") ? <p>Yes</p> : <p>No</p>),
-	},
-	{
-		header: "Is Blocked?",
-		accessorKey: "is_blocked",
-		cell: ({ row }) => (row.getValue("is_blocked") ? <p>Yes</p> : <p>No</p>),
 	},
 	{
 		header: "Action",
@@ -96,14 +98,14 @@ const columns: ColumnDef<Sellers>[] = [
 
 					<ApproveUserModal
 						id={row.original._id}
-						name={`${row.original.first_name} ${row.original.last_name}`}
-						isVerified={row.original.is_verified}
+						name={`${row.original.FirstName} ${row.original.LastName}`}
+						isVerified={row.original.IsVerified}
 					/>
 
 					<RemoveUserModal
 						id={row.original._id}
-						name={`${row.original.first_name} ${row.original.last_name}`}
-						isBlocked={row.original.is_blocked}
+						name={`${row.original.FirstName} ${row.original.LastName}`}
+						isBlocked={row.original.IsBlocked}
 					/>
 				</PopoverContent>
 			</Popover>
@@ -111,21 +113,24 @@ const columns: ColumnDef<Sellers>[] = [
 	},
 ]
 
-const page = 1
 const Sellers = () => {
 	usePageTitle("Sellers")
-	// const [timeLine, setTimeLine] = React.useState<TimelineProps>("")
+	const [searchParams, setSearchParams] = useSearchParams()
+	const page = Number(searchParams.get("page")) || 1
+	const status = searchParams.get("status") ?? tabs[0]
+
 	const [query, setQuery] = React.useState("")
 	const seller_name = useDebounce(query, 500)
 
-	// const ranges = getWeekRanges(new Date("2024-06-01"))
-	// const [start_date, end_date] = timeLine.split(" - ")
-
-	// console.log("timeLine", start_date, end_date)
-
 	const { data, isPending, isPlaceholderData } = useQuery({
-		queryFn: () => GetSellersQuery({ page, limit: PAGE_LIMIT, search: seller_name }),
-		queryKey: ["get-sellers", page, seller_name],
+		queryFn: () =>
+			GetSellersQuery({
+				page,
+				limit: PAGE_LIMIT,
+				search: seller_name,
+				seller_status: status.toUpperCase(),
+			}),
+		queryKey: ["get-sellers", page, seller_name, status],
 		placeholderData: keepPreviousData,
 	})
 
@@ -152,26 +157,6 @@ const Sellers = () => {
 							placeholder="Search by seller name"
 						/>
 					</div>
-
-					{/* <Select value={timeLine} onValueChange={setTimeLine}>
-						<SelectTrigger className="w-[166px] border-0">
-							<SelectValue placeholder="Select Range" />
-						</SelectTrigger>
-						<SelectContent>
-							{ranges.map((value) => (
-								<SelectItem key={value} value={value}>
-									{value}
-								</SelectItem>
-							))}
-						</SelectContent>
-					</Select>
-
-					<Popover>
-						<PopoverTrigger className="text-neutral-500">
-							<MoreHorizontal />
-						</PopoverTrigger>
-						<PopoverContent></PopoverContent>
-					</Popover> */}
 				</div>
 			</header>
 
@@ -238,20 +223,35 @@ const Sellers = () => {
 						</div>
 					</div>
 
-					<div className="flex flex-col gap-8 border-0.5 border-[#f8f3f3] bg-white p-6 shadow-card shadow-primary/[8%]">
-						<div className="flex w-full items-center justify-between">
-							<p className="text-lg font-medium">All Sellers</p>
+					<div className="flex flex-col gap-8 border-0.5 border-[#f8f3f3] bg-white px-6 py-4 shadow-card shadow-primary/[8%]">
+						{/* <p className="text-2xl font-medium">Sellers</p> */}
 
-							{/* <Link to="" className="flex items-center gap-3 text-sm font-medium text-primary">
-					More <ArrowRight size={16} />
-				</Link> */}
-						</div>
-						<DataTable
-							columns={columns}
-							data={data?.data.sellers_data.data || []}
-							totalPages={totalPages}
-							isPlaceholderData={isPlaceholderData}
-						/>
+						<Tabs
+							defaultValue={status ?? tabs[0]}
+							value={status ?? tabs[0]}
+							onValueChange={(value) => {
+								searchParams.set("status", value)
+								setSearchParams(searchParams)
+							}}>
+							<TabsList>
+								{tabs.map((tab) => (
+									<TabsTrigger key={tab} value={tab}>
+										{tab} Seller
+									</TabsTrigger>
+								))}
+							</TabsList>
+
+							{tabs.map((tab) => (
+								<TabsContent key={tab} value={tab}>
+									<DataTable
+										columns={columns}
+										data={data?.data.sellers_data.data || []}
+										totalPages={totalPages}
+										isPlaceholderData={isPlaceholderData}
+									/>
+								</TabsContent>
+							))}
+						</Tabs>
 					</div>
 				</>
 			)}
