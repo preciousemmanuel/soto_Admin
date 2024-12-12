@@ -16,9 +16,10 @@ type Props = {
 	id: string
 	name: string
 	isBlocked: boolean
+	trigger?: React.ReactNode
 }
 
-export const RemoveUserModal = ({ id, name, isBlocked }: Props) => {
+export const RemoveUserModal = ({ id, name, isBlocked, trigger }: Props) => {
 	const [open, setOpen] = React.useState(false)
 	const queryClient = useQueryClient()
 
@@ -44,10 +45,16 @@ export const RemoveUserModal = ({ id, name, isBlocked }: Props) => {
 
 	return (
 		<Dialog open={open} onOpenChange={setOpen}>
-			<DialogTrigger
-				type="button"
-				className="flex w-full rounded-md px-4 py-2 text-xs text-red-600 transition-all hover:bg-red-600 hover:text-white">
-				{isBlocked ? "Unblock User" : "Block User"}
+			<DialogTrigger asChild>
+				{trigger ? (
+					trigger
+				) : (
+					<button
+						type="button"
+						className="flex w-full rounded-md px-4 py-2 text-xs text-red-600 transition-all hover:bg-red-600 hover:text-white">
+						{isBlocked ? "Unblock User" : "Block User"}
+					</button>
+				)}
 			</DialogTrigger>
 
 			<DialogContent className="max-w-md">

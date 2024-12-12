@@ -8,8 +8,9 @@ import { PAGE_LIMIT } from "@/config"
 import { useDebounce, usePageTitle } from "@/hooks"
 import { getInitials, replaceSpaceWithUnderscore } from "@/lib"
 import { GetPurchasersQuery } from "@/queries/purchaser"
+import { GetStatesQuery } from "@/queries/shared"
 import type { PurchasersProps } from "@/types"
-import { keepPreviousData, useQuery } from "@tanstack/react-query"
+import { keepPreviousData, usePrefetchQuery, useQuery } from "@tanstack/react-query"
 import type { ColumnDef } from "@tanstack/react-table"
 import { format } from "date-fns"
 import { SearchNormal1 } from "iconsax-react"
@@ -24,6 +25,11 @@ const tabs = ["purchasers", "pending", "picked up", "delivered", "cancelled"] as
 
 type PurchaserDetails = PurchasersProps["data"][number]
 const columns: ColumnDef<PurchaserDetails>[] = [
+	{
+		header: "ID",
+		accessorKey: "_id",
+		cell: ({ row }) => row.original?.UniqueId ?? row.original._id,
+	},
 	{
 		header: "Purchaser",
 		accessorKey: "FirstName",
@@ -99,11 +105,19 @@ const Purchasers = () => {
 	})
 	const totalPages = Number(data?.data.pagination.pageCount)
 
+	usePrefetchQuery({
+		queryKey: ["get-states"],
+		queryFn: GetStatesQuery,
+	})
+
 	return (
 		<section className="flex flex-col gap-10">
 			<header className="flex items-center justify-between gap-2">
 				<h2 className="font-body text-3xl font-medium">Purchaser Management</h2>
 
+				{/* <Button className="w-36" asChild>
+					<Link to="/dashboard/purchasers/new">Add Purchaser</Link>
+				</Button> */}
 				<AddPurchaserModal />
 			</header>
 

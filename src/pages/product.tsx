@@ -72,7 +72,7 @@ const Product = () => {
 									<h3 className="font-body text-4xl font-semibold capitalize">
 										{product?.data.product.product_name}
 									</h3>
-									{product?.data.product.decline_product_note ? (
+									{product?.data.product.decline_product_note && !product?.data.product.is_verified ? (
 										<div className="flex w-fit items-center gap-1 bg-red-50 px-3 py-1 text-xs font-medium text-red-600">
 											<CloseCircle variant="Bold" className="size-4 text-red-600" />
 											<p>Declined</p>
@@ -80,7 +80,7 @@ const Product = () => {
 									) : product?.data.product.is_verified ? (
 										<div className="flex w-fit items-center gap-1 bg-green-50 px-3 py-1 text-xs font-medium text-green-600">
 											<ShieldTick variant="Bold" className="size-4" />
-											<p>Verified</p>
+											<p>Approved</p>
 										</div>
 									) : (
 										<div className="flex w-fit items-center gap-1 bg-yellow-50 px-3 py-1 text-xs font-medium text-yellow-600">
@@ -97,9 +97,16 @@ const Product = () => {
 							<p className="text-sm leading-relaxed">{product?.data.product.description}</p>
 
 							<div className="flex flex-col gap-2 text-sm text-[#9F9F9F]">
-								<p>Category: {product?.data.product.category.name}</p>
+								<p>
+									Category: <span className="capitalize">{product?.data.product.category.name}</span>
+								</p>
 								<p>Total Quantity: {product?.data.product.product_quantity}</p>
 								<p>Quantity Sold: {product?.data.product.total_quantity_sold}</p>
+								<p>
+									Quantity In Stock:{" "}
+									{Number(product?.data.product.product_quantity) -
+										Number(product?.data.product.total_quantity_sold)}
+								</p>
 								<p>
 									In Stock:{" "}
 									<span
@@ -150,9 +157,16 @@ const Product = () => {
 								</div>
 
 								<div className="flex items-center gap-3 pt-4">
-									<ApproveProductModal id={String(id)} name={String(product?.data.product.product_name)} />
+									<ApproveProductModal
+										id={String(id)}
+										name={String(product?.data.product.product_name)}
+										isVerified={product?.data.product.is_verified ?? false}
+									/>
 
-									<DeclineProductModal />
+									<DeclineProductModal
+										isVerified={product?.data.product.is_verified ?? false}
+										isDeclined={Boolean(product?.data.product.decline_product_note)}
+									/>
 								</div>
 
 								{/* <p>

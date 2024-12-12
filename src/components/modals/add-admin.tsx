@@ -67,7 +67,7 @@ export const AddAdminModal = () => {
 				</Button>
 			</DialogTrigger>
 
-			<DialogContent className="max-w-2xl">
+			<DialogContent>
 				<DialogHeader className="flex flex-col gap-1">
 					<DialogTitle>Add Admin</DialogTitle>
 				</DialogHeader>

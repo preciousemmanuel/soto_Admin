@@ -122,16 +122,16 @@ export type SellersProps = {
 	sellers_data: {
 		data: Array<{
 			_id: string
-			first_name: string
-			last_name: string
-			email: string
-			createdAt: string
-			is_active: boolean
-			is_verified: boolean
+			FirstName: string
+			LastName: string
+			Email: string
+			IsActive: boolean
+			IsBlocked: boolean
+			IsVerified: boolean
+			createdAt: Date
 			total_quantity: number
-			category?: string
+			category: string
 			product?: string
-			is_blocked: boolean
 		}>
 		pagination: {
 			pageSize: number
@@ -586,6 +586,9 @@ export type PurchasersProps = PaginationResponse<{
 	coordinate: Array<number>
 	createdAt: string
 	updatedAt: string
+	UniqueId: string
+	id_type: string
+	id_number: string
 	__v: number
 	Token: string
 	address_id: string
@@ -684,4 +687,39 @@ export type CategoriesProps = PaginationResponse<{
 	createdAt: string
 	updatedAt: string
 	image: string
+}>
+
+export type NotificationsProps = PaginationResponse<{
+	_id: string
+	sender: string
+	receiver: string
+	type: string
+	status: boolean
+	category: string
+	category_id: string
+	content: string
+	title: string
+	deleted: boolean
+	is_read: boolean
+	createdAt: string
+	updatedAt: string
+	__v: number
+}>
+
+export type StatesProps = Array<{
+	_id: string
+	name: string
+	isoCode: string
+	countryCode: "NG"
+	latitude: string
+	longitude: string
+}>
+
+export type CitiesProps = Array<{
+	_id: string
+	name: string
+	countryCode: "NG"
+	stateCode: string
+	latitude: string
+	longitude: string
 }>

@@ -8,14 +8,18 @@ export interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> 
 	label?: string
 	labelClassName?: string
 	leadingIcon?: Icon
+	wrapperClassName?: string
 }
 
 const Input = React.forwardRef<HTMLInputElement, InputProps>(
-	({ className, error, label, labelClassName, leadingIcon: Icon, type, ...props }, ref) => {
+	(
+		{ className, error, label, labelClassName, wrapperClassName, leadingIcon: Icon, type, ...props },
+		ref
+	) => {
 		const [showPassword, setShowPassword] = React.useState(false)
 
 		return (
-			<div className="flex w-full flex-col gap-2.5">
+			<div className={cn("flex w-full flex-col gap-2.5", wrapperClassName)}>
 				{label && (
 					<label
 						className={cn(

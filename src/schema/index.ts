@@ -73,7 +73,31 @@ export const addAdminSchema = Yup.object({
 	country: Yup.string().required("Country is required!"),
 })
 
-export const addPurchaserSchema = addAdminSchema.omit(["role", "country"])
+// export const addPurchaserSchema = addAdminSchema.omit(["role", "country"])
+export const idTypes = ["NIN", "BVN", "Drivers License", "Voters Card", "International Passport"]
+const allowedExtension = ["image/jpeg", "image/jpg", "image/png"]
+export const addPurchaserSchema = Yup.object({
+	first_name: Yup.string().required("First name is required!"),
+	last_name: Yup.string().required("Last name is required!"),
+	email: Yup.string().email("Please enter a valid email!").required("Email is required!"),
+	phone_number: Yup.string()
+		.required("Phone is required!")
+		.max(11, "Phone number must be 11 digits!"),
+	address: Yup.string().required("Address is required!"),
+	city: Yup.string().required("City is required!"),
+	state: Yup.string().required("State is required!"),
+	id_type: Yup.mixed().oneOf(idTypes).required("ID type is required!"),
+	id_number: Yup.string().required("ID number is required!"),
+	passport: Yup.string().required("Passport is required!"),
+	password: Yup.mixed()
+		.required("Password is required!").nullable()
+		.test(
+			"is-valid-type",
+			"Only jpg, jpeg and png image format are allowed",
+			// @ts-expect-error nil
+			(val) => !val || !allowedExtension.includes(val && val?.type)
+	),
+})
 
 export const declineProductSchema = Yup.object({
 	decline_product_note: Yup.string().required("Reason is required!"),

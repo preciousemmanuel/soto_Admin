@@ -82,10 +82,18 @@ export const endpoints = (id?: string) => {
 		get_all: `${baseURL}/admin/purchasers/get-all`,
 		get_one: `${baseURL}/admin/purchasers/view-one/${id}`,
 		get_pickups: `${baseURL}/admin/purchasers/get-pickups`,
+		create: `${baseURL}/admin/purchasers/create-new`,
 	} as const
 
-	const categories = {
-		get_all: `${baseURL}/admin/get-categories`,
+	const shared = {
+		get_categories: `${baseURL}/admin/get-categories`,
+		get_states: `${baseURL}/delivery/get-states`,
+		get_cities: `${baseURL}/delivery/get-cities`,
+	} as const
+
+	const notification = {
+		get_all: `${baseURL}/admin/notification/fetch`,
+		mark_as_read: `${baseURL}/admin/notification/mark-as-read/${id}`,
 	} as const
 
 	const feedback = {}
@@ -104,6 +112,7 @@ export const endpoints = (id?: string) => {
 		settings,
 		purchasers,
 		profile,
-		categories,
+		shared,
+		notification,
 	}
 }
