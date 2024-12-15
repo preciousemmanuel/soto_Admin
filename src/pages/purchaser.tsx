@@ -1,3 +1,4 @@
+import { UpdatePurchaserOrderStatusModal } from "@/components/modals"
 import { DataTable, Spinner } from "@/components/shared"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Button } from "@/components/ui/button"
@@ -19,6 +20,12 @@ const columns: ColumnDef<PickupsDetails>[] = [
 		accessorKey: "order_id",
 		// @ts-expect-error nil
 		cell: ({ row }) => <p>#{row.getValue("order_id").substring(0, 8)}</p>,
+	},
+	{
+		header: "Pickup ID",
+		accessorKey: "_id",
+		// @ts-expect-error nil
+		cell: ({ row }) => <p>#{row.getValue("_id").substring(0, 8)}</p>,
 	},
 	{
 		header: "Purchaser",
@@ -49,13 +56,9 @@ const columns: ColumnDef<PickupsDetails>[] = [
 		cell: ({ row }) => <p className="text-center">{row.getValue("quantity")}</p>,
 	},
 	{
-		header: "Seller",
+		header: "Vendor",
 		accessorKey: "vendor_contact",
-		cell: ({ row }) => (
-			<p className="capitalize">
-				{row.original.vendor_contact.first_name} {row.original.vendor_contact.last_name}
-			</p>
-		),
+		cell: ({ row }) => <p className="capitalize">{row.original.vendor_contact.first_name}</p>,
 	},
 	{
 		header: "Status",
@@ -88,11 +91,7 @@ const columns: ColumnDef<PickupsDetails>[] = [
 						View order
 					</Link>
 
-					{/* <button
-						type="button"
-						className="flex w-full rounded-md px-4 py-2 text-xs text-red-600 transition-all hover:bg-red-600 hover:text-white">
-						Cancel order
-					</button> */}
+					<UpdatePurchaserOrderStatusModal id={row.original._id} />
 				</PopoverContent>
 			</Popover>
 		),

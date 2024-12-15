@@ -63,5 +63,17 @@ const CreatePurchaseMutation = async (payload: CreatePurchaserPayload) => {
 		.then((res) => res.data)
 }
 
-export { CreatePurchaseMutation, GetPickupsQuery, GetPurchaserQuery, GetPurchasersQuery }
+const UpdatePickupMutation = async (id: string, payload: { status: string }) => {
+	return axios
+		.put<HttpResponse<AdminProps>>(endpoints(id).purchasers.update_pickup, payload)
+		.then((res) => res.data)
+}
+
+export {
+	CreatePurchaseMutation,
+	GetPickupsQuery,
+	GetPurchaserQuery,
+	GetPurchasersQuery,
+	UpdatePickupMutation,
+}
 

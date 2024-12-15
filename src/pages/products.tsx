@@ -23,7 +23,16 @@ import { SearchNormal1 } from "iconsax-react"
 import * as React from "react"
 import { useSearchParams } from "react-router-dom"
 
-const tabs = ["active", "sold", "promo", "out of stock", "returned"] as const
+const tabs = [
+	"active",
+	"approved",
+	"pending",
+	"declined",
+	"sold",
+	"promo",
+	"out of stock",
+	"returned",
+] as const
 type Tabs = (typeof tabs)[number]
 
 const Products = () => {
@@ -144,7 +153,7 @@ const Products = () => {
 				<TabsList>
 					{tabs.map((tab) => (
 						<TabsTrigger key={tab} value={replaceSpaceWithUnderscore(tab)}>
-							{tab} Products
+							{tab}
 						</TabsTrigger>
 					))}
 				</TabsList>
@@ -157,6 +166,18 @@ const Products = () => {
 					<>
 						{/* ACTIVE PRODUCTS */}
 						<TabsContent value="active">
+							<ProductItem products={products?.data} />
+						</TabsContent>
+
+						<TabsContent value="approved">
+							<ProductItem products={products?.data} />
+						</TabsContent>
+
+						<TabsContent value="pending">
+							<ProductItem products={products?.data} />
+						</TabsContent>
+
+						<TabsContent value="declined">
 							<ProductItem products={products?.data} />
 						</TabsContent>
 

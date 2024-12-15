@@ -30,7 +30,6 @@ export const ApproveCustomOrderModal = () => {
 				id: String(id),
 				data: {
 					approve_or_decline: "APPROVED",
-					decline_note: "",
 				},
 			}),
 		mutationKey: ["update-custom-order"],

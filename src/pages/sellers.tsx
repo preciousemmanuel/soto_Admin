@@ -30,23 +30,19 @@ const columns: ColumnDef<Sellers>[] = [
 	{
 		header: "Seller",
 		accessorKey: "FirstName",
-		cell: ({ row }) => {
-			const full_name = `${row.original.FirstName} ${row.original.LastName}`
+		cell: ({ row }) => (
+			<div className="flex items-center gap-2.5">
+				<Avatar className="size-9">
+					<AvatarImage src="" alt={row.getValue("FirstName")} />
+					<AvatarFallback>{getInitials(row.getValue("FirstName"))}</AvatarFallback>
+				</Avatar>
 
-			return (
-				<div className="flex items-center gap-2.5">
-					<Avatar className="size-9">
-						<AvatarImage src="" alt={row.getValue("FirstName")} />
-						<AvatarFallback>{getInitials(full_name)}</AvatarFallback>
-					</Avatar>
-
-					<div>
-						<p className="font-medium capitalize leading-none">{full_name}</p>
-						<span className="text-xs text-gray-400">{row.original.Email}</span>
-					</div>
+				<div>
+					<p className="font-medium capitalize leading-none">{row.getValue("FirstName")}</p>
+					<span className="text-xs text-gray-400">{row.original.FirstName}</span>
 				</div>
-			)
-		},
+			</div>
+		),
 	},
 	{
 		header: () => <p>QTY</p>,
@@ -96,11 +92,12 @@ const columns: ColumnDef<Sellers>[] = [
 						View seller
 					</Link>
 
-					<ApproveUserModal
-						id={row.original._id}
-						name={`${row.original.FirstName} ${row.original.LastName}`}
-						isVerified={row.original.IsVerified}
-					/>
+					{!row.original.IsVerified ? (
+						<ApproveUserModal
+							id={row.original._id}
+							name={`${row.original.FirstName} ${row.original.LastName}`}
+						/>
+					) : null}
 
 					<RemoveUserModal
 						id={row.original._id}
