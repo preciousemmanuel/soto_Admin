@@ -352,7 +352,9 @@ export type OrderProps = Node & {
 	total_amount: number
 	delivery_amount: number
 	shipping_address: string
-	order_itinerary: string
+	order_itinerary: {
+		[key: string]: string
+	}
 	tracking_id: string
 	grand_total: number
 	payment_type: string
@@ -557,10 +559,21 @@ export type SettingsProps = {
 		flat: number
 		special: number
 	}
+	order_itinerary: {
+		step_1: ItineraryStep
+		step_2: ItineraryStep
+		step_3: ItineraryStep
+		step_4: ItineraryStep
+	}
 	_id: string
 	createdAt: string
 	updatedAt: string
 	__v: number
+}
+
+type ItineraryStep = {
+	level: number
+	description: string
 }
 
 export type PurchasersProps = PaginationResponse<{
@@ -595,6 +608,7 @@ export type PurchasersProps = PaginationResponse<{
 }>
 
 export type PickupsProps = PaginationResponse<{
+	_id: string
 	tracking_id: string
 	order_id: string
 	purchaser: {
@@ -676,7 +690,7 @@ export type ProfileProps = {
 	address_id: string
 }
 
-export type RolesProps = PaginationResponse<ProfileProps["Role"]>
+// export type RolesProps = PaginationResponse<ProfileProps["Role"]>
 
 export type AdminProps = PaginationResponse<ProfileProps>
 
@@ -722,4 +736,39 @@ export type CitiesProps = Array<{
 	stateCode: string
 	latitude: string
 	longitude: string
+}>
+
+export type RolesProps = PaginationResponse<{
+	admin: {
+		read: string
+		write: string
+	}
+	config: {
+		read: string
+		write: string
+	}
+	order: {
+		read: string
+		write: string
+	}
+	buyer: {
+		read: string
+		write: string
+	}
+	seller: {
+		read: string
+		write: string
+	}
+	product: {
+		read: string
+		write: string
+	}
+	transaction: {
+		read: string
+		write: string
+	}
+	_id: string
+	name: string
+	createdAt: string
+	updatedAt: string
 }>

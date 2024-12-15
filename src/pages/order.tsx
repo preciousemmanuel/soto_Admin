@@ -1,4 +1,4 @@
-import { CancelOrderModal } from "@/components/modals"
+import { CancelOrderModal, UpdateTrackingStatusModal } from "@/components/modals"
 import { Spinner } from "@/components/shared"
 import { Invoice } from "@/components/table"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
@@ -138,6 +138,12 @@ const columns: ColumnDef<OrderItem>[] = [
 	},
 ]
 
+const arrayFromObject = (obj = {}) =>
+	Object.entries(obj).map((item) => ({
+		step: item[0],
+		value: item[1],
+	}))
+
 const Order = () => {
 	usePageTitle("Order")
 	const { id } = useParams()
@@ -158,6 +164,7 @@ const Order = () => {
 		getCoreRowModel: getCoreRowModel(),
 	})
 	const owner = `${order?.data.user.FirstName} ${order?.data.user.LastName}`
+	const order_timeline = arrayFromObject(order?.data.order_itinerary || {})
 
 	return (
 		<section className="flex flex-col gap-10">
@@ -199,25 +206,27 @@ const Order = () => {
 							<Spinner variant="primary" size="lg" />
 						</div>
 					) : (
-						<>
-							<h3 className="text-lg font-semibold">
-								Order Details - <span className="text-neutral-400">#{order?.data._id.substring(0, 6)}</span>
-							</h3>
+						<div className="grid grid-cols-6 gap-8">
+							<div className="col-span-4">
+								<h3 className="text-lg font-semibold">
+									Order Details -{" "}
+									<span className="text-neutral-400">#{order?.data._id.substring(0, 6)}</span>
+								</h3>
 
-							<div className="grid w-full grid-cols-3 items-center justify-between gap-10 pt-12 text-sm">
-								<div className="flex flex-col gap-8">
-									<div className="flex flex-col">
-										<p className="font-semibold">Order by:</p>
-										<p className="capitalize">
-											{order?.data.user.FirstName} {order?.data.user.LastName}
-										</p>
-									</div>
+								<div className="grid w-full grid-cols-2 items-center justify-between gap-10 pt-12 text-sm">
+									<div className="flex flex-col gap-8">
+										<div className="flex flex-col">
+											<p className="font-semibold">Order by:</p>
+											<p className="capitalize">
+												{order?.data.user.FirstName} {order?.data.user.LastName}
+											</p>
+										</div>
 
-									<div className="flex flex-col">
-										<p className="">{order?.data.shipping_address}</p>
-										<p className="">Phone Number</p>
-									</div>
-									{/* <div className="flex items-center gap-2">
+										<div className="flex flex-col">
+											<p className="">{order?.data.shipping_address}</p>
+											<p className="">Phone Number</p>
+										</div>
+										{/* <div className="flex items-center gap-2">
 										<Avatar>
 											<AvatarImage src="" alt="" />
 											<AvatarFallback>{getInitials("")}</AvatarFallback>
@@ -227,59 +236,84 @@ const Order = () => {
 											<p>Product Seller</p>
 										</div>
 									</div> */}
-								</div>
-
-								<div className="flex flex-col gap-4">
-									<div className="flex flex-col">
-										<p className="font-semibold">Payment Method:</p>
-										<p className="capitalize">
-											{order?.data.payment_details ? order?.data.payment_details.at(0)?.payment_provider : ""}
-										</p>
 									</div>
 
-									<div className="flex w-full flex-col gap-2 font-medium">
-										<p>Amount: {formatPrice(order?.data.total_amount ?? 0)}</p>
-										<p>Payment ID: {}</p>
-										<p>
-											Date:{" "}
-											{order?.data.createdAt && format(new Date(String(order?.data.createdAt)), "dd-MM-yyyy")}
-										</p>
-										<p>
-											Status:{" "}
-											<span className={`${statusClass[order?.data.status as keyof typeof statusClass]}`}>
-												{order?.data.status}
-											</span>
-										</p>
-										<p>
-											Payment Status:{" "}
-											<span
-												className={`${transactionStatusClass[order?.data.status as keyof typeof transactionStatusClass]}`}>
-												{order?.data.payment_details ? order?.data.payment_details.at(0)?.status : ""}
-											</span>
-										</p>
-										<p>Tracking ID: {order?.data.tracking_id}</p>
+									<div className="flex flex-col gap-6">
+										<p className="font-semibold">Shipping Details</p>
+										<div className="flex w-full flex-col gap-3">
+											<div className="flex flex-col">
+												<p className="font-medium">Address</p>
+												<p className="text-[#939393]">{order?.data.shipping_address}</p>
+											</div>
+											<div className="flex flex-col">
+												<p className="font-medium">Email</p>
+												<p className="text-[#939393]">{order?.data.user.Email}</p>
+											</div>
+											<div className="flex items-center gap-2">
+												<p className="font-medium">Contact</p>
+												<p>{order?.data.user.PhoneNumber}</p>
+											</div>
+										</div>
 									</div>
-								</div>
 
-								<div className="flex flex-col gap-6">
-									<p className="font-semibold">Shipping Details</p>
-									<div className="flex w-full flex-col gap-3">
+									<div className="flex flex-col gap-4">
 										<div className="flex flex-col">
-											<p className="font-medium">Address</p>
-											<p className="text-[#939393]">{order?.data.shipping_address}</p>
+											<p className="font-semibold">Payment Method:</p>
+											<p className="capitalize">
+												{order?.data.payment_details ? order?.data.payment_details.at(0)?.payment_provider : ""}
+											</p>
 										</div>
-										<div className="flex flex-col">
-											<p className="font-medium">Email</p>
-											<p className="text-[#939393]">{order?.data.user.Email}</p>
-										</div>
-										<div className="flex items-center gap-2">
-											<p className="font-medium">Contact</p>
-											<p>{order?.data.user.PhoneNumber}</p>
+
+										<div className="flex w-full flex-col gap-2 font-medium">
+											<p>Amount: {formatPrice(order?.data.total_amount ?? 0)}</p>
+											<p>Payment ID: {}</p>
+											<p>
+												Date:{" "}
+												{order?.data.createdAt && format(new Date(String(order?.data.createdAt)), "dd-MM-yyyy")}
+											</p>
+											<p>
+												Status:{" "}
+												<span className={`${statusClass[order?.data.status as keyof typeof statusClass]}`}>
+													{order?.data.status}
+												</span>
+											</p>
+											<p>
+												Payment Status:{" "}
+												<span
+													className={`${transactionStatusClass[order?.data.status as keyof typeof transactionStatusClass]}`}>
+													{order?.data.payment_details ? order?.data.payment_details.at(0)?.status : ""}
+												</span>
+											</p>
+											<p>Tracking ID: {order?.data.tracking_id}</p>
 										</div>
 									</div>
 								</div>
 							</div>
-						</>
+
+							<div className="col-span-2 flex flex-col gap-10 rounded-lg border border-neutral-100 bg-neutral-50 p-8">
+								<ol className="relative flex flex-col gap-7 border-l border-primary/30 py-2 text-sm">
+									{order_timeline.length ? (
+										order_timeline?.map((item) => (
+											<li className="ml-5" key={item.step}>
+												<div className="bg-imsme-primary absolute -left-1.5 h-3 w-3 rounded-full bg-primary" />
+												<div className="flex flex-col gap-1">
+													<p className="text-xs font-normal uppercase leading-none text-neutral-500">
+														Level 00{item.step.split("_")[1]}
+													</p>
+
+													{/* @ts-expect-error nil */}
+													<p className="text-pretty text-xs font-medium leading-relaxed">{item.value}</p>
+												</div>
+											</li>
+										))
+									) : (
+										<li>No timeline</li>
+									)}
+								</ol>
+
+								<UpdateTrackingStatusModal level={order_timeline.length} />
+							</div>
+						</div>
 					)}
 				</TabsContent>
 

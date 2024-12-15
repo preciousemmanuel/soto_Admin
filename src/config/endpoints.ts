@@ -45,6 +45,7 @@ export const endpoints = (id?: string) => {
 		create_shipment: `${baseURL}/admin/create-shipment`,
 		track_shipment: `${baseURL}/admin/track-shipment`,
 		update_custom_order: `${baseURL}/admin/update-custom-order/${id}`,
+		update_tracking_status: `${baseURL}/admin/track-an-order/${id}`,
 	} as const
 
 	const products = {
@@ -83,6 +84,7 @@ export const endpoints = (id?: string) => {
 		get_one: `${baseURL}/admin/purchasers/view-one/${id}`,
 		get_pickups: `${baseURL}/admin/purchasers/get-pickups`,
 		create: `${baseURL}/admin/purchasers/create-new`,
+		update_pickup: `${baseURL}/admin/purchasers/update-one/${id}`,
 	} as const
 
 	const shared = {
@@ -97,6 +99,12 @@ export const endpoints = (id?: string) => {
 	} as const
 
 	const feedback = {}
+
+	const roles = {
+		get_all: `${baseURL}/admin/role/fetch`,
+		update: `${baseURL}/admin/role/update/${id}`,
+		create: `${baseURL}/admin/role/create`,
+	} as const
 
 	return {
 		admin,
@@ -114,5 +122,6 @@ export const endpoints = (id?: string) => {
 		profile,
 		shared,
 		notification,
+		roles,
 	}
 }

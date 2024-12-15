@@ -47,7 +47,7 @@ export const Notifications = () => {
 
 					{data?.data.data.length ? (
 						<span className="absolute right-1 top-0 grid size-5 place-items-center rounded-full bg-red-600 text-xs text-white">
-							{data.data.pagination.pageCount}
+							{data.data.pagination.totalCount}
 						</span>
 					) : null}
 				</button>

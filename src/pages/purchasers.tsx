@@ -166,18 +166,6 @@ const Purchasers = () => {
 				))}
 			</Tabs>
 
-			{/* {isPending ? (
-				<div className="flex items-center justify-center">
-					<Spinner variant="primary" size="lg" />
-				</div>
-			) : (
-				<DataTable
-					columns={columns}
-					data={data?.data.data || []}
-					totalPages={totalPages}
-					isPlaceholderData={isPlaceholderData}
-				/>
-			)} */}
 		</section>
 	)
 }

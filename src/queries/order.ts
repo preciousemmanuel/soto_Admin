@@ -25,7 +25,7 @@ type Payload = {
 	id: string
 	data: {
 		approve_or_decline: "APPROVED" | "DECLINED"
-		decline_note: string
+		decline_note?: string
 	}
 }
 const UpdateCustomOrderMutation = async (payload: Payload) => {
@@ -46,6 +46,12 @@ const TrackShipmentMutation = async (id: string) => {
 		.then((res) => res.data)
 }
 
+const UpdateTrackingStatusMutation = async (id: string, payload: { step: number }) => {
+	return axios
+		.put<HttpResponse<string>>(endpoints(id).orders.update_tracking_status, payload)
+		.then((res) => res.data)
+}
+
 export {
 	CancelOrderMutation,
 	CreateShipmentMutation,
@@ -53,4 +59,6 @@ export {
 	GetOrdersQuery,
 	TrackShipmentMutation,
 	UpdateCustomOrderMutation,
+	UpdateTrackingStatusMutation,
 }
+
