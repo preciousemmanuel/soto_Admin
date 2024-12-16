@@ -24,7 +24,6 @@ import * as React from "react"
 import { useSearchParams } from "react-router-dom"
 
 const tabs = [
-	"active",
 	"approved",
 	"pending",
 	"declined",
@@ -39,7 +38,7 @@ const Products = () => {
 	usePageTitle("Products")
 	const [searchParams, setSearchParams] = useSearchParams()
 
-	const status = replaceSpaceWithUnderscore(searchParams.get("status") || "active")
+	const status = replaceSpaceWithUnderscore(searchParams.get("status") || "approved")
 	const page = Number(searchParams.get("page") || 1)
 
 	// const [status, setStatus] = React.useState<Tabs>("ACTIVE")
@@ -153,7 +152,7 @@ const Products = () => {
 				<TabsList>
 					{tabs.map((tab) => (
 						<TabsTrigger key={tab} value={replaceSpaceWithUnderscore(tab)}>
-							{tab}
+							{tab === "approved" ? "Active" : tab}
 						</TabsTrigger>
 					))}
 				</TabsList>
@@ -165,9 +164,9 @@ const Products = () => {
 				) : (
 					<>
 						{/* ACTIVE PRODUCTS */}
-						<TabsContent value="active">
+						{/* <TabsContent value="active">
 							<ProductItem products={products?.data} />
-						</TabsContent>
+						</TabsContent> */}
 
 						<TabsContent value="approved">
 							<ProductItem products={products?.data} />
