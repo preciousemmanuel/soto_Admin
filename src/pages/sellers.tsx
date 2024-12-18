@@ -22,8 +22,10 @@ const tabs = ["approved", "pending", "blocked", "declined"]
 
 type Sellers = SellersProps["sellers_data"]["data"][number]
 const statusClass = {
-	true: "text-[#0E973E]",
-	false: "text-[#7F7F7F]",
+	APPROVED: "text-green-600",
+	PENDING: "text-yellow-600",
+	BLOCKED: "text-red-600",
+	DECLINED: "text-rose-600",
 }
 
 const columns: ColumnDef<Sellers>[] = [
@@ -58,19 +60,23 @@ const columns: ColumnDef<Sellers>[] = [
 	},
 	{
 		header: "Seller Status",
-		accessorKey: "isVerified",
+		accessorKey: "vendor_status",
 		cell: ({ row }) => (
-			<p>{row.original.IsVerified ? "Verified" : row.original.IsBlocked ? "Blocked" : "Pending"}</p>
+			<p
+				className={`${statusClass[row.getValue("vendor_status") as keyof typeof statusClass]} font-medium`}>
+				{row.getValue("vendor_status")}
+			</p>
 		),
 	},
 	{
-		header: "Active Status",
+		header: "Email Verified",
 		accessorKey: "IsActive",
-		cell: ({ row }) => (
-			<p className={statusClass[row.getValue("IsActive") as keyof typeof statusClass]}>
-				{row.getValue("IsActive") ? "Active" : "Inactive"}
-			</p>
-		),
+		cell: ({ row }) => <p>{row.getValue("IsActive") ? "YES" : "NO"}</p>,
+	},
+	{
+		header: "Seller Blocked?",
+		accessorKey: "IsBlocked",
+		cell: ({ row }) => <p>{row.getValue("IsBlocked") ? "YES" : "NO"}</p>,
 	},
 	{
 		header: "Joined Date",

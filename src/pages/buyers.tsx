@@ -21,26 +21,33 @@ const columns: ColumnDef<BuyerDetails>[] = [
 	{
 		header: "Buyer",
 		accessorKey: "first_name",
-		cell: ({ row }) => (
-			<div className="flex items-center gap-2.5">
-				<Avatar className="size-9">
-					<AvatarImage src={row.original.profile_image} alt={row.getValue("first_name")} />
-					<AvatarFallback>{getInitials(row.getValue("first_name"))}</AvatarFallback>
-				</Avatar>
+		cell: ({ row }) => {
+			const full_name = `${row.original.FirstName} ${row.original.LastName}`
 
-				<div>
-					<p className="font-medium capitalize leading-none">
-						{row.original.first_name} {row.original.last_name}
-					</p>
-					<span className="text-xs text-gray-400">{row.original.email}</span>
+			return (
+				<div className="flex items-center gap-2.5">
+					<Avatar className="size-9">
+						<AvatarImage src={row.original.ProfileImage} alt={full_name} />
+						<AvatarFallback>{getInitials(full_name)}</AvatarFallback>
+					</Avatar>
+
+					<div>
+						<p className="font-medium capitalize leading-none">{full_name}</p>
+						<span className="text-xs text-gray-400">{row.original.Email}</span>
+					</div>
 				</div>
-			</div>
-		),
+			)
+		},
 	},
 	{
 		header: () => <p className="text-center">Total Orders</p>,
 		accessorKey: "total_orders",
 		cell: ({ row }) => <p className="text-center">{row.getValue("total_orders")}</p>,
+	},
+	{
+		header: () => <p className="text-center">Total Items Ordered</p>,
+		accessorKey: "total_items_ordered",
+		cell: ({ row }) => <p className="text-center">{row.getValue("total_items_ordered")}</p>,
 	},
 	{
 		header: "Total Spent",
@@ -75,18 +82,6 @@ const columns: ColumnDef<BuyerDetails>[] = [
 						className="flex rounded-md px-4 py-2 text-xs transition-all hover:bg-primary hover:text-white">
 						View Buyer
 					</Link>
-
-					{/* <button
-						type="button"
-						className="flex w-full rounded-md px-4 py-2 text-xs transition-all hover:bg-primary hover:text-white">
-						Approve seller
-					</button>
-
-					<button
-						type="button"
-						className="flex w-full rounded-md px-4 py-2 text-xs text-red-600 transition-all hover:bg-red-600 hover:text-white">
-						Remove seller
-					</button> */}
 				</PopoverContent>
 			</Popover>
 		),
@@ -98,11 +93,6 @@ const Buyers = () => {
 	// const [timeLine, setTimeLine] = React.useState<TimelineProps>("")
 	const [query, setQuery] = React.useState("")
 	const buyer_name = useDebounce(query, 500)
-
-	// const ranges = getWeekRanges(new Date("2024-06-01"))
-	// const [start_date, end_date] = timeLine.split(" - ")
-
-	// console.log("timeLine", start_date, end_date)
 
 	const { data, isPending, isPlaceholderData } = useQuery({
 		queryFn: () => GetBuyersQuery({ page, limit: PAGE_LIMIT, search: buyer_name }),
@@ -132,19 +122,6 @@ const Buyers = () => {
 							placeholder="Search by buyer's name"
 						/>
 					</div>
-
-					{/* <Select value={timeLine} onValueChange={setTimeLine}>
-						<SelectTrigger className="w-[166px] border-0">
-							<SelectValue placeholder="Select Range" />
-						</SelectTrigger>
-						<SelectContent>
-							{ranges.map((value) => (
-								<SelectItem key={value} value={value}>
-									{value}
-								</SelectItem>
-							))}
-						</SelectContent>
-					</Select> */}
 				</div>
 			</header>
 
@@ -191,17 +168,17 @@ const Buyers = () => {
 							<div className="text-sm">
 								<div className="flex flex-col items-center justify-center gap-2 border-b border-b-gray-200 pb-6 text-center">
 									<Avatar className="size-20">
-										<AvatarImage src="" alt={data?.data.data.at(0)?.first_name} />
+										<AvatarImage src="" alt={data?.data.data.at(0)?.FirstName} />
 										<AvatarFallback className="text-xl">
-											{getInitials(data?.data.data.at(0)?.first_name || "")}
+											{getInitials(data?.data.data.at(0)?.FirstName || "")}
 										</AvatarFallback>
 									</Avatar>
 
 									<div>
 										<p className="font-bold capitalize">
-											{data?.data.data.at(0)?.first_name} {data?.data.data.at(0)?.last_name}
+											{data?.data.data.at(0)?.FirstName} {data?.data.data.at(0)?.LastName}
 										</p>
-										<p className="text-xs">{data?.data.data.at(0)?.email}</p>
+										<p className="text-xs">{data?.data.data.at(0)?.Email}</p>
 									</div>
 								</div>
 

@@ -36,7 +36,7 @@ const Dashboard = () => {
 					<Notifications />
 
 					<Select value={timeLine} onValueChange={setTimeLine}>
-						<SelectTrigger className="w-[166px] border-0">
+						<SelectTrigger className="w-[166px]">
 							<SelectValue placeholder="Select Range" />
 						</SelectTrigger>
 						<SelectContent>
