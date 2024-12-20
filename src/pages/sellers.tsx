@@ -98,7 +98,7 @@ const columns: ColumnDef<Sellers>[] = [
 						View seller
 					</Link>
 
-					{!row.original.IsVerified ? (
+					{row.original.vendor_status !== "APPROVED" ? (
 						<ApproveUserModal
 							id={row.original._id}
 							name={`${row.original.FirstName} ${row.original.LastName}`}
