@@ -28,31 +28,21 @@ const columns: ColumnDef<Transactions>[] = [
 	{
 		header: "Trx ID",
 		accessorKey: "reference",
-		cell: ({ row }) => (
-			<div className="flex items-center gap-2.5">
-				{/* <Avatar className="size-9">
-					<AvatarImage src="" alt={row.getValue("first_name")} />
-					<AvatarFallback>{getInitials(row.getValue("first_name"))}</AvatarFallback>
-				</Avatar> */}
-
-				<p>{row.getValue("reference")}</p>
-				{/* <div>
-					<span className="text-xs text-gray-400">{row.original.email}</span>
-				</div> */}
-			</div>
-		),
 	},
 	{
 		header: "User",
 		accessorKey: "user",
-		cell: ({ row }) => (
-			<div>
-				<p className="font-medium capitalize">
-					{row.original.user.FirstName} {row.original.user.LastName}
-				</p>
-				<p className="text-xs">{row.original.user.UserType}</p>
-			</div>
-		),
+		cell: ({ row }) =>
+			row.original.user ? (
+				<div>
+					<p className="font-medium capitalize">
+						{row.original.user.FirstName} {row.original.user.LastName}
+					</p>
+					<p className="text-xs">{row.original.user.UserType}</p>
+				</div>
+			) : (
+				<p>N/A</p>
+			),
 	},
 	{
 		header: () => <p className="text-right">Amount</p>,
@@ -118,7 +108,7 @@ const Wallet = () => {
 
 				<div className="flex items-center gap-6">
 					<Select value={timeLine} onValueChange={setTimeLine}>
-						<SelectTrigger className="w-[166px] border-0">
+						<SelectTrigger className="w-[166px]">
 							<SelectValue placeholder="Select Range" />
 						</SelectTrigger>
 						<SelectContent>

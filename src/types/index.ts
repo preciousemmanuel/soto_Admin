@@ -130,6 +130,7 @@ export type SellersProps = {
 			IsVerified: boolean
 			createdAt: Date
 			total_quantity: number
+			vendor_status: string
 			category: string
 			product?: string
 		}>
@@ -198,16 +199,16 @@ export type BuyersProps = {
 	}>
 	data: Array<{
 		_id: string
-		first_name: string
-		last_name: string
-		email: string
-		profile_image: string
+		FirstName: string
+		LastName: string
+		Email: string
+		ProfileImage: string
+		Rank?: string
 		createdAt: string
-		rank?: string
 		total_spent: number
-		last_order_price: number
 		total_orders: number
 		total_items_ordered: number
+		last_order_price: number
 	}>
 	pagination: {
 		pageSize: number

@@ -141,7 +141,7 @@ const Orders = () => {
 
 				<div className="flex items-center gap-6">
 					<Select value={timeLine} onValueChange={setTimeLine}>
-						<SelectTrigger className="w-[166px] border-0">
+						<SelectTrigger className="w-[166px]">
 							<SelectValue placeholder="Select Range" />
 						</SelectTrigger>
 						<SelectContent>

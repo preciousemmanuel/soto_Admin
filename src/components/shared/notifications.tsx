@@ -53,7 +53,7 @@ export const Notifications = () => {
 				</button>
 			</PopoverTrigger>
 
-			<PopoverContent className="w-96 text-xs">
+			<PopoverContent className="max-h-[500px] w-96 overflow-y-auto text-xs">
 				<h2 className="p-4 pb-2 font-body text-lg font-medium">Notifications</h2>
 
 				<Tabs defaultValue={tabs[0]} value={tab} onValueChange={setTab}>
