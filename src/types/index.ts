@@ -133,6 +133,7 @@ export type SellersProps = {
 			vendor_status: string
 			category: string
 			product?: string
+			business_category_name: string
 		}>
 		pagination: {
 			pageSize: number
