@@ -55,8 +55,8 @@ const columns: ColumnDef<Sellers>[] = [
 	},
 	{
 		header: "Category",
-		accessorKey: "category",
-		cell: ({ row }) => <span className="capitalize">{row.getValue("category")}</span>,
+		accessorKey: "business_category_name",
+		cell: ({ row }) => <span className="capitalize">{row.getValue("business_category_name")}</span>,
 	},
 	{
 		header: "Seller Status",
