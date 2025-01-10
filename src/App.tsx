@@ -9,6 +9,8 @@ import {
 	CreateCoupon,
 	CreateProduct,
 	CustomOrder,
+	Dispute,
+	Disputes,
 	Feedback,
 	ForgotPassword,
 	Order,
@@ -31,7 +33,6 @@ import { useUserStore } from "./store/z-store"
 
 function App() {
 	const { isAuthenticated } = useUserStore()
-	console.log("isAuthenticated", isAuthenticated)
 
 	const router = createBrowserRouter([
 		{
@@ -154,6 +155,19 @@ function App() {
 								{
 									path: ":id",
 									element: <Seller />,
+								},
+							],
+						},
+						{
+							path: "disputes",
+							children: [
+								{
+									index: true,
+									element: <Disputes />,
+								},
+								{
+									path: ":id",
+									element: <Dispute />,
 								},
 							],
 						},

@@ -48,8 +48,6 @@ const Products = () => {
 
 	const product_name = useDebounce(query, 500)
 
-	console.log("category", category)
-
 	const { data: categories } = useQuery({
 		queryKey: ["get-categories", 1],
 		queryFn: () =>

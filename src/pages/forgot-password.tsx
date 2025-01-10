@@ -78,8 +78,7 @@ function OtpScreen({ handleBack, handleNext }: ComponentProps) {
 
 	const { handleSubmit, setFieldValue, values } = useFormik({
 		initialValues: { email: "", otp: "" },
-		onSubmit: (values) => {
-			console.log(values)
+		onSubmit: () => {
 			handleNext()
 		},
 	})

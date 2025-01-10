@@ -100,6 +100,12 @@ export const endpoints = (id?: string) => {
 
 	const feedback = {}
 
+	const dispute = {
+		get_all: `${baseURL}/admin/disputes`,
+		get_one: `${baseURL}/admin/disputes/view-one/${id}`,
+		update_dispute: `${baseURL}/admin/disputes/track-one/${id}`,
+	} as const
+
 	const roles = {
 		get_all: `${baseURL}/admin/role/fetch`,
 		update: `${baseURL}/admin/role/update/${id}`,
@@ -123,5 +129,6 @@ export const endpoints = (id?: string) => {
 		shared,
 		notification,
 		roles,
+		dispute,
 	}
 }

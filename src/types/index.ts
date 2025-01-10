@@ -774,3 +774,138 @@ export type RolesProps = PaginationResponse<{
 	createdAt: string
 	updatedAt: string
 }>
+
+export type DisputesProps = {
+	metrics: Array<{
+		total_pending: number
+		total_resolved: number
+		total_disputes: number
+	}>
+	data: Array<{
+		_id: string
+		title: string
+		code: string
+		description: string
+		user: {
+			_id: string
+			FirstName: string
+			LastName: string
+		}
+		status: string
+		order?: string
+		images: Array<string>
+		createdAt: string
+		updatedAt: string
+		__v: number
+		admin?: {
+			_id: string
+			FirstName: string
+			LastName: string
+			ProfileImage?: string
+		}
+	}>
+	pagination: {
+		pageSize: number
+		totalCount: number
+		pageCount: number
+		currentPage: number
+		hasNext: boolean
+	}
+}
+
+export type DisputeProps = {
+	_id: string
+	title: string
+	code: string
+	description: string
+	user: {
+		_id: string
+		FirstName: string
+		LastName: string
+	}
+	status: string
+	order: string
+	images: Array<string>
+	createdAt: string
+	updatedAt: string
+	__v: number
+	admin: {
+		_id: string
+		FirstName: string
+		LastName: string
+	}
+	order_details: {
+		_id: string
+		items: Array<{
+			product_id: string
+			product_name: string
+			product_code: string
+			description: string
+			vendor: {
+				_id: string
+				FirstName: string
+				LastName: string
+				Email: string
+				ProfileImage: string
+			}
+			images: Array<string>
+			quantity: number
+			unit_price: number
+			height: number
+			width: number
+			weight: number
+			is_discounted: boolean
+			_id: string
+			assigned: boolean
+			assigned_purchaser: {
+				_id: string
+				FirstName: string
+				LastName: string
+				Email: string
+				ProfileImage: string
+				PhoneNumber: string
+				status: string
+				createdAt: string
+				updatedAt: string
+			}
+		}>
+		user: {
+			_id: string
+			FirstName: string
+			LastName: string
+			email: string
+			PhoneNumber: string
+			rank: string
+		}
+		status: string
+		total_amount: number
+		delivery_amount: number
+		shipping_address: string
+		order_itinerary: {
+			step_1: string
+		}
+		tracking_id: string
+		grand_total: number
+		discounted_amount: number
+		is_coupon_applied: boolean
+		shipment_charges: boolean
+		createdAt: string
+		updatedAt: string
+		general_coupon: unknown
+		payment_details: Array<{
+			_id: string
+			reference: string
+			amount: number
+			user: string
+			type: string
+			status: string
+			currency: string
+			narration: string
+			narration_id: string
+			payment_provider: string
+			createdAt: string
+			updatedAt: string
+			__v: number
+		}>
+	}
+}

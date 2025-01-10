@@ -23,7 +23,7 @@ export function DashboardLayout() {
 	return (
 		<div className="flex h-screen overflow-hidden">
 			<aside className="flex h-full w-[260px] flex-col bg-primary">
-				<div className="grid w-full place-items-center border-b-[0.5px] border-[#f8f3f3] py-12">
+				<div className="grid w-full place-items-center border-b-[0.5px] border-[#f8f3f3] py-8">
 					<SotoLogoWhite />
 				</div>
 				<div className="flex w-full flex-col gap-4 px-[26px] py-5">
