@@ -22,6 +22,8 @@ const Seller = React.lazy(() => import("./seller"))
 const Sellers = React.lazy(() => import("./sellers"))
 const Settings = React.lazy(() => import("./settings"))
 const Feedback = React.lazy(() => import("./feedback"))
+const Disputes = React.lazy(() => import("./disputes"))
+const Dispute = React.lazy(() => import("./dispute"))
 
 export {
 	Buyer,
@@ -30,6 +32,8 @@ export {
 	CreateCoupon,
 	CreateProduct,
 	CustomOrder,
+	Dispute,
+	Disputes,
 	Feedback,
 	ForgotPassword,
 	Order,

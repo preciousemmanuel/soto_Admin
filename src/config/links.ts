@@ -52,6 +52,11 @@ export const dashboard_links = [
 		icon: UserOctagon,
 	},
 	{
+		label: "Disputes",
+		href: "/dashboard/disputes",
+		icon: FlashCircle,
+	},
+	{
 		label: "Settings and Profile",
 		href: "/dashboard/settings-and-profile",
 		icon: Setting2,

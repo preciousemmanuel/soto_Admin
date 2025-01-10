@@ -62,7 +62,7 @@ export const UpdateTrackingStatusModal = ({ level }: Props) => {
 			<DialogTrigger asChild>
 				<Button
 					disabled={level === 4}
-					className="mr-auto w-48 bg-neutral-600 text-xs text-white hover:bg-neutral-700 disabled:opacity-10">
+					className="mt-auto w-48 bg-neutral-600 text-xs text-white hover:bg-neutral-700 disabled:opacity-10">
 					Update tracking status
 				</Button>
 			</DialogTrigger>
