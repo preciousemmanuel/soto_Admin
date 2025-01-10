@@ -2,16 +2,24 @@ import { UpdateDisputeModal } from "@/components/modals/update-dispute"
 import { DataTable, Spinner } from "@/components/shared"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
+import {
+	Select,
+	SelectContent,
+	SelectItem,
+	SelectTrigger,
+	SelectValue,
+} from "@/components/ui/select"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { PAGE_LIMIT } from "@/config"
+import { frequencyFilter, PAGE_LIMIT } from "@/config"
 import { usePageTitle } from "@/hooks"
 import { capitalize, getInitials } from "@/lib"
 import { GetDisputesQuery } from "@/queries/dispute"
-import type { DisputesProps } from "@/types"
+import type { DisputesProps, TimelineProps } from "@/types"
 import { keepPreviousData, useQuery } from "@tanstack/react-query"
 import type { ColumnDef } from "@tanstack/react-table"
 import { format } from "date-fns"
 import { MoreHorizontal } from "lucide-react"
+import * as React from "react"
 import { Link, useSearchParams } from "react-router-dom"
 
 const tabs = ["resolved", "pending", "cancelled"]
@@ -102,15 +110,16 @@ const columns: ColumnDef<DisputeDetails>[] = [
 
 const Disputes = () => {
 	usePageTitle("Products")
-	// const [timeLine, setTimeLine] = React.useState<TimelineProps>("")
+	const [timeLine, setTimeLine] = React.useState<TimelineProps>("")
 	const [searchParams, setSearchParams] = useSearchParams()
 
 	const status = searchParams.get("status") ?? tabs[0]
 	const page = Number(searchParams.get("page") || 1)
 
 	const { data, isPending, isPlaceholderData } = useQuery({
-		queryFn: () => GetDisputesQuery({ page, limit: PAGE_LIMIT, status: status.toUpperCase() }),
-		queryKey: ["get-disputes", page, status],
+		queryFn: () =>
+			GetDisputesQuery({ page, limit: PAGE_LIMIT, status: status.toUpperCase(), timeLine }),
+		queryKey: ["get-disputes", page, status, timeLine],
 		placeholderData: keepPreviousData,
 	})
 	// const totalPages = Number(data?.data.data.pagination.pageCount)
@@ -120,7 +129,7 @@ const Disputes = () => {
 			<header className="flex items-center justify-between gap-2">
 				<h2 className="text-3xl font-medium">Dispute Resolution</h2>
 
-				{/* <div className="flex items-center gap-3">
+				<div className="flex items-center gap-3">
 					<Select value={timeLine} onValueChange={setTimeLine}>
 						<SelectTrigger className="w-[166px]">
 							<SelectValue placeholder="Select Range" />
@@ -133,7 +142,7 @@ const Disputes = () => {
 							))}
 						</SelectContent>
 					</Select>
-				</div> */}
+				</div>
 			</header>
 
 			{isPending ? (
