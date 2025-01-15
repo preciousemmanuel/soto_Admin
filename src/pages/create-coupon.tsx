@@ -91,10 +91,10 @@ const CreateCoupon = () => {
 	const { handleSubmit, errors, handleChange, values } = useFormik({
 		initialValues,
 		validationSchema: createCouponSchema,
-		onSubmit: (values) => {
-			mutate(values)
-		},
+		onSubmit: (values) => mutate(values),
 	})
+
+	console.log("errors", errors)
 
 	return (
 		<section className="flex flex-col gap-10">
@@ -246,7 +246,7 @@ const CreateCoupon = () => {
 					</div>
 				</div>
 
-				<Button className="ml-auto w-36" type="submit" form="create-coupon">
+				<Button className="ml-auto w-36" type="submit">
 					{isPending ? <Spinner /> : "Save"}
 				</Button>
 			</form>
