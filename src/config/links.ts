@@ -42,7 +42,7 @@ export const dashboard_links = [
 		icon: People,
 	},
 	{
-		label: "Sellers Mgt.",
+		label: "Vendor Mgt.",
 		href: "/dashboard/sellers",
 		icon: People,
 	},

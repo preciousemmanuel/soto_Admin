@@ -147,7 +147,7 @@ const Sellers = () => {
 	return (
 		<section className="flex flex-col gap-10">
 			<header className="flex items-center justify-between gap-2">
-				<h2 className="font-body text-3xl font-medium">Seller’s Management</h2>
+				<h2 className="font-body text-3xl font-medium">Vendor’s Management</h2>
 
 				<div className="flex items-center gap-6">
 					<div className="relative flex items-center gap-2">

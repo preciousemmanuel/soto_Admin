@@ -54,7 +54,10 @@ export const Notifications = () => {
 			</PopoverTrigger>
 
 			<PopoverContent className="max-h-[500px] w-96 overflow-y-auto text-xs">
-				<h2 className="p-4 pb-2 font-body text-lg font-medium">Notifications</h2>
+				<header className="flex flex-row items-center justify-between gap-2 p-4 pb-2">
+					<h2 className="font-body text-lg font-medium">Notifications</h2>
+					{/* <button>Clear all</button> */}
+				</header>
 
 				<Tabs defaultValue={tabs[0]} value={tab} onValueChange={setTab}>
 					<TabsList>
