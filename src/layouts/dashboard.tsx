@@ -26,7 +26,7 @@ export function DashboardLayout() {
 				<div className="grid w-full place-items-center border-b-[0.5px] border-[#f8f3f3] py-8">
 					<SotoLogoWhite />
 				</div>
-				<div className="flex w-full flex-col gap-4 px-[26px] py-5">
+				<div className="flex w-full flex-col gap-4 overflow-y-auto px-[26px] py-5">
 					{dashboard_links.map(({ href, icon: Icon, label }, index) => (
 						<Link
 							key={index}

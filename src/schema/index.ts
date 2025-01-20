@@ -20,11 +20,9 @@ export const createCouponSchema = Yup.object({
 		.required("Activation date is required!")
 		.min(new Date(), "Activation date must be in the future!"),
 	expiry_date: Yup.date()
-		.required("Expiry date is required!")
 		.min(new Date(), "Activation date must be in the future!")
 		.min(Yup.ref("activation_date"), "Expiry date must be after activation date!"),
 	usage_limit: Yup.number()
-		.required("Usage limit is required!")
 		.typeError("Usage limit must be a number!")
 		.integer("Usage limit must be a whole number!"),
 })
