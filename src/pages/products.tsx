@@ -1,3 +1,4 @@
+import { AddProductCategory } from "@/components/modals"
 import { AddInterestModal } from "@/components/modals/add-interest"
 import { Spinner } from "@/components/shared"
 import { ProductItem } from "@/components/table"
@@ -81,63 +82,67 @@ const Products = () => {
 				<h2 className="text-3xl font-medium">Products Management</h2>
 
 				<div className="flex items-center gap-3">
-					<Select value={category} onValueChange={setCategory}>
-						<SelectTrigger className="w-52 capitalize">
-							<SelectValue placeholder="Select Category" />
-						</SelectTrigger>
-						<SelectContent>
-							<SelectItem value="all" className="capitalize">
-								<div className="flex flex-row items-center gap-2">
-									<Avatar className="size-6">
-										<AvatarImage src="" alt="" />
-										<AvatarFallback>{getInitials("ALL")}</AvatarFallback>
-									</Avatar>
-
-									<span>All Categories</span>
-								</div>
-							</SelectItem>
-
-							{categories?.data.data.map((category) => (
-								<SelectItem key={category._id} value={category._id} className="capitalize">
-									<div className="flex flex-row items-center gap-2">
-										<Avatar className="size-6">
-											<AvatarImage src={category.image} alt="" />
-											<AvatarFallback>{getInitials(category.name)}</AvatarFallback>
-										</Avatar>
-
-										<span>{category.name}</span>
-									</div>
-								</SelectItem>
-							))}
-						</SelectContent>
-					</Select>
-
-					<Select value={timeLine} onValueChange={setTimeLine}>
-						<SelectTrigger className="w-[166px]">
-							<SelectValue placeholder="Select Range" />
-						</SelectTrigger>
-						<SelectContent>
-							{frequencyFilter.map(({ label, value }) => (
-								<SelectItem key={value} value={value}>
-									{label}
-								</SelectItem>
-							))}
-						</SelectContent>
-					</Select>
-
+					<AddProductCategory />
 					<AddInterestModal />
 				</div>
 			</header>
 
-			<div className="relative flex items-center gap-2">
-				<SearchNormal1 className="absolute left-4 top-1/2 size-5 -translate-y-1/2 text-[#5F6B7A]" />
-				<input
-					type="search"
-					value={query}
-					onChange={(e) => setQuery(e.target.value)}
-					className="w-96 rounded-md border-0 bg-neutral-50 px-3 py-2 pl-12 outline-none ring-1 ring-[#E5E5E5] focus:ring-2 focus-visible:ring-primary"
-					placeholder="Search by product name"
-				/>
+			<div className="flex items-center gap-4 rounded-md bg-neutral-100 p-4">
+				<p className="text-xs uppercase tracking-wider">Filter by:</p>
+				<Select value={category} onValueChange={setCategory}>
+					<SelectTrigger className="w-52 capitalize">
+						<SelectValue placeholder="Select Category" />
+					</SelectTrigger>
+					<SelectContent>
+						<SelectItem value="all" className="capitalize">
+							<div className="flex flex-row items-center gap-2">
+								<Avatar className="size-6">
+									<AvatarImage src="" alt="" />
+									<AvatarFallback>{getInitials("ALL")}</AvatarFallback>
+								</Avatar>
+
+								<span>All Categories</span>
+							</div>
+						</SelectItem>
+
+						{categories?.data.data.map((category) => (
+							<SelectItem key={category._id} value={category._id} className="capitalize">
+								<div className="flex flex-row items-center gap-2">
+									<Avatar className="size-6">
+										<AvatarImage src={category.image} alt="" />
+										<AvatarFallback>{getInitials(category.name)}</AvatarFallback>
+									</Avatar>
+
+									<span>{category.name}</span>
+								</div>
+							</SelectItem>
+						))}
+					</SelectContent>
+				</Select>
+
+				<Select value={timeLine} onValueChange={setTimeLine}>
+					<SelectTrigger className="w-[166px]">
+						<SelectValue placeholder="Select Range" />
+					</SelectTrigger>
+					<SelectContent>
+						{frequencyFilter.map(({ label, value }) => (
+							<SelectItem key={value} value={value}>
+								{label}
+							</SelectItem>
+						))}
+					</SelectContent>
+				</Select>
+
+				<div className="relative ml-auto flex items-center gap-2">
+					<SearchNormal1 className="absolute left-3 top-1/2 size-4 -translate-y-1/2 text-[#5F6B7A]" />
+					<input
+						type="search"
+						value={query}
+						onChange={(e) => setQuery(e.target.value)}
+						className="max-w-[350px] rounded-md border-0 bg-white px-3 py-2 pl-10 outline-none ring-1 ring-[#E5E5E5] focus:ring-2 focus-visible:ring-primary"
+						placeholder="Search by product name"
+					/>
+				</div>
 			</div>
 
 			<Tabs
