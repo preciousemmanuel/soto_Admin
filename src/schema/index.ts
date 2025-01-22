@@ -88,16 +88,36 @@ export const addPurchaserSchema = Yup.object({
 	id_number: Yup.string().required("ID number is required!"),
 	passport: Yup.string().required("Passport is required!"),
 	password: Yup.mixed()
-		.required("Password is required!").nullable()
+		.required("Password is required!")
+		.nullable()
 		.test(
 			"is-valid-type",
 			"Only jpg, jpeg and png image format are allowed",
 			// @ts-expect-error nil
-			(val) => !val || !allowedExtension.includes(val && val?.type)
-	),
+			(val) => !val || allowedExtension.includes(val && val?.type)
+		),
 })
 
 export const declineProductSchema = Yup.object({
 	decline_product_note: Yup.string().required("Reason is required!"),
+})
+
+export const addProductCategorySchema = Yup.object({
+	name: Yup.string().required("Name is required!"),
+	image: Yup.mixed()
+		.nullable()
+		.notRequired()
+		.test(
+			"is-valid-type",
+			"Only jpg, jpeg and png image format are allowed",
+			// @ts-expect-error nil
+			(val) => !val || allowedExtension.includes(val && val?.type)
+		)
+		.test(
+			"is-valid-size",
+			"Image size must be less than 3MB",
+			// @ts-expect-error nil
+			(val) => !val || val?.size <= 3000000
+		),
 })
 

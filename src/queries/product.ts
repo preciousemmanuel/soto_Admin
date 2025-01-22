@@ -47,4 +47,19 @@ const UpdateProductMutation = async ({ id, data }: Payload) => {
 		.then((res) => res.data)
 }
 
-export { GetProductQuery, GetProductsQuery, UpdateProductMutation }
+export type CreateCategoryPayload = {
+	name: string
+	image: string | undefined
+}
+const CreateCategoryMutation = async (payload: CreateCategoryPayload) => {
+	return axios
+		.post<HttpResponse<null>>(endpoints().products.crate_category, payload, {
+			headers: {
+				"Content-Type": "multipart/form-data",
+			},
+		})
+		.then((res) => res.data)
+}
+
+export { CreateCategoryMutation, GetProductQuery, GetProductsQuery, UpdateProductMutation }
+

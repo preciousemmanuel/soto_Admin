@@ -52,6 +52,7 @@ export const endpoints = (id?: string) => {
 		get_all: `${baseURL}/admin/products-mgt`,
 		get_one: `${baseURL}/admin/view-a-product/${id}`,
 		update: `${baseURL}/admin/update-product/${id}`,
+		crate_category: `${baseURL}/admin/add-category`,
 	} as const
 
 	const coupons = {
