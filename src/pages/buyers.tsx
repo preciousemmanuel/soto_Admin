@@ -140,18 +140,18 @@ const Buyers = () => {
 						/>
 						<DataCard
 							label="Buyers"
-							amount={overview?.data.visitors.amount}
-							percentage_change={overview?.data.visitors.percentage_change}
+							amount={overview?.data.buyers.amount}
+							percentage_change={overview?.data.buyers.percentage_change}
 						/>
 						<DataCard
 							label="Sellers"
-							amount={overview?.data.conversion.amount}
-							percentage_change={overview?.data.conversion.percentage_change}
+							amount={overview?.data.sellers.amount}
+							percentage_change={overview?.data.sellers.percentage_change}
 						/>
 						<DataCard
 							label="Orders"
 							amount={overview?.data.orders.amount}
-							percentage_change={Number(overview?.data.orders.percentage_change.toFixed(2) || 0)}
+							percentage_change={Number(overview?.data.orders.percentage_change.toFixed(2))}
 						/>
 					</div>
 
