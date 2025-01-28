@@ -65,13 +65,13 @@ const Dashboard = () => {
 						/>
 						<DataCard
 							label="Buyers"
-							amount={overview?.data.visitors.amount}
-							percentage_change={overview?.data.visitors.percentage_change}
+							amount={overview?.data.buyers.amount}
+							percentage_change={overview?.data.buyers.percentage_change}
 						/>
 						<DataCard
 							label="Sellers"
-							amount={overview?.data.conversion.amount}
-							percentage_change={overview?.data.conversion.percentage_change}
+							amount={overview?.data.sellers.amount}
+							percentage_change={overview?.data.sellers.percentage_change}
 						/>
 						<DataCard
 							label="Orders"

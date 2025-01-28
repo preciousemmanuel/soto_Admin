@@ -12,7 +12,7 @@ interface ExtendedPaginationProps extends PaginationProps {
 	timeLine?: TimelineProps
 }
 
-type OverviewMetricProps = {
+export type OverviewMetricProps = {
 	amount: number
 	percentage_change: number
 }

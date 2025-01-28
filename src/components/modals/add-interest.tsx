@@ -16,8 +16,10 @@ export const AddInterestModal = () => {
 		queryKey: ["get-settings"],
 	})
 
-	const [flatRate, setFlatRate] = React.useState([data?.data.interest_rates.flat || 0])
-	const [interestRate, setInterestRate] = React.useState([data?.data.interest_rates.special || 0])
+	const rate = data?.data?.interest_rates ? data?.data?.interest_rates.flat : 0
+	const defaultRate = data?.data?.interest_rates ? data?.data?.interest_rates.flat : 0
+	const [flatRate, setFlatRate] = React.useState([rate])
+	const [interestRate, setInterestRate] = React.useState([defaultRate])
 
 	const { isPending, mutate } = useMutation({
 		mutationFn: () =>
