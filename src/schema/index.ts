@@ -86,9 +86,9 @@ export const addPurchaserSchema = Yup.object({
 	state: Yup.string().required("State is required!"),
 	id_type: Yup.mixed().oneOf(idTypes).required("ID type is required!"),
 	id_number: Yup.string().required("ID number is required!"),
-	passport: Yup.string().required("Passport is required!"),
-	password: Yup.mixed()
-		.required("Password is required!")
+	password: Yup.string().required("Password is required!"),
+	passport: Yup.mixed()
+		.required("Passport is required!")
 		.nullable()
 		.test(
 			"is-valid-type",
@@ -120,4 +120,3 @@ export const addProductCategorySchema = Yup.object({
 			(val) => !val || val?.size <= 3000000
 		),
 })
-

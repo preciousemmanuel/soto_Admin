@@ -50,7 +50,6 @@ export const AddPurchaserModal = () => {
 		validationSchema: addPurchaserSchema,
 		enableReinitialize: true,
 		onSubmit: (values) => {
-			console.log("values", values)
 			mutate({
 				...values,
 				country: "Nigeria",
@@ -58,6 +57,8 @@ export const AddPurchaserModal = () => {
 			})
 		},
 	})
+
+	console.log("errors", errors)
 
 	const selectedState = states?.data.find((state) => state.name === values.state)
 
@@ -209,6 +210,7 @@ export const AddPurchaserModal = () => {
 							error={errors.password}
 							accept="image/jpeg, image/jpg, image/png"
 						/>
+						{errors.passport && <p className="text-xs text-red-600">{errors.passport}</p>}
 
 						{/* {values.passport ? (
 							<img src={URL.createObjectURL(values?.passport)} className="h-60 w-full object-contain" />
