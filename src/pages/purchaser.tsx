@@ -1,4 +1,6 @@
 import { UpdatePurchaserOrderStatusModal } from "@/components/modals"
+import { RemovePurchaserModal } from "@/components/modals/remove-purchaser"
+import { UpdatePurchaserModal } from "@/components/modals/update-purchaser"
 import { DataTable, Spinner } from "@/components/shared"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Button } from "@/components/ui/button"
@@ -176,9 +178,7 @@ const Purchaser = () => {
 							<div className="flex items-center justify-between">
 								<p className="font-semibold">Other info</p>
 
-								<button type="button" className="text-sm text-primary">
-									Edit
-								</button>
+								<UpdatePurchaserModal />
 							</div>
 
 							<div className="flex flex-col gap-2">
@@ -201,9 +201,10 @@ const Purchaser = () => {
 							</div>
 
 							<div className="flex flex-col gap-2 border-t border-t-[#E9EAF3] pt-4">
-								<button type="button" className="text-left text-sm text-red-600">
-									Remove Purchaser
-								</button>
+								<RemovePurchaserModal
+									id={data?.data._id}
+									name={`${data?.data.FirstName} ${data?.data.LastName}`}
+								/>
 							</div>
 						</div>
 					</div>

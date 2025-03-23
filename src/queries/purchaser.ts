@@ -53,9 +53,19 @@ export type CreatePurchaserPayload = {
 	password: string
 	passport: string | undefined
 }
-const CreatePurchaseMutation = async (payload: CreatePurchaserPayload) => {
+const CreatePurchaserMutation = async (payload: CreatePurchaserPayload) => {
 	return axios
 		.post<HttpResponse<AdminProps>>(endpoints().purchasers.create, payload, {
+			headers: {
+				"Content-Type": "multipart/form-data",
+			},
+		})
+		.then((res) => res.data)
+}
+
+const UpdatePurchaserMutation = async (id: string, payload: Partial<CreatePurchaserPayload>) => {
+	return axios
+		.put<HttpResponse<AdminProps>>(endpoints(id).purchasers.update_purchaser, payload, {
 			headers: {
 				"Content-Type": "multipart/form-data",
 			},
@@ -69,11 +79,19 @@ const UpdatePickupMutation = async (id: string, payload: { status: string }) => 
 		.then((res) => res.data)
 }
 
+const RemovePurchaser = async (id: string) => {
+	return axios
+		.put<HttpResponse<AdminProps>>(endpoints(id).purchasers.remove_purchaser)
+		.then((res) => res.data)
+}
+
 export {
-	CreatePurchaseMutation,
+	CreatePurchaserMutation,
 	GetPickupsQuery,
 	GetPurchaserQuery,
 	GetPurchasersQuery,
+	RemovePurchaser,
 	UpdatePickupMutation,
+	UpdatePurchaserMutation,
 }
 
