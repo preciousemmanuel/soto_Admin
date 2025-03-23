@@ -86,6 +86,8 @@ export const endpoints = (id?: string) => {
 		get_pickups: `${baseURL}/admin/purchasers/get-pickups`,
 		create: `${baseURL}/admin/purchasers/create-new`,
 		update_pickup: `${baseURL}/admin/purchasers/update-one/${id}`,
+		remove_purchaser: `${baseURL}/admin/purchasers/remove-one/${id}`,
+		update_purchaser: `${baseURL}/admin/purchasers/edit-details/${id}`,
 	} as const
 
 	const shared = {

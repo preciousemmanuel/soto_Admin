@@ -97,6 +97,17 @@ export const addPurchaserSchema = Yup.object({
 			(val) => !val || allowedExtension.includes(val && val?.type)
 		),
 })
+export const updatePurchaserSchema = Yup.object({
+	first_name: Yup.string().required("First name is required!"),
+	last_name: Yup.string().required("Last name is required!"),
+	email: Yup.string().email("Please enter a valid email!").required("Email is required!"),
+	phone_number: Yup.string()
+		.required("Phone is required!")
+		.max(11, "Phone number must be 11 digits!"),
+	id_type: Yup.mixed().oneOf(idTypes).required("ID type is required!"),
+	id_number: Yup.string().required("ID number is required!"),
+	passport: Yup.mixed().required("Passport is required!").nullable(),
+})
 
 export const declineProductSchema = Yup.object({
 	decline_product_note: Yup.string().required("Reason is required!"),

@@ -1,7 +1,7 @@
-import { CreatePurchaseMutation, type CreatePurchaserPayload } from "@/queries/purchaser"
+import { CreatePurchaserMutation, type CreatePurchaserPayload } from "@/queries/purchaser"
 import { GetCitiesQuery, GetStatesQuery } from "@/queries/shared"
 import { addPurchaserSchema, idTypes } from "@/schema"
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
+import { skipToken, useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import { useFormik } from "formik"
 import * as React from "react"
 import { Spinner } from "../shared"
@@ -36,7 +36,7 @@ export const AddPurchaserModal = () => {
 	})
 
 	const { isPending, mutate } = useMutation({
-		mutationFn: (values: CreatePurchaserPayload) => CreatePurchaseMutation(values),
+		mutationFn: (values: CreatePurchaserPayload) => CreatePurchaserMutation(values),
 		mutationKey: ["add-purchaser"],
 		onSuccess: () => {
 			queryClient.invalidateQueries()
@@ -58,16 +58,15 @@ export const AddPurchaserModal = () => {
 		},
 	})
 
-	console.log("errors", errors)
-
 	const selectedState = states?.data.find((state) => state.name === values.state)
 
-	const { data: cities, isPending: citiesLoading } = useQuery({
+	const { data: cities, isLoading } = useQuery({
 		queryKey: ["get-cities", selectedState?.isoCode],
-		queryFn: () => GetCitiesQuery({ state_code: selectedState?.isoCode }),
+		queryFn: selectedState?.isoCode
+			? () => GetCitiesQuery({ state_code: selectedState?.isoCode })
+			: skipToken,
 		staleTime: Infinity,
 		gcTime: Infinity,
-		enabled: !!selectedState,
 	})
 
 	return (
@@ -143,10 +142,10 @@ export const AddPurchaserModal = () => {
 						</p>
 						<Select
 							name="city"
-							disabled={citiesLoading}
+							disabled={isLoading}
 							onValueChange={(value) => handleChange({ target: { name: "city", value } })}>
 							<SelectTrigger className="flex w-full rounded border-0 bg-neutral-50 px-4 py-[22px] text-base font-normal outline-none ring-1 ring-[#E5E5E5] focus:ring-2 focus:ring-primary focus:ring-offset-1 disabled:cursor-not-allowed disabled:opacity-50 data-[placeholder]:font-normal data-[placeholder]:text-neutral-500">
-								<SelectValue placeholder={citiesLoading ? "Loading..." : "Select a value"} />
+								<SelectValue placeholder={isLoading ? "Loading..." : "Select a value"} />
 							</SelectTrigger>
 
 							<SelectContent>
@@ -207,7 +206,7 @@ export const AddPurchaserModal = () => {
 							name="passport"
 							label="Passport"
 							onChange={(e) => setFieldValue("passport", e.target.files?.[0])}
-							error={errors.password}
+							error={errors.passport}
 							accept="image/jpeg, image/jpg, image/png"
 						/>
 						{errors.passport && <p className="text-xs text-red-600">{errors.passport}</p>}

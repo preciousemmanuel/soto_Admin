@@ -607,6 +607,7 @@ export type PurchasersProps = PaginationResponse<{
 	__v: number
 	Token: string
 	address_id: string
+	ProfileImage: string
 }>
 
 export type PickupsProps = PaginationResponse<{
