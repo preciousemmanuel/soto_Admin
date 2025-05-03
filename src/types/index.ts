@@ -191,6 +191,7 @@ export type SellerProps = {
 		product_quantity: number
 		is_verified: boolean
 	}>
+	
 }
 
 export type BuyersProps = {

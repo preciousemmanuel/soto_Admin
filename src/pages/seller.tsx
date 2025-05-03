@@ -3,6 +3,7 @@ import { Spinner } from "@/components/shared"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Button } from "@/components/ui/button"
 import { Pagination } from "@/components/ui/pagination"
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
 import {
 	Table,
 	TableBody,
@@ -13,11 +14,13 @@ import {
 } from "@/components/ui/table"
 import { usePageTitle } from "@/hooks"
 import { formatCurrency, getInitials } from "@/lib"
-import { GetSellerQuery } from "@/queries"
+import { DeleteProductMutation, GetSellerQuery } from "@/queries"
 import type { SellerProps } from "@/types"
-import { useQuery } from "@tanstack/react-query"
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import { flexRender, getCoreRowModel, useReactTable, type ColumnDef } from "@tanstack/react-table"
 import { formatDistanceStrict } from "date-fns"
+import { MoreHorizontal } from "lucide-react"
+import { useEffect, useState } from "react"
 import { useNavigate, useParams } from "react-router-dom"
 
 const statusClass = {
@@ -25,55 +28,120 @@ const statusClass = {
 	false: "text-[#7F7F7F]",
 }
 
-type SellerProducts = SellerProps["product_records"]["data"][number]
-const columns: ColumnDef<SellerProducts>[] = [
-	{
-		header: "Products",
-		accessorKey: "product_name",
-		cell: ({ row }) => (
-			<div className="flex items-center gap-2.5">
-				<Avatar className="size-9">
-					<AvatarImage src="" alt={row.getValue("product_name")} />
-					<AvatarFallback>{getInitials(row.getValue("product_name"))}</AvatarFallback>
-				</Avatar>
 
-				<p className="font-medium capitalize leading-none">{row.getValue("product_name")}</p>
-			</div>
-		),
-	},
-	{
-		header: () => <p>QTY</p>,
-		accessorKey: "product_quantity",
-		cell: ({ row }) => (
-			<span className="text-center">{row.getValue("product_quantity")?.toLocaleString()}</span>
-		),
-	},
-	{
-		header: "Status",
-		accessorKey: "is_verified",
-		cell: ({ row }) => (
-			<p className={statusClass[row.getValue("is_verified") as keyof typeof statusClass]}>
-				{row.getValue("is_verified") ? "Active" : "Inactive"}
-			</p>
-		),
-	},
-	{
-		header: "Price",
-		accessorKey: "unit_price",
-		cell: ({ row }) => (
-			<span className="capitalize">{formatCurrency(row.getValue("unit_price"))}</span>
-		),
-	},
-]
+type SellerProducts = SellerProps["product_records"]["data"][number]
+
 
 const Seller = () => {
 	usePageTitle("Seller")
+	const queryClient = useQueryClient()
 	const { id } = useParams()
 	const navigate = useNavigate()
+	const [deleteId, setDeleteId] = useState<string | null>(null)
 
-	const { data, isPending } = useQuery({
+    const handleDelete = (id: string) => {
+        setDeleteId(id)
+    }
+
+	const { mutate } = useMutation({
+		mutationFn: (id: string) => DeleteProductMutation(id),
+		mutationKey: ["delete-product"],
+		onSuccess: () => {
+			queryClient.invalidateQueries({
+				queryKey: ["get-sellers", id],
+			})
+		},
+		onError: (error: Error) => {
+			console.error("Delete error:", error.message);
+		}
+	});
+
+    const confirmDelete = () => {
+        if (deleteId) {
+            mutate(deleteId)
+            setDeleteId(null)
+        }
+    }
+
+    const cancelDelete = () => {
+        setDeleteId(null)
+    }
+
+	const columns: ColumnDef<SellerProducts>[] = [
+		{
+			header: "Products",
+			accessorKey: "product_name",
+			cell: ({ row }) => (
+				<div className="flex items-center gap-2.5">
+					<Avatar className="size-9">
+						<AvatarImage src="" alt={row.getValue("product_name")} />
+						<AvatarFallback>{getInitials(row.getValue("product_name"))}</AvatarFallback>
+					</Avatar>
+	
+					<p className="font-medium capitalize leading-none">{row.getValue("product_name")}</p>
+				</div>
+			),
+		},
+		{
+			header: () => <p>QTY</p>,
+			accessorKey: "product_quantity",
+			cell: ({ row }) => (
+				<span className="text-center">{row.getValue("product_quantity")?.toLocaleString()}</span>
+			),
+		},
+		{
+			header: "Status",
+			accessorKey: "is_verified",
+			cell: ({ row }) => (
+				<p className={statusClass[row.getValue("is_verified") as keyof typeof statusClass]}>
+					{row.getValue("is_verified") ? "Active" : "Inactive"}
+				</p>
+			),
+		},
+		{
+			header: "Price",
+			accessorKey: "unit_price",
+			cell: ({ row }) => (
+				<span className="capitalize">{formatCurrency(row.getValue("unit_price"))}</span>
+			),
+		},
+		{
+			header: "Action",
+			accessorKey: "action",
+			cell: ({ row }) => (
+				
+				<Popover>
+					<PopoverTrigger>
+						<MoreHorizontal />
+					</PopoverTrigger>
+	
+					<PopoverContent className="flex flex-col gap-1 p-1">
+						<button
+							onClick={() => navigate(`/dashboard/products/${row.original._id}`)}
+							className="flex rounded-md px-4 py-2 text-xs hover:bg-primary hover:text-white transition-all w-full text-left">
+							View Product
+						</button>
+						<button
+							onClick={() => navigate(`/dashboard/products/edit/${row.original._id}`)}
+							className="flex rounded-md px-4 py-2 text-xs hover:bg-primary hover:text-white transition-all w-full text-left">
+							Edit Product
+						</button>
+						<button
+							className="flex rounded-md px-4 py-2 text-xs text-red-600 transition-all hover:bg-red-50"
+							onClick={() => handleDelete(row.original._id)}>
+							Delete Product
+						</button>
+					</PopoverContent>
+				</Popover>
+			),
+		},
+	]
+
+	
+	const { data, isPending,refetch } = useQuery({
 		queryFn: () => GetSellerQuery(String(id)),
 		queryKey: ["get-sellers", id],
+		
 	})
 	const table = useReactTable({
 		data: data?.data.product_records.data || [],
@@ -81,7 +149,15 @@ const Seller = () => {
 		getCoreRowModel: getCoreRowModel(),
 	})
 
+
+	useEffect(() => {
+		refetch()
+	}, [refetch])
+
 	const totalPages = Number(data?.data.product_records.pagination.pageCount)
+
+
+	
 
 	return (
 		<section className="flex flex-col gap-10">
@@ -249,6 +325,21 @@ const Seller = () => {
 					</div>
 				</>
 			)}
+			{deleteId && (
+                <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+                    <div className="bg-white rounded-lg p-6 w-full max-w-sm">
+                        <p className="text-sm mb-4">Are you sure you want to delete this product?</p>
+                        <div className="flex gap-2 justify-end">
+                            <Button variant="outline" size="sm" onClick={cancelDelete}>
+                                Cancel
+                            </Button>
+                            <Button variant="destructive" size="sm" onClick={confirmDelete}>
+                                Delete
+                            </Button>
+                        </div>
+                    </div>
+                </div>
+            )}
 		</section>
 	)
 }

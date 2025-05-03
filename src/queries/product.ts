@@ -37,6 +37,17 @@ type Payload = {
 	data: {
 		is_verified?: "YES" | "NO"
 		decline_product_note?: string
+		product_name?: string
+		category?: string
+		product_quantity?: number
+		unit_price?: number
+		is_discounted?: string
+		length?: number
+		height?: number
+		width?: number
+		description?: string
+		in_stock?: string
+		product_image?: any
 	}
 }
 const UpdateProductMutation = async ({ id, data }: Payload) => {
@@ -44,6 +55,12 @@ const UpdateProductMutation = async ({ id, data }: Payload) => {
 		.put<HttpResponse<SingleProductProps>>(endpoints(id).products.update, data, {
 			headers: { "Content-Type": "multipart/form-data" },
 		})
+		.then((res) => res.data)
+}
+
+const DeleteProductMutation = async (id: string) => {
+	return axios
+		.put<HttpResponse<SingleProductProps>>(endpoints(id).products.delete)
 		.then((res) => res.data)
 }
 
@@ -61,5 +78,10 @@ const CreateCategoryMutation = async (payload: CreateCategoryPayload) => {
 		.then((res) => res.data)
 }
 
-export { CreateCategoryMutation, GetProductQuery, GetProductsQuery, UpdateProductMutation }
-
+export {
+	CreateCategoryMutation,
+	DeleteProductMutation,
+	GetProductQuery,
+	GetProductsQuery,
+	UpdateProductMutation,
+}

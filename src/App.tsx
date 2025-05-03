@@ -30,6 +30,7 @@ import {
 } from "@/pages"
 import { ErrorBoundary } from "./components/shared"
 import { useUserStore } from "./store/z-store"
+import EditProduct from "./pages/edit-product"
 
 function App() {
 	const { isAuthenticated } = useUserStore()
@@ -103,6 +104,10 @@ function App() {
 								{
 									path: "create",
 									element: <CreateProduct />,
+								},
+								{
+									path: "edit/:id",
+									element: <EditProduct />,
 								},
 							],
 						},
