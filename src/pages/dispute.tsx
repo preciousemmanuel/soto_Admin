@@ -38,13 +38,13 @@ const Dispute = () => {
 						className="w-32 bg-neutral-600 text-neutral-100 hover:bg-neutral-700"
 						asChild
 						variant="secondary"
-						disabled={data?.data.status === "RESOLVED"}>
-						<Link to={`/dashboard/orders/${data?.data.order}`}>View Order</Link>
+						disabled={data?.data?.status === "RESOLVED"}>
+						<Link to={`/dashboard/orders/${data?.data?.order}`}>View Order</Link>
 					</Button>
 					<UpdateDisputeModal
 						id={id ?? ""}
 						trigger={
-							<Button className="w-36" disabled={data?.data.status === "RESOLVED"}>
+							<Button className="w-36" disabled={data?.data?.status === "RESOLVED"}>
 								Update Dispute
 							</Button>
 						}
@@ -106,12 +106,12 @@ const Dispute = () => {
 									<Avatar className="size-9">
 										<AvatarImage src="" alt={fullname} />
 										<AvatarFallback className="text-sm">
-											{getInitials(`${data.data.admin.FirstName} ${data.data.admin.LastName}`)}
+											{getInitials(`${data?.data.admin.FirstName} ${data?.data.admin.LastName}`)}
 										</AvatarFallback>
 									</Avatar>
 
 									<p className="text-sm capitalize leading-none">
-										{data.data.admin.FirstName} {data.data.admin.LastName}
+										{data?.data.admin.FirstName} {data?.data.admin.LastName}
 									</p>
 								</div>
 							) : (
@@ -121,7 +121,7 @@ const Dispute = () => {
 
 						<div>
 							<p className="text-[11px] uppercase tracking-wide">Date:</p>
-							<p className="text-sm">{format(data?.data.createdAt as string, "MMM d, yyyy hh:mm a")}</p>
+							<p className="text-sm">{format(data?.data?.createdAt as string, "MMM d, yyyy hh:mm a")}</p>
 						</div>
 					</div>
 
@@ -130,8 +130,8 @@ const Dispute = () => {
 							<h4 className="text-sm font-medium">Attached Images</h4>
 
 							<div className="flex items-center gap-4">
-								{data?.data.images.length ? (
-									data?.data.images.map((image) => (
+								{data?.data?.images?.length ? (
+									data?.data?.images?.map((image) => (
 										<img src={image} alt="product image" className="size-40 rounded-lg" />
 									))
 								) : (
@@ -144,17 +144,17 @@ const Dispute = () => {
 							<h4 className="text-sm font-medium">Order Products</h4>
 
 							<ul className="rounded-md bg-white p-4">
-								{data?.data.order_details.items.map((item) => (
+								{data?.data?.order_details?.items?.map((item) => (
 									<li
-										key={item._id}
+										key={item?._id}
 										className="flex flex-row items-center gap-4 border-b border-b-neutral-200 pb-4 last:border-b-0 last:pb-0">
-										<img src={item.images[0]} alt={item.product_name} className="size-20" />
+										<img src={item?.images[0]} alt={item?.product_name} className="size-20" />
 
 										<div className="text-sm">
-											<p className="capitalize">{item.product_name}</p>
-											<p className="text-xs text-[#808089]">Qty: {item.quantity}</p>
+											<p className="capitalize">{item?.product_name}</p>
+											<p className="text-xs text-[#808089]">Qty: {item?.quantity}</p>
 											<p className="text-xs text-[#808089]">
-												Price: {formatCurrency(item.unit_price * item.quantity)}
+												Price: {formatCurrency(item?.unit_price * item?.quantity)}
 											</p>
 										</div>
 									</li>
@@ -169,11 +169,11 @@ const Dispute = () => {
 								<ul className="rounded-md bg-white p-4">
 									<li className="flex items-center justify-between gap-1 border-b border-b-neutral-200 pb-4 text-sm">
 										<p>Order ID</p>
-										<p>#{data?.data.order_details._id.substring(0, 8)}</p>
+										<p>#{data?.data?.order_details?._id?.substring(0, 8)}</p>
 									</li>
 									<li className="flex items-center justify-between gap-1 pt-4 text-sm">
 										<p>Order Date</p>
-										<p>{format(data?.data.order_details.createdAt as string, "MMM d, yyyy hh:mm a")}</p>
+										<p>{data?.data?.order_details?.createdAt ? format(new Date(data.data.order_details.createdAt), "MMM d, yyyy hh:mm a") : "-"}</p>
 									</li>
 								</ul>
 							</div>
@@ -181,16 +181,15 @@ const Dispute = () => {
 							<div className="flex flex-col gap-3">
 								<h4 className="text-sm">Payment Info</h4>
 
-								{data?.data.order_details.payment_details.length ? (
+								{data?.data?.order_details?.payment_details?.length ? (
 									<ul className="rounded-md bg-white p-4">
 										<li className="flex items-center justify-between gap-1 border-b border-b-neutral-200 pb-4 text-sm">
 											<p>Payment Status</p>
-											{/* @ts-expect-error nil */}
-											<p>{data?.data.order_details.payment_details?.at(-1).status ?? "-"}</p>
+											<p>{data?.data?.order_details?.payment_details?.at(-1)?.status ?? "-"}</p>
 										</li>
 										<li className="flex items-center justify-between gap-1 pt-4 text-sm">
 											<p>Total Amount</p>
-											<p>{formatCurrency(data?.data.order_details.grand_total)}</p>
+											<p>{formatCurrency(data?.data?.order_details?.grand_total)}</p>
 										</li>
 									</ul>
 								) : null}
