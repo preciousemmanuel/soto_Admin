@@ -23,7 +23,7 @@ import { MoreHorizontal } from "lucide-react"
 import React from "react"
 import { Link, useSearchParams } from "react-router-dom"
 
-const tabs = ["custom", "booked", "pending", "cancelled", "delivered", "picked_Up" , "shipment", "failed"] as const
+const tabs = ["custom", "booked", "pending", "cancelled", "delivered", "picked_Up" ,"failed"] as const
 const columns: ColumnDef<OrderProps>[] = [
 	{
 		header: "Orders ID",

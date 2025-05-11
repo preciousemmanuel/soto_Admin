@@ -48,17 +48,21 @@ export const UpdateRoleModal = ({ data }: Props) => {
 				read: data.order.read === "YES" ? true : false,
 				write: data.order.write === "YES" ? true : false,
 			},
+			purchaser: {
+				read: data?.purchaser?.read === "YES" ? true : false,
+				write: data?.purchaser?.write === "YES" ? true : false,
+			},
 			buyer: {
 				read: data.buyer.read === "YES" ? true : false,
 				write: data.buyer.write === "YES" ? true : false,
 			},
 			seller: {
-				read: data.seller.read === "YES" ? true : false,
-				write: data.seller.write === "YES" ? true : false,
+				read: data?.seller?.read === "YES" ? true : false,
+				write: data?.seller?.write === "YES" ? true : false,
 			},
 			product: {
-				read: data.product.read === "YES" ? true : false,
-				write: data.product.write === "YES" ? true : false,
+				read: data?.product?.read === "YES" ? true : false,
+				write: data?.product?.write === "YES" ? true : false,
 			},
 			transaction: {
 				read: data.transaction.read === "YES" ? true : false,
@@ -86,6 +90,10 @@ export const UpdateRoleModal = ({ data }: Props) => {
 					buyer: {
 						read: values.buyer.read ? "YES" : "NO",
 						write: values.buyer.write ? "YES" : "NO",
+					},
+					purchaser: {
+						read: values?.purchaser?.read ? "YES" : "NO",
+						write: values?.purchaser?.write ? "YES" : "NO",
 					},
 					seller: {
 						read: values.seller.read ? "YES" : "NO",
@@ -215,9 +223,37 @@ export const UpdateRoleModal = ({ data }: Props) => {
 								className="place-self-center"
 							/>
 						</div>
+						<div className="grid grid-cols-[1fr_130px_130px] gap-2">
+							<p>Order</p>
+							<Switch
+								checked={Boolean(values.order.read)}
+								onCheckedChange={(value) => setFieldValue("order.read", value)}
+								className="place-self-center"
+							/>
+							<Switch
+								checked={Boolean(values.order.write)}
+								onCheckedChange={(value) => setFieldValue("order.write", value)}
+								className="place-self-center"
+							/>
+						</div>
+
 
 						<div className="grid grid-cols-[1fr_130px_130px] gap-2">
-							<p>Product</p>
+							<p>Purchaser</p>
+							<Switch
+								checked={Boolean(values.purchaser.read)}
+								onCheckedChange={(value) => setFieldValue("purchaser.read", value)}
+								className="place-self-center"
+							/>
+							<Switch
+								checked={Boolean(values.purchaser.write)}
+								onCheckedChange={(value) => setFieldValue("purchaser.write", value)}
+								className="place-self-center"
+							/>
+						</div>
+
+						<div className="grid grid-cols-[1fr_130px_130px] gap-2">
+							<p>Transaction</p>
 							<Switch
 								checked={Boolean(values.transaction.read)}
 								onCheckedChange={(value) => setFieldValue("transaction.read", value)}

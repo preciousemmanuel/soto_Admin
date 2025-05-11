@@ -1,6 +1,6 @@
 import { endpoints } from "@/config"
 import { axios } from "@/lib"
-import { HttpResponse, OrderProps, PaginationProps, PaginationResponse } from "@/types"
+import { HttpResponse, OrderProps, PaginationProps, PaginationResponse, ShipmentProps } from "@/types"
 
 const GetOrdersQuery = async (params: PaginationProps & { status?: string }) => {
 	return axios
@@ -12,6 +12,18 @@ const GetOrdersQuery = async (params: PaginationProps & { status?: string }) => 
 		})
 		.then((res) => res.data)
 }
+
+const GetShipmentQuery = async (params: PaginationProps) => {
+	return axios
+		.get<HttpResponse<PaginationResponse<ShipmentProps>>>(endpoints().orders.fetch_shipment, {
+			params: {
+				...params,
+				timeLine: params?.timeLine === "ALL" ? "" : params?.timeLine,
+			},
+		})
+		.then((res) => res.data)
+}
+
 
 const GetOrderQuery = async (id: string) => {
 	return axios.get<HttpResponse<OrderProps>>(endpoints(id).orders.get_one).then((res) => res.data)
@@ -57,8 +69,8 @@ export {
 	CreateShipmentMutation,
 	GetOrderQuery,
 	GetOrdersQuery,
+	GetShipmentQuery,
 	TrackShipmentMutation,
 	UpdateCustomOrderMutation,
 	UpdateTrackingStatusMutation,
 }
-

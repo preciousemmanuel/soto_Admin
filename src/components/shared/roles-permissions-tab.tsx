@@ -99,12 +99,22 @@ export const RolesPermissionsTab = () => {
 										<p className="text-center font-medium text-neutral-600">{role.product.read}</p>
 										<p className="text-center font-medium text-neutral-600">{role.product.write}</p>
 									</div>
-
 									<div className="grid grid-cols-[1fr_50px_50px] gap-2">
-										<p>Product</p>
-										<p className="text-center font-medium text-neutral-600">{role.product.read}</p>
-										<p className="text-center font-medium text-neutral-600">{role.product.write}</p>
+										<p>Order</p>
+										<p className="text-center font-medium text-neutral-600">{role.order.read}</p>
+										<p className="text-center font-medium text-neutral-600">{role.order.write}</p>
 									</div>
+									<div className="grid grid-cols-[1fr_50px_50px] gap-2">
+										<p>Purchaser</p>
+										<p className="text-center font-medium text-neutral-600">{role?.purchaser?.read}</p>
+										<p className="text-center font-medium text-neutral-600">{role?.purchaser?.write}</p>
+									</div>
+									<div className="grid grid-cols-[1fr_50px_50px] gap-2">
+										<p>Transaction</p>
+										<p className="text-center font-medium text-neutral-600">{role.transaction.read}</p>
+										<p className="text-center font-medium text-neutral-600">{role.transaction.write}</p>
+									</div>
+									
 								</div>
 							</li>
 						))

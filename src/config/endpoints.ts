@@ -44,6 +44,7 @@ export const endpoints = (id?: string) => {
 		cancel: `${baseURL}/admin/cancel-order/${id}`,
 		create_shipment: `${baseURL}/admin/create-shipment`,
 		track_shipment: `${baseURL}/admin/track-shipment`,
+		fetch_shipment: `${baseURL}/admin/fetch-shipments`,
 		update_custom_order: `${baseURL}/admin/update-custom-order/${id}`,
 		update_tracking_status: `${baseURL}/admin/track-an-order/${id}`,
 	} as const

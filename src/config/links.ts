@@ -9,6 +9,7 @@ import {
 	UserOctagon,
 	Wallet2,
 } from "iconsax-react"
+import { Truck } from "lucide-react"
 
 export const dashboard_links = [
 	{
@@ -25,6 +26,11 @@ export const dashboard_links = [
 		label: "Orders",
 		href: "/dashboard/orders",
 		icon: BagHappy,
+	},
+	{
+		label: "Shipments",
+		href: "/dashboard/shipments",
+		icon: Truck,
 	},
 	{
 		label: "Products",

@@ -12,6 +12,7 @@ import {
 	TableHeader,
 	TableRow,
 } from "@/components/ui/table"
+import { PAGE_LIMIT } from "@/config"
 import { usePageTitle } from "@/hooks"
 import { formatCurrency, getInitials } from "@/lib"
 import { DeleteProductMutation, GetSellerQuery } from "@/queries"
@@ -21,7 +22,7 @@ import { flexRender, getCoreRowModel, useReactTable, type ColumnDef } from "@tan
 import { formatDistanceStrict } from "date-fns"
 import { MoreHorizontal } from "lucide-react"
 import { useEffect, useState } from "react"
-import { useNavigate, useParams } from "react-router-dom"
+import { useNavigate, useParams, useSearchParams } from "react-router-dom"
 
 const statusClass = {
 	true: "text-[#0E973E]",
@@ -31,13 +32,14 @@ const statusClass = {
 
 type SellerProducts = SellerProps["product_records"]["data"][number]
 
-
 const Seller = () => {
 	usePageTitle("Seller")
 	const queryClient = useQueryClient()
 	const { id } = useParams()
 	const navigate = useNavigate()
 	const [deleteId, setDeleteId] = useState<string | null>(null)
+	const [searchParams] = useSearchParams()
+	const page = Number(searchParams.get("page") || 1)
 
     const handleDelete = (id: string) => {
         setDeleteId(id)
@@ -139,8 +141,11 @@ const Seller = () => {
 
 	
 	const { data, isPending,refetch } = useQuery({
-		queryFn: () => GetSellerQuery(String(id)),
-		queryKey: ["get-sellers", id],
+		queryFn: () => GetSellerQuery(String(id), {
+			page,
+			limit: PAGE_LIMIT,
+		}),
+		queryKey: ["get-sellers", id, page],
 		
 	})
 	const table = useReactTable({
@@ -154,7 +159,7 @@ const Seller = () => {
 		refetch()
 	}, [refetch])
 
-	const totalPages = Number(data?.data.product_records.pagination.pageCount)
+	const totalPages = Number(data?.data.product_records.pagination.totalCount)
 
 
 	

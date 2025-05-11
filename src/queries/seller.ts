@@ -19,8 +19,14 @@ const GetSellersQuery = async (
 		.then((res) => res.data)
 }
 
-const GetSellerQuery = async (id: string) => {
-	return axios.get<HttpResponse<SellerProps>>(endpoints(id).sellers.get_one).then((res) => res.data)
+const GetSellerQuery = async (id: string, params?: PaginationProps) => {
+	return axios
+		.get<HttpResponse<SellerProps>>(endpoints(id).sellers.get_one, {
+			params: {
+				...params,
+			},
+		})
+		.then((res) => res.data)
 }
 
 type UpdateSellerPayload = {

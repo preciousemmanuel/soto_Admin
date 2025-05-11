@@ -25,6 +25,10 @@ const initialValues = {
 		read: "",
 		write: "",
 	},
+	purchaser: {
+		read: "",
+		write: "",
+	},
 	buyer: {
 		read: "",
 		write: "",
@@ -80,6 +84,10 @@ export const CreateRoleModal = () => {
 					order: {
 						read: values.order.read ? "YES" : "NO",
 						write: values.order.write ? "YES" : "NO",
+					},
+					purchaser: {
+						read: values.purchaser.read ? "YES" : "NO",
+						write: values.purchaser.write ? "YES" : "NO",
 					},
 					buyer: {
 						read: values.buyer.read ? "YES" : "NO",
@@ -205,9 +213,35 @@ export const CreateRoleModal = () => {
 								className="place-self-center"
 							/>
 						</div>
+						<div className="grid grid-cols-[1fr_130px_130px] gap-2">
+							<p>Order</p>
+							<Switch
+								checked={Boolean(values.order.read)}
+								onCheckedChange={(value) => setFieldValue("order.read", value)}
+								className="place-self-center"
+							/>
+							<Switch
+								checked={Boolean(values.order.write)}
+								onCheckedChange={(value) => setFieldValue("order.write", value)}
+								className="place-self-center"
+							/>
+						</div>
+						<div className="grid grid-cols-[1fr_130px_130px] gap-2">
+							<p>Purchaser</p>
+							<Switch
+								checked={Boolean(values.purchaser.read)}
+								onCheckedChange={(value) => setFieldValue("purchaser.read", value)}
+								className="place-self-center"
+							/>
+							<Switch
+								checked={Boolean(values.purchaser.write)}
+								onCheckedChange={(value) => setFieldValue("purchaser.write", value)}
+								className="place-self-center"
+							/>
+						</div>
 
 						<div className="grid grid-cols-[1fr_130px_130px] gap-2">
-							<p>Product</p>
+							<p>Transaction</p>
 							<Switch
 								checked={Boolean(values.transaction.read)}
 								onCheckedChange={(value) => setFieldValue("transaction.read", value)}
