@@ -26,6 +26,10 @@ export type CreateRolePayload = {
 		read: string
 		write: string
 	}
+	purchaser: {
+		read: string
+		write: string
+	}
 	buyer: {
 		read: string
 		write: string

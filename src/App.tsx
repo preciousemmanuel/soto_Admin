@@ -31,6 +31,7 @@ import {
 import { ErrorBoundary } from "./components/shared"
 import { useUserStore } from "./store/z-store"
 import EditProduct from "./pages/edit-product"
+import Shippment from "./pages/shippment"
 
 function App() {
 	const { isAuthenticated } = useUserStore()
@@ -89,6 +90,10 @@ function App() {
 									element: <CustomOrder />,
 								},
 							],
+						},
+						{
+							path: "shipments",
+							element: <Shippment />,
 						},
 						{
 							path: "products",

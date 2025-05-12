@@ -755,6 +755,10 @@ export type RolesProps = PaginationResponse<{
 		read: string
 		write: string
 	}
+	purchaser: {
+		read: string
+		write: string
+	}
 	buyer: {
 		read: string
 		write: string
@@ -910,4 +914,39 @@ export type DisputeProps = {
 			__v: number
 		}>
 	}
+}
+
+export type ShipmentItem = {
+	product_id: string
+	product_name: string
+	product_code: string
+	description: string
+	vendor: string
+	images: string[]
+	quantity: number
+	unit_price: number
+	height: number
+	width: number
+	weight: number
+	is_discounted: boolean
+	_id: string
+}
+
+export type ShipmentOrder = {
+	_id: string
+	items: ShipmentItem[]
+	tracking_id: string
+}
+
+export type ShipmentProps = {
+	_id: string
+	created_shipment_id: string
+	status: string
+	price: number
+	order: ShipmentOrder
+	tracking_status: string
+	delivery_agent_name: string
+	delivery_agent_contact: string
+	createdAt: string
+	updatedAt: string
 }
