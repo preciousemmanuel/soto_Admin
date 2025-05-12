@@ -87,7 +87,7 @@ const columns: ColumnDef<ShipmentProps>[] = [
 const Shippment = () => {
 	usePageTitle("Shippment")
 	const [timeLine, setTimeLine] = React.useState<TimelineProps>("ALL")
-	const [searchParams, setSearchParams] = useSearchParams()
+	const [searchParams] = useSearchParams()
 	const page = Number(searchParams.get("page") || 1)
 
 	const { data, isPending, isPlaceholderData } = useQuery({
