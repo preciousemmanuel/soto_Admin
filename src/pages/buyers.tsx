@@ -13,9 +13,9 @@ import { format } from "date-fns"
 import { SearchNormal1 } from "iconsax-react"
 import { MoreHorizontal } from "lucide-react"
 import * as React from "react"
-import { Link } from "react-router-dom"
+import { Link, useSearchParams } from "react-router-dom"
 
-const page = 1
+
 type BuyerDetails = BuyersProps["data"][number]
 const columns: ColumnDef<BuyerDetails>[] = [
 	{
@@ -93,6 +93,8 @@ const Buyers = () => {
 	// const [timeLine, setTimeLine] = React.useState<TimelineProps>("")
 	const [query, setQuery] = React.useState("")
 	const buyer_name = useDebounce(query, 500)
+	const [searchParams] = useSearchParams()
+	const page = Number(searchParams.get("page") || 1)
 
 	const { data, isPending, isPlaceholderData } = useQuery({
 		queryFn: () => GetBuyersQuery({ page, limit: PAGE_LIMIT, search: buyer_name }),
